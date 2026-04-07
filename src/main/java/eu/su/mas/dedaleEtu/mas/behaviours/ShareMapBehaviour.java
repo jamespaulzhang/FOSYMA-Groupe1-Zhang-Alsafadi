@@ -1,17 +1,18 @@
 package eu.su.mas.dedaleEtu.mas.behaviours;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import dataStructures.tuple.Couple;
-import eu.su.mas.dedale.env.Location;
-import eu.su.mas.dedale.env.Observation;
 import eu.su.mas.dedale.mas.AbstractDedaleAgent;
 import eu.su.mas.dedaleEtu.mas.knowledge.MapRepresentation;
 import eu.su.mas.dedaleEtu.mas.knowledge.MapWithScent;
 import jade.core.AID;
 import jade.core.behaviours.TickerBehaviour;
+import jade.domain.DFService;
+import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.ServiceDescription;
+import jade.domain.FIPAException;
 import jade.lang.acl.ACLMessage;
 
 public class ShareMapBehaviour extends TickerBehaviour {
@@ -33,41 +34,57 @@ public class ShareMapBehaviour extends TickerBehaviour {
         lastHash = curHash;
         hasUpdate = false;
 
-        List<String> neighbours = getReachableAgents();
-        if (neighbours.isEmpty()) return;
+        // 获取所有探索者代理的 AID（通过 DF）
+        List<AID> allExplorers = getAllExplorerAgents();
+        if (allExplorers.isEmpty()) return;
 
         MapWithScent mws = new MapWithScent(myMap.getSerializableGraph(), myMap.getSerializableScent());
         ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
         msg.setProtocol("SHARE-TOPO");
         msg.setSender(myAgent.getAID());
-        neighbours.forEach(name -> msg.addReceiver(new AID(name, AID.ISLOCALNAME)));
+
+        // 添加所有其他探索者作为接收者
+        for (AID aid : allExplorers) {
+            if (!aid.equals(myAgent.getAID())) {
+                msg.addReceiver(aid);
+            }
+        }
+
+        // 如果没有接收者，直接返回
+        if (!msg.getAllReceiver().hasNext()) return;
 
         try {
             msg.setContentObject(mws);
             ((AbstractDedaleAgent) myAgent).sendMessage(msg);
-            System.out.println(myAgent.getLocalName() + " sent map to " + neighbours +
-                               " (" + mws.graph.getAllNodes().size() + " nodes, " +
-                               mws.scent.size() + " scent nodes)");
+            // 打印日志时不要调用 msg.getReceiverCount()，改为手动计数
+            int receiverCount = 0;
+            var it = msg.getAllReceiver();
+            while (it.hasNext()) { it.next(); receiverCount++; }
+            System.out.println(myAgent.getLocalName() + " sent map to " + receiverCount + " agents (" +
+                               mws.graph.getAllNodes().size() + " nodes, " + mws.scent.size() + " scent nodes)");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private List<String> getReachableAgents() {
-        AbstractDedaleAgent agent = (AbstractDedaleAgent) myAgent;
-        Location pos = agent.getCurrentPosition();
-        if (pos == null) return List.of();
-
-        List<Couple<Location, List<Couple<Observation, String>>>> observations = agent.observe();
-        if (observations.size() <= 1) return List.of();
-
-        return observations.subList(1, observations.size()).stream()
-                .flatMap(c -> c.getRight().stream())
-                .filter(p -> p.getLeft() == Observation.AGENTNAME)
-                .map(Couple::getRight)
-                .filter(name -> name.startsWith("Explo"))
-                .distinct()
-                .collect(Collectors.toList());
+    /**
+     * 通过 DF 服务获取所有类型为 "agentExplo" 的代理 AID。
+     */
+    private List<AID> getAllExplorerAgents() {
+        List<AID> agents = new ArrayList<>();
+        DFAgentDescription template = new DFAgentDescription();
+        ServiceDescription sd = new ServiceDescription();
+        sd.setType("agentExplo");   // 必须与 JSON 中的 agentType 一致
+        template.addServices(sd);
+        try {
+            DFAgentDescription[] results = DFService.search(myAgent, template);
+            for (DFAgentDescription dfd : results) {
+                agents.add(dfd.getName());
+            }
+        } catch (FIPAException e) {
+            e.printStackTrace();
+        }
+        return agents;
     }
 
     public void markUpdate() {

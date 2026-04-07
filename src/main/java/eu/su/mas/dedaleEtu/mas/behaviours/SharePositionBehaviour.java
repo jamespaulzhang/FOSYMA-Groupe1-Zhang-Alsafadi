@@ -4,50 +4,58 @@ import eu.su.mas.dedale.env.Location;
 import eu.su.mas.dedale.mas.AbstractDedaleAgent;
 import jade.core.AID;
 import jade.core.behaviours.TickerBehaviour;
+import jade.domain.DFService;
+import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.ServiceDescription;
+import jade.domain.FIPAException;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 /**
- * Periodically shares its own position and receives positions from other agents,
- * updating the position table in the hunt behaviour.
+ * 定期广播自己的位置到所有探索者（通过 DF 获取），并接收其他代理的位置，维护全局位置表。
  */
 public class SharePositionBehaviour extends TickerBehaviour {
     private static final long serialVersionUID = 1L;
-    
-    private DecentralizedHuntBehaviour huntBehaviour;
-    
-    // Constructor explicitly receives the huntBehaviour reference
-    public SharePositionBehaviour(AbstractDedaleAgent agent, long period, DecentralizedHuntBehaviour huntBehaviour) {
+
+    private final Map<String, String> agentPositions;
+
+    public SharePositionBehaviour(AbstractDedaleAgent agent, long period, Map<String, String> agentPositions) {
         super(agent, period);
-        this.huntBehaviour = huntBehaviour;
+        this.agentPositions = agentPositions;
     }
-    
+
     @Override
     protected void onTick() {
-        // 1. Send own position
+        // 1. 获取自己的位置
         Location myPos = ((AbstractDedaleAgent) myAgent).getCurrentPosition();
-        if (myPos != null) {
-            ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
-            msg.setProtocol("SHARE-POSITION");
-            msg.setSender(myAgent.getAID());
-            // Broadcast to all reachable agents (obtained via observation)
-            var observations = ((AbstractDedaleAgent) myAgent).observe();
-            for (int i = 1; i < observations.size(); i++) {
-                observations.get(i).getRight().stream()
-                    .filter(p -> p.getLeft() == eu.su.mas.dedale.env.Observation.AGENTNAME)
-                    .forEach(p -> msg.addReceiver(new AID(p.getRight(), AID.ISLOCALNAME)));
-            }
-            // If no receivers, send to self (harmless)
-            if (msg.getAllReceiver().hasNext()) {
-                try {
-                    msg.setContentObject(myPos.getLocationId());
-                    ((AbstractDedaleAgent) myAgent).sendMessage(msg);
-                } catch (Exception e) { e.printStackTrace(); }
+        if (myPos == null) return;
+
+        // 2. 通过 DF 获取所有探索者 agent 的 AID
+        List<AID> allExplorers = getAllExplorerAgents();
+        if (allExplorers.isEmpty()) return;
+
+        // 3. 发送自己的位置给所有探索者
+        ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+        msg.setProtocol("SHARE-POSITION");
+        msg.setSender(myAgent.getAID());
+        for (AID aid : allExplorers) {
+            if (!aid.equals(myAgent.getAID())) {
+                msg.addReceiver(aid);
             }
         }
-        
-        // 2. Receive positions from other agents
+        try {
+            msg.setContentObject(myPos.getLocationId());
+            ((AbstractDedaleAgent) myAgent).sendMessage(msg);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // 4. 接收其他代理的位置消息
         MessageTemplate tmpl = MessageTemplate.and(
                 MessageTemplate.MatchProtocol("SHARE-POSITION"),
                 MessageTemplate.MatchPerformative(ACLMessage.INFORM));
@@ -56,11 +64,28 @@ public class SharePositionBehaviour extends TickerBehaviour {
             try {
                 String sender = received.getSender().getLocalName();
                 String position = (String) received.getContentObject();
-                if (huntBehaviour != null) {
-                    huntBehaviour.updateAgentPosition(sender, position);
-                }
-            } catch (UnreadableException e) { e.printStackTrace(); }
+                agentPositions.put(sender, position);
+            } catch (UnreadableException e) {
+                e.printStackTrace();
+            }
             received = myAgent.receive(tmpl);
         }
+    }
+
+    private List<AID> getAllExplorerAgents() {
+        List<AID> agents = new ArrayList<>();
+        DFAgentDescription template = new DFAgentDescription();
+        ServiceDescription sd = new ServiceDescription();
+        sd.setType("agentExplo");
+        template.addServices(sd);
+        try {
+            DFAgentDescription[] results = DFService.search(myAgent, template);
+            for (DFAgentDescription dfd : results) {
+                agents.add(dfd.getName());
+            }
+        } catch (FIPAException e) {
+            e.printStackTrace();
+        }
+        return agents;
     }
 }
