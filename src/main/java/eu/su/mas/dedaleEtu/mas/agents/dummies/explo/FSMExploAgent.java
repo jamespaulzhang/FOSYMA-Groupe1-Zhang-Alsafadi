@@ -126,7 +126,6 @@ public class FSMExploAgent extends AbstractDedaleAgent {
 
         @Override
         public int onEnd() {
-            // 返回 0 表示继续探索，返回 1 表示进入狩猎
             return (mode == MODE_EXPLORATION) ? 0 : 1;
         }
     }
@@ -165,7 +164,10 @@ public class FSMExploAgent extends AbstractDedaleAgent {
 
     public MapRepresentation getMyMap() { return myMap; }
     public void setMyMap(MapRepresentation myMap) { this.myMap = myMap; }
-    public void initiateMyMap() { this.myMap = new MapRepresentation(getLocalName()); }
+    public void initiateMyMap() {
+        this.myMap = new MapRepresentation(getLocalName());
+        this.myMap.showGUI();   // 打开地图窗口
+    }
     public void myMapAddNode(String node, MapAttribute attr) { myMap.addNode(node, attr); }
     public boolean myMapAddNewNode(String id) { return myMap.addNewNode(id); }
     public void myMapAddEdge(String id1, String id2) { myMap.addEdge(id1, id2); }

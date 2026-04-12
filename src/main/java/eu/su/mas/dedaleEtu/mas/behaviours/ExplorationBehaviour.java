@@ -43,10 +43,8 @@ public class ExplorationBehaviour extends OneShotBehaviour {
         // 首先将当前位置添加到地图中（如果尚未添加）
         boolean nodeAdded = agent.myMapAddNewNode(myPosition);
         if (nodeAdded) {
-            // 如果是新节点，将其标记为 closed（已访问）
             agent.getMyMap().addNode(myPosition, MapAttribute.closed);
         } else {
-            // 如果节点已存在，确保它是 closed（可能之前从别人那里收到）
             agent.getMyMap().addNode(myPosition, MapAttribute.closed);
         }
 
@@ -59,14 +57,12 @@ public class ExplorationBehaviour extends OneShotBehaviour {
             if (!myPosition.equals(nodeId)) {
                 boolean isNew = agent.myMapAddNewNode(nodeId);
                 agent.myMapAddEdge(myPosition, nodeId);
-                // 记录第一个未访问的邻居作为候选 nextNode
                 if (nextNode == null && isNew && !agent.getPosition().contains(nodeId)) {
                     nextNode = nodeId;
                 }
             }
         }
 
-        // 现在地图至少包含了当前位置及其邻居，可以安全判断 hasOpenNode()
         // 检查是否应切换到狩猎模式
         if (agent.getGetoutCnt() >= 10 || !agent.getMyMap().hasOpenNode()) {
             agent.setMode(FSMExploAgent.MODE_HUNT);
@@ -142,6 +138,7 @@ public class ExplorationBehaviour extends OneShotBehaviour {
         agent.setNextDest(nextNode);
         if (nextNode != null) {
             ((AbstractDedaleAgent) this.myAgent).moveTo(new GsLocation(nextNode));
+            System.out.println(agent.getLocalName() + " [EXPLORE] moving to " + nextNode);
         }
         agent.cleanPosition();
         agent.cleanStenchDirection();

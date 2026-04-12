@@ -1,6 +1,8 @@
 package eu.su.mas.dedaleEtu.mas.behaviours;
 
 import java.io.IOException;
+import java.util.Iterator;
+
 import dataStructures.serializableGraph.SerializableSimpleGraph;
 import eu.su.mas.dedale.mas.AbstractDedaleAgent;
 import eu.su.mas.dedaleEtu.mas.agents.dummies.explo.FSMExploAgent;
@@ -25,11 +27,12 @@ public class SignalBehaviour extends OneShotBehaviour {
     @Override
     public void action() {
         FSMExploAgent agent = (FSMExploAgent) this.myAgent;
+        String myName = myAgent.getLocalName();
         AID[] receivers;
         boolean inboxEmpty;
 
         // 检查捕获消息（若收到则终止）
-        if (checkCaptureMessage(agent)) {
+        if (checkCaptureMessage(agent, myName)) {
             agent.setMode(FSMExploAgent.MODE_CAPTURED);
             return;
         }
@@ -45,6 +48,7 @@ public class SignalBehaviour extends OneShotBehaviour {
         String myPosStr = ((AbstractDedaleAgent) myAgent).getCurrentPosition().getLocationId();
         msgPos.setContent(myPosStr);
         ((AbstractDedaleAgent) myAgent).sendMessage(msgPos);
+        System.out.println(myName + " [SEND] POSITION: " + myPosStr);
 
         // 2. 接收位置
         inboxEmpty = false;
@@ -53,7 +57,9 @@ public class SignalBehaviour extends OneShotBehaviour {
             ACLMessage msg = myAgent.receive(tmpl);
             if (msg != null) {
                 String pos = msg.getContent();
+                String sender = msg.getSender().getLocalName();
                 if (pos != null) agent.addPosition(pos);
+                System.out.println(myName + " [RECV] POSITION from " + sender + ": " + pos);
             } else inboxEmpty = true;
         } while (!inboxEmpty);
 
@@ -66,6 +72,7 @@ public class SignalBehaviour extends OneShotBehaviour {
             for (AID r : receivers) if (!r.equals(myAgent.getAID())) msgW.addReceiver(r);
             msgW.setContent("WUMPUS");
             ((AbstractDedaleAgent) myAgent).sendMessage(msgW);
+            System.out.println(myName + " [SEND] WUMPUS_FOUND (stuck)");
         }
 
         // 4. 接收 Wumpus 发现
@@ -74,6 +81,8 @@ public class SignalBehaviour extends OneShotBehaviour {
             MessageTemplate tmpl = MessageTemplate.MatchProtocol("SHARE-WUMPUSFOUND");
             ACLMessage msg = myAgent.receive(tmpl);
             if (msg != null) {
+                String sender = msg.getSender().getLocalName();
+                System.out.println(myName + " [RECV] WUMPUS_FOUND from " + sender);
                 if (agent.getWumpusCnt() < 10) {
                     agent.increaseGetoutCnt();
                     agent.setDest_wumpusfound(true);
@@ -96,6 +105,7 @@ public class SignalBehaviour extends OneShotBehaviour {
             for (AID r : receivers) if (!r.equals(myAgent.getAID())) msgSD.addReceiver(r);
             msgSD.setContent(agent.getOwnStenchDirection());
             ((AbstractDedaleAgent) myAgent).sendMessage(msgSD);
+            System.out.println(myName + " [SEND] STENCH_DIRECTION: " + agent.getOwnStenchDirection());
         }
 
         // 6. 发送内部气味
@@ -107,6 +117,7 @@ public class SignalBehaviour extends OneShotBehaviour {
             for (AID r : receivers) if (!r.equals(myAgent.getAID())) msgIS.addReceiver(r);
             msgIS.setContent(agent.getOwnInsideStench());
             ((AbstractDedaleAgent) myAgent).sendMessage(msgIS);
+            System.out.println(myName + " [SEND] INSIDE_STENCH: " + agent.getOwnInsideStench());
         }
 
         // 7. 接收气味方向
@@ -116,7 +127,9 @@ public class SignalBehaviour extends OneShotBehaviour {
             ACLMessage msg = myAgent.receive(tmpl);
             if (msg != null) {
                 String sd = msg.getContent();
+                String sender = msg.getSender().getLocalName();
                 if (sd != null) agent.addStenchDirection(sd);
+                System.out.println(myName + " [RECV] STENCH_DIRECTION from " + sender + ": " + sd);
             } else inboxEmpty = true;
         } while (!inboxEmpty);
 
@@ -127,7 +140,9 @@ public class SignalBehaviour extends OneShotBehaviour {
             ACLMessage msg = myAgent.receive(tmpl);
             if (msg != null) {
                 String is = msg.getContent();
+                String sender = msg.getSender().getLocalName();
                 if (is != null) agent.addInsideStench(is);
+                System.out.println(myName + " [RECV] INSIDE_STENCH from " + sender + ": " + is);
             } else inboxEmpty = true;
         } while (!inboxEmpty);
 
@@ -148,6 +163,11 @@ public class SignalBehaviour extends OneShotBehaviour {
                     );
                     msgMap.setContentObject(mws);
                     ((AbstractDedaleAgent) myAgent).sendMessage(msgMap);
+                    int recvCount = 0;
+                    Iterator<?> it = msgMap.getAllReceiver();
+                    while (it.hasNext()) { it.next(); recvCount++; }
+                    System.out.println(myName + " [SEND] MAP (hash=" + currentHash + ") to " + recvCount +
+                            " agents. Nodes: " + mws.graph.getAllNodes().size() + ", Scent: " + mws.scent.size());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -161,16 +181,20 @@ public class SignalBehaviour extends OneShotBehaviour {
                 MessageTemplate tmpl = MessageTemplate.MatchProtocol("SHARE-MAP");
                 ACLMessage msg = myAgent.receive(tmpl);
                 if (msg != null) {
+                    String sender = msg.getSender().getLocalName();
                     try {
                         Object obj = msg.getContentObject();
                         if (obj instanceof MapWithScent) {
                             MapWithScent mws = (MapWithScent) obj;
                             agent.getMyMap().mergeMap(mws.graph, mws.scent);
+                            System.out.println(myName + " [RECV] MAP from " + sender +
+                                    ". Nodes: " + mws.graph.getAllNodes().size() + ", Scent: " + mws.scent.size());
                         } else if (obj instanceof SerializableSimpleGraph) {
                             @SuppressWarnings("unchecked")
                             SerializableSimpleGraph<String, MapAttribute> sg =
                                 (SerializableSimpleGraph<String, MapAttribute>) obj;
                             agent.getMyMap().mergeMap(sg);
+                            System.out.println(myName + " [RECV] MAP (legacy) from " + sender);
                         }
                     } catch (UnreadableException e) {
                         e.printStackTrace();
@@ -180,13 +204,13 @@ public class SignalBehaviour extends OneShotBehaviour {
         }
     }
 
-    private boolean checkCaptureMessage(FSMExploAgent agent) {
+    private boolean checkCaptureMessage(FSMExploAgent agent, String myName) {
         MessageTemplate tmpl = MessageTemplate.and(
                 MessageTemplate.MatchProtocol(PROTOCOL_CAPTURE),
                 MessageTemplate.MatchPerformative(ACLMessage.INFORM));
         ACLMessage msg = myAgent.receive(tmpl);
         if (msg != null) {
-            System.out.println(myAgent.getLocalName() + " received CAPTURE from " + msg.getSender().getLocalName());
+            System.out.println(myName + " [RECV] CAPTURE from " + msg.getSender().getLocalName());
             return true;
         }
         return false;

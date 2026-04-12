@@ -28,6 +28,7 @@ public class YellowSetupBehaviour extends SimpleBehaviour {
         dfd.addServices(sd);
         try {
             DFService.register(myAgent, dfd);
+            System.out.println(myAgent.getLocalName() + " registered DF service: " + behaviour);
         } catch (FIPAException e) {
             e.printStackTrace();
         }

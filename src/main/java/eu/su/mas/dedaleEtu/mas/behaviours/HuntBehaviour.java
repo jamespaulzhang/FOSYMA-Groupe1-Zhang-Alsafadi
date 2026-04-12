@@ -65,7 +65,7 @@ public class HuntBehaviour extends OneShotBehaviour {
         }
 
         // 直接观察 Golem
-        String golemPos = detectGolemDirectly(lobs);
+        String golemPos = detectGolemDirectly(lobs, agent);
         if (golemPos != null) {
             agent.setDestination(golemPos);
             if (isGolemSurrounded(golemPos, agent)) {
@@ -192,6 +192,7 @@ public class HuntBehaviour extends OneShotBehaviour {
         agent.setNextDest(nextNode);
         if (nextNode != null) {
             ((AbstractDedaleAgent) this.myAgent).moveTo(new GsLocation(nextNode));
+            System.out.println(agent.getLocalName() + " [HUNT] moving to " + nextNode);
         }
         agent.cleanPosition();
         agent.cleanStenchDirection();
@@ -200,13 +201,13 @@ public class HuntBehaviour extends OneShotBehaviour {
     }
 
     // ---------- 辅助方法 ----------
-    private String detectGolemDirectly(List<Couple<Location, List<Couple<Observation, String>>>> obs) {
+    private String detectGolemDirectly(List<Couple<Location, List<Couple<Observation, String>>>> obs, FSMExploAgent agent) {
         for (int i = 1; i < obs.size(); i++) {
             String nodeId = obs.get(i).getLeft().getLocationId();
             boolean hasGolem = obs.get(i).getRight().stream()
                     .anyMatch(p -> p.getLeft() == Observation.AGENTNAME && "Golem".equals(p.getRight()));
             if (hasGolem) {
-                System.out.println(myAgent.getLocalName() + " directly spotted Golem at " + nodeId);
+                System.out.println(agent.getLocalName() + " [HUNT] Directly spotted Golem at " + nodeId);
                 return nodeId;
             }
         }
@@ -225,7 +226,7 @@ public class HuntBehaviour extends OneShotBehaviour {
     }
 
     private void captureSuccess(String golemNode, FSMExploAgent agent) {
-        System.out.println(myAgent.getLocalName() + " *** GOLEM CAPTURED at " + golemNode + " ***");
+        System.out.println(agent.getLocalName() + " [HUNT] *** GOLEM CAPTURED at " + golemNode + " ***");
         agent.setMode(FSMExploAgent.MODE_CAPTURED);
         broadcastCapture(golemNode, agent);
     }
@@ -242,6 +243,7 @@ public class HuntBehaviour extends OneShotBehaviour {
         try {
             msg.setContentObject(golemNode);
             ((AbstractDedaleAgent) myAgent).sendMessage(msg);
+            System.out.println(agent.getLocalName() + " [SEND] CAPTURE: " + golemNode);
         } catch (IOException e) {}
         for (int i = 0; i < 2; i++) {
             try { Thread.sleep(100); } catch (InterruptedException e) {}
