@@ -16,7 +16,7 @@
   {
     "agentType": "agentExplo",
     "agentName": "Explo1",
-    "agentClass": "dummies.explo.ExploreCoopAgent",
+    "agentClass": "dummies.explo.FSMExploAgent",
     "agentInitialContainer": "container2",
     "communicationRange": 99,
     "initialLocation": "free",
@@ -30,7 +30,7 @@
   {
     "agentType": "agentExplo",
     "agentName": "Explo2",
-    "agentClass": "dummies.explo.ExploreCoopAgent",
+    "agentClass": "dummies.explo.FSMExploAgent",
     "agentInitialContainer": "container2",
     "communicationRange": 99,
     "initialLocation": "free",
@@ -44,7 +44,7 @@
   {
     "agentType": "agentExplo",
     "agentName": "Explo3",
-    "agentClass": "dummies.explo.ExploreCoopAgent",
+    "agentClass": "dummies.explo.FSMExploAgent",
     "agentInitialContainer": "container2",
     "communicationRange": 99,
     "initialLocation": "free",
@@ -58,7 +58,7 @@
   {
     "agentType": "agentExplo",
     "agentName": "Explo4",
-    "agentClass": "dummies.explo.ExploreCoopAgent",
+    "agentClass": "dummies.explo.FSMExploAgent",
     "agentInitialContainer": "container2",
     "communicationRange": 99,
     "initialLocation": "free",
@@ -72,7 +72,7 @@
   {
     "agentType": "agentExplo",
     "agentName": "Explo5",
-    "agentClass": "dummies.explo.ExploreCoopAgent",
+    "agentClass": "dummies.explo.FSMExploAgent",
     "agentInitialContainer": "container2",
     "communicationRange": 99,
     "initialLocation": "free",

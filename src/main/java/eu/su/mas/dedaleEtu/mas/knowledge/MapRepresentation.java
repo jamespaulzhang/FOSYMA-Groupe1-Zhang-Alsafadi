@@ -5,6 +5,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import org.graphstream.algorithm.Dijkstra;
+import org.graphstream.algorithm.Toolkit;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
@@ -16,6 +17,7 @@ import org.graphstream.ui.view.Viewer;
 
 import dataStructures.serializableGraph.SerializableNode;
 import dataStructures.serializableGraph.SerializableSimpleGraph;
+import dataStructures.tuple.Couple;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
@@ -210,6 +212,7 @@ public class MapRepresentation implements Serializable {
     // Path Planning
     // ----------------------------------------------------------------------
     public synchronized List<String> getShortestPath(String from, String to) {
+        if (from == null || to == null) return null;
         if (from.equals(to)) return Collections.emptyList();
         Node fromNode = g.getNode(from);
         Node toNode = g.getNode(to);
@@ -384,7 +387,7 @@ public class MapRepresentation implements Serializable {
     }
 
     // ----------------------------------------------------------------------
-    // Helper Methods
+    // Helper Methods (for new hunting logic)
     // ----------------------------------------------------------------------
     public String getAgentName() {
         return agentName;
@@ -396,5 +399,65 @@ public class MapRepresentation implements Serializable {
     
     public synchronized void setWumpusScent(String nodeId, boolean hasScent) {
         wumpusScent.put(nodeId, hasScent);
+    }
+
+    /**
+     * Find the shortest path to the closest open node that is not currently occupied by other agents.
+     */
+    public List<String> getShortestPathToClosestOpenNode(String myPosition, List<String> agentNodes) {
+        List<String> openNodes = getOpenNodes();
+        openNodes.removeAll(agentNodes);
+        if (openNodes.isEmpty()) {
+            List<String> pos = new ArrayList<>();
+            pos.add(myPosition);
+            return pos;
+        }
+        List<Couple<String, Integer>> distances = openNodes.stream()
+                .map(on -> {
+                    List<String> path = getShortestPath(myPosition, on);
+                    int dist = (path == null) ? Integer.MAX_VALUE : path.size();
+                    return new Couple<>(on, dist);
+                })
+                .collect(Collectors.toList());
+        Optional<Couple<String, Integer>> closest = distances.stream().min(Comparator.comparing(Couple::getRight));
+        return getShortestPath(myPosition, closest.get().getLeft());
+    }
+
+    public synchronized List<String> getClosedNodes() {
+        return g.nodes()
+                .filter(n -> n.getAttribute("ui.class") == MapAttribute.closed.toString())
+                .map(Node::getId)
+                .collect(Collectors.toList());
+    }
+
+    public String getRandomNode() {
+        List<String> closed = getClosedNodes();
+        if (closed.isEmpty()) return null;
+        return closed.get(new Random().nextInt(closed.size()));
+    }
+
+    public List<String> getOneNodes() {
+        List<String> closed = getClosedNodes();
+        List<String> result = new ArrayList<>();
+        for (String id : closed) {
+            if (g.getNode(id).getDegree() == 1) result.add(id);
+        }
+        return result;
+    }
+
+    public String getRandomOneNode() {
+        List<String> ones = getOneNodes();
+        if (ones.isEmpty()) return getRandomNode();
+        return ones.get(new Random().nextInt(ones.size()));
+    }
+
+    public double checkTypeGraph() {
+        return Toolkit.averageClusteringCoefficient(g);
+    }
+
+    public int getContentHash() {
+        int hash = getSerializableGraph().hashCode();
+        hash = 31 * hash + wumpusScent.hashCode();
+        return hash;
     }
 }

@@ -6,7 +6,6 @@ import java.util.Map;
 
 public class MapWithScent implements Serializable {
     private static final long serialVersionUID = 1L;
-
     public final SerializableSimpleGraph<String, MapRepresentation.MapAttribute> graph;
     public final Map<String, Boolean> scent;
 
