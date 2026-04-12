@@ -82,19 +82,5 @@
     "strengthExpertise": 1,
     "lockPickingExpertise": 1,
     "userParameters": []
-  },
-  {
-      "agentType": "agentExplo",
-      "agentName": "Explo6",
-      "agentClass": "dummies.explo.ExploreCoopAgent",
-      "agentInitialContainer": "container2",
-      "communicationRange": 99,
-      "initialLocation": "free",
-      "backPackCapacityGold": -1,
-      "backPackCapacityDiamond": -1,
-      "detectionRadius": 0,
-      "strengthExpertise": 1,
-      "lockPickingExpertise": 1,
-      "userParameters": []
-    }
+  }
 ]

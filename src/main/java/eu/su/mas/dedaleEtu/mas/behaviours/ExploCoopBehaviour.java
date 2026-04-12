@@ -26,40 +26,22 @@ public class ExploCoopBehaviour extends SimpleBehaviour {
 
     private static final String PROTOCOL_SHARE = "SHARE-TOPO";
     private static final String PROTOCOL_TARGET = "HUNT-TARGET";
+    private static final String PROTOCOL_GOLEM_POS = "GOLEM-POS";
     private static final String PROTOCOL_CAPTURE = "CAPTURE";
-    private static final String PROTOCOL_CONFIRM = "CONFIRM_READY";
-    private static final String PROTOCOL_RESERVE = "RESERVE";
 
     private boolean finished = false;
     private MapRepresentation myMap;
     private ShareMapBehaviour shareBehaviour;
-    private Map<String, String> agentPositions;
 
     private boolean hunting = false;
-    private String currentTargetScent = null;
+    private String currentTarget = null;
     private Set<String> blockedPositions = new HashSet<>();
-    private String myReservedNeighbor = null;
-    private long myReservationTime = 0;
-    private static final long RESERVATION_TIMEOUT = 5000; // 5秒超时
-
-    private static class Reservation {
-        String node;
-        long timestamp;
-        Reservation(String node, long time) { this.node = node; this.timestamp = time; }
-    }
-    private Map<String, Reservation> reservedNeighbors = new HashMap<>();
 
     private final String coordinatorName = "Explo1";
+    private long lastTargetUpdate = 0;
+    private static final long TARGET_UPDATE_INTERVAL = 5000;
 
-    private int localConfirmCount = 0;
-    private static final int LOCAL_CONFIRM_NEEDED = 5;
-    private boolean hasSentConfirm = false;
-
-    private Set<String> receivedConfirmations = new HashSet<>();
-    private long lastConfirmCheck = 0;
-    private static final long CONFIRM_TIMEOUT = 10000;
-
-    private Set<String> allAgents = new HashSet<>();
+    private Random random = new Random();
 
     public ExploCoopBehaviour(final AbstractDedaleAgent myagent,
                               MapRepresentation myMap,
@@ -68,7 +50,6 @@ public class ExploCoopBehaviour extends SimpleBehaviour {
         super(myagent);
         this.myMap = myMap;
         this.shareBehaviour = shareBehaviour;
-        this.agentPositions = agentPositions;
     }
 
     @Override
@@ -91,13 +72,12 @@ public class ExploCoopBehaviour extends SimpleBehaviour {
         List<Couple<Location, List<Couple<Observation, String>>>> observations =
                 ((AbstractDedaleAgent) myAgent).observe();
 
-        try { Thread.sleep(500); } catch (InterruptedException e) {}
+        try { Thread.sleep(300); } catch (InterruptedException e) {}
 
         updateTopologyAndScent(myPos, observations);
         receiveSharedMap();
         receiveTargetMessage();
-        receiveConfirmations();
-        receiveReserveMessages();
+        receiveGolemPositionMessage();
 
         if (myMap.hasOpenNode()) {
             explore(myPos, observations);
@@ -108,35 +88,45 @@ public class ExploCoopBehaviour extends SimpleBehaviour {
             hunting = true;
             System.out.println(myAgent.getLocalName() + " exploration done, starting hunt.");
             if (myAgent.getLocalName().equals(coordinatorName)) {
-                allAgents = getAllExplorerAgentNames();
-                receivedConfirmations.add(coordinatorName);
-                System.out.println(coordinatorName + " initialized agent set: " + allAgents);
                 selectAndBroadcastTarget();
-                lastConfirmCheck = System.currentTimeMillis();
+                lastTargetUpdate = System.currentTimeMillis();
             }
         }
 
-        if (myAgent.getLocalName().equals(coordinatorName)) {
-            selectAndBroadcastTarget();
-            if (System.currentTimeMillis() - lastConfirmCheck > CONFIRM_TIMEOUT) {
-                if (!receivedConfirmations.isEmpty()) {
-                    System.out.println(myAgent.getLocalName() + " confirm timeout, resetting confirmations.");
-                    receivedConfirmations.clear();
-                    receivedConfirmations.add(coordinatorName);
-                }
-                lastConfirmCheck = System.currentTimeMillis();
+        // 每个 Agent 定期观察相邻节点，直接发现 Golem
+        String golemPos = detectGolemDirectly(observations);
+        if (golemPos != null && (currentTarget == null || !currentTarget.equals(golemPos))) {
+            broadcastGolemPosition(golemPos);
+            if (myAgent.getLocalName().equals(coordinatorName)) {
+                currentTarget = golemPos;
+                broadcastTarget(currentTarget);
             }
         }
 
-        if (currentTargetScent == null) {
+        if (currentTarget == null) {
             block(500);
+            return;
+        }
+
+        // 协调者定期重新选择目标
+        if (myAgent.getLocalName().equals(coordinatorName)) {
+            long now = System.currentTimeMillis();
+            if (now - lastTargetUpdate >= TARGET_UPDATE_INTERVAL) {
+                selectAndBroadcastTarget();
+                lastTargetUpdate = now;
+            }
+        }
+
+        // 捕获判定：只有通过实时观察确认所有邻居都被占据才宣布
+        if (isTargetBlockedByObservation(observations)) {
+            captureSuccess(currentTarget);
             return;
         }
 
         huntTarget(myPos, observations);
     }
 
-    // ---------- 拓扑更新 ----------
+    // ---------- 拓扑和气味更新 ----------
     private void updateTopologyAndScent(Location myPos, List<Couple<Location, List<Couple<Observation, String>>>> obs) {
         String myId = myPos.getLocationId();
         myMap.addNode(myId, MapAttribute.closed);
@@ -194,37 +184,103 @@ public class ExploCoopBehaviour extends SimpleBehaviour {
         }
     }
 
-    // ---------- 协调者：选择度数最低的气味节点 ----------
-    private void selectAndBroadcastTarget() {
-        List<String> scentNodes = myMap.getWumpusScentNodes();
-        if (scentNodes.isEmpty()) return;
-        String best = scentNodes.stream()
-                .min(Comparator.comparingInt(n -> myMap.getNeighbors(n).size()))
-                .orElse(scentNodes.get(0));
-        if (!best.equals(currentTargetScent)) {
-            currentTargetScent = best;
-            broadcastTarget(currentTargetScent);
-            localConfirmCount = 0;
-            hasSentConfirm = false;
-            myReservedNeighbor = null;
-            reservedNeighbors.clear();
-            if (myAgent.getLocalName().equals(coordinatorName)) {
-                receivedConfirmations.clear();
-                receivedConfirmations.add(coordinatorName);
-                lastConfirmCheck = System.currentTimeMillis();
+    // ---------- 直接观察 Golem ----------
+    private String detectGolemDirectly(List<Couple<Location, List<Couple<Observation, String>>>> obs) {
+        for (int i = 1; i < obs.size(); i++) {
+            String nodeId = obs.get(i).getLeft().getLocationId();
+            boolean hasGolem = obs.get(i).getRight().stream()
+                    .anyMatch(p -> p.getLeft() == Observation.AGENTNAME && "Golem".equals(p.getRight()));
+            if (hasGolem) {
+                System.out.println(myAgent.getLocalName() + " directly spotted Golem at " + nodeId);
+                return nodeId;
             }
-            System.out.println(myAgent.getLocalName() + " broadcast target (lowest degree): " + currentTargetScent +
-                    " with " + myMap.getNeighbors(currentTargetScent).size() + " neighbors");
         }
+        return null;
+    }
+
+    private void broadcastGolemPosition(String golemNode) {
+        ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+        msg.setProtocol(PROTOCOL_GOLEM_POS);
+        msg.setSender(myAgent.getAID());
+        for (AID aid : getAllExplorerAgents()) {
+            if (!aid.equals(myAgent.getAID())) {
+                msg.addReceiver(aid);
+            }
+        }
+        try {
+            msg.setContentObject(golemNode);
+            ((AbstractDedaleAgent) myAgent).sendMessage(msg);
+        } catch (IOException e) {}
+        System.out.println(myAgent.getLocalName() + " broadcast Golem position: " + golemNode);
+    }
+
+    private void receiveGolemPositionMessage() {
+        MessageTemplate tmpl = MessageTemplate.and(
+                MessageTemplate.MatchProtocol(PROTOCOL_GOLEM_POS),
+                MessageTemplate.MatchPerformative(ACLMessage.INFORM));
+        ACLMessage msg = myAgent.receive(tmpl);
+        while (msg != null) {
+            try {
+                String golemPos = (String) msg.getContentObject();
+                if (currentTarget == null || !currentTarget.equals(golemPos)) {
+                    currentTarget = golemPos;
+                    System.out.println(myAgent.getLocalName() + " learned Golem position: " + golemPos);
+                    blockedPositions.clear();
+                }
+            } catch (UnreadableException e) {}
+            msg = myAgent.receive(tmpl);
+        }
+    }
+
+    // ---------- 目标选择 ----------
+    private String inferGolemFromScent() {
+        List<String> scentNodes = myMap.getWumpusScentNodes();
+        if (scentNodes.isEmpty()) return null;
+        Set<String> candidates = null;
+        for (String scent : scentNodes) {
+            Set<String> neighbors = new HashSet<>(myMap.getNeighbors(scent));
+            if (candidates == null) {
+                candidates = neighbors;
+            } else {
+                candidates.retainAll(neighbors);
+            }
+        }
+        if (candidates != null && !candidates.isEmpty()) {
+            // 选择度数最低的候选（更容易封锁）
+            return candidates.stream()
+                    .min(Comparator.comparingInt(n -> myMap.getNeighbors(n).size()))
+                    .orElse(candidates.iterator().next());
+        }
+        return null;
+    }
+
+    private void selectAndBroadcastTarget() {
+        String newTarget = inferGolemFromScent();
+        if (newTarget == null) {
+            // 后备：选择气味节点中邻居最少的
+            List<String> scentNodes = myMap.getWumpusScentNodes();
+            if (!scentNodes.isEmpty()) {
+                newTarget = scentNodes.stream()
+                        .min(Comparator.comparingInt(n -> myMap.getNeighbors(n).size()))
+                        .orElse(scentNodes.get(0));
+                System.out.println(coordinatorName + " fallback: using scent node " + newTarget);
+            }
+        }
+        if (newTarget == null || newTarget.equals(currentTarget)) return;
+        currentTarget = newTarget;
+        System.out.println(coordinatorName + " broadcast target: " + currentTarget +
+                " with " + myMap.getNeighbors(currentTarget).size() + " neighbours");
+        broadcastTarget(currentTarget);
+        blockedPositions.clear();
     }
 
     private void broadcastTarget(String target) {
         ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
         msg.setProtocol(PROTOCOL_TARGET);
         msg.setSender(myAgent.getAID());
-        for (String name : getAllKnownAgents()) {
-            if (!name.equals(myAgent.getLocalName())) {
-                msg.addReceiver(new AID(name, AID.ISLOCALNAME));
+        for (AID aid : getAllExplorerAgents()) {
+            if (!aid.equals(myAgent.getAID())) {
+                msg.addReceiver(aid);
             }
         }
         try {
@@ -241,218 +297,103 @@ public class ExploCoopBehaviour extends SimpleBehaviour {
         if (msg != null && !myAgent.getLocalName().equals(coordinatorName)) {
             try {
                 String newTarget = (String) msg.getContentObject();
-                if (!newTarget.equals(currentTargetScent)) {
-                    currentTargetScent = newTarget;
-                    localConfirmCount = 0;
-                    hasSentConfirm = false;
-                    myReservedNeighbor = null;
-                    reservedNeighbors.clear();
-                    System.out.println(myAgent.getLocalName() + " received target: " + currentTargetScent);
+                if (!newTarget.equals(currentTarget)) {
+                    currentTarget = newTarget;
+                    System.out.println(myAgent.getLocalName() + " received target: " + currentTarget);
+                    blockedPositions.clear();
                 }
             } catch (UnreadableException e) {}
         }
     }
 
-    // ---------- 围堵目标 ----------
+    // ---------- 围堵 ----------
     private void huntTarget(Location myPos, List<Couple<Location, List<Couple<Observation, String>>>> obs) {
         String myId = myPos.getLocationId();
-        List<String> neighbors = myMap.getNeighbors(currentTargetScent);
-        if (neighbors.isEmpty()) {
-            captureSuccess(currentTargetScent);
+        List<String> neighbours = myMap.getNeighbors(currentTarget);
+        if (neighbours.isEmpty()) {
+            captureSuccess(currentTarget);
             return;
         }
 
-        // 清理过期的预约（超时）
-        long now = System.currentTimeMillis();
-        List<String> expired = new ArrayList<>();
-        for (Map.Entry<String, Reservation> entry : reservedNeighbors.entrySet()) {
-            if (now - entry.getValue().timestamp > RESERVATION_TIMEOUT) {
-                expired.add(entry.getKey());
+        // 实时观察哪些邻居已经被其他 Agent 占据
+        Set<String> occupiedNeighbours = new HashSet<>();
+        for (int i = 1; i < obs.size(); i++) {
+            String nodeId = obs.get(i).getLeft().getLocationId();
+            if (neighbours.contains(nodeId)) {
+                boolean hasAgent = obs.get(i).getRight().stream()
+                        .anyMatch(p -> p.getLeft() == Observation.AGENTNAME);
+                if (hasAgent) {
+                    occupiedNeighbours.add(nodeId);
+                }
             }
         }
-        for (String node : expired) {
-            reservedNeighbors.remove(node);
-            System.out.println(myAgent.getLocalName() + " removed expired reservation for " + node);
-        }
+        if (neighbours.contains(myId)) occupiedNeighbours.add(myId);
 
-        // 实时占据集合：自己 + 其他代理位置
-        Set<String> occupied = new HashSet<>();
-        occupied.add(myId);
-        occupied.addAll(agentPositions.values());
-
-        boolean currentHasScent = false;
-        for (Couple<Location, List<Couple<Observation, String>>> locObs : obs) {
-            if (locObs.getLeft().getLocationId().equals(currentTargetScent)) {
-                currentHasScent = locObs.getRight().stream()
-                        .anyMatch(p -> p.getLeft() == Observation.STENCH);
+        // 选择一个未被占据的邻居
+        String targetNeighbour = null;
+        for (String nb : neighbours) {
+            if (!occupiedNeighbours.contains(nb) && !blockedPositions.contains(nb)) {
+                targetNeighbour = nb;
                 break;
             }
         }
+        if (targetNeighbour == null) {
+            // 所有邻居都被占据，等待捕获
+            block(500);
+            return;
+        }
+        if (myId.equals(targetNeighbour)) return;
 
-        if (occupied.containsAll(neighbors) && currentHasScent) {
-            localConfirmCount++;
-            System.out.println(myAgent.getLocalName() + " local confirm " + localConfirmCount + "/" + LOCAL_CONFIRM_NEEDED +
-                    " for target " + currentTargetScent);
-            if (localConfirmCount >= LOCAL_CONFIRM_NEEDED && !hasSentConfirm) {
-                if (!myAgent.getLocalName().equals(coordinatorName)) {
-                    sendConfirmToCoordinator();
+        List<String> path = myMap.getShortestPath(myId, targetNeighbour);
+        if (path != null && !path.isEmpty()) {
+            String next = path.get(0);
+            boolean moved = ((AbstractDedaleAgent) myAgent).moveTo(new GsLocation(next));
+            if (!moved) {
+                System.out.println(myAgent.getLocalName() + " cannot move to " + next + ", blocked");
+                blockedPositions.add(next);
+                // 尝试其他邻居
+                for (String alt : neighbours) {
+                    if (!occupiedNeighbours.contains(alt) && !blockedPositions.contains(alt) && !alt.equals(targetNeighbour)) {
+                        targetNeighbour = alt;
+                        path = myMap.getShortestPath(myId, targetNeighbour);
+                        if (path != null && !path.isEmpty()) {
+                            next = path.get(0);
+                            moved = ((AbstractDedaleAgent) myAgent).moveTo(new GsLocation(next));
+                            if (moved) {
+                                System.out.println(myAgent.getLocalName() + " detoured to " + targetNeighbour + " via " + next);
+                                break;
+                            }
+                        }
+                    }
                 }
-                hasSentConfirm = true;
-                System.out.println(myAgent.getLocalName() + " sent CONFIRM to coordinator.");
+                if (!moved) {
+                    block(500);
+                }
+            } else {
+                System.out.println(myAgent.getLocalName() + " moving to " + targetNeighbour + " via " + next);
             }
         } else {
-            if (localConfirmCount > 0) {
-                System.out.println(myAgent.getLocalName() + " local condition lost, resetting confirm.");
-                localConfirmCount = 0;
-                hasSentConfirm = false;
-            }
-        }
-
-        // 协调者检查确认
-        if (myAgent.getLocalName().equals(coordinatorName)) {
-            if (!allAgents.isEmpty() && receivedConfirmations.containsAll(allAgents)) {
-                System.out.println(coordinatorName + " received confirmations from all agents: " + receivedConfirmations);
-                captureSuccess(currentTargetScent);
-                return;
-            }
-        }
-
-        // 如果没有完全占据，尝试预约并移动到一个空闲邻居
-        if (!occupied.containsAll(neighbors)) {
-            // 检查当前预约是否有效
-            if (myReservedNeighbor != null) {
-                // 如果预约的节点已被占据（别人占了）或已过期，释放
-                if (occupied.contains(myReservedNeighbor) || !reservedNeighbors.containsKey(myReservedNeighbor)) {
-                    System.out.println(myAgent.getLocalName() + " reservation " + myReservedNeighbor + " invalid, releasing.");
-                    reservedNeighbors.remove(myReservedNeighbor);
-                    myReservedNeighbor = null;
-                }
-            }
-
-            if (myReservedNeighbor == null) {
-                // 选择一个未被占据且未被预约的邻居
-                String candidate = neighbors.stream()
-                        .filter(n -> !occupied.contains(n) && !reservedNeighbors.containsKey(n) && !blockedPositions.contains(n))
-                        .findFirst()
-                        .orElse(null);
-                if (candidate != null) {
-                    // 尝试预约
-                    if (reserveNeighbor(candidate)) {
-                        myReservedNeighbor = candidate;
-                        myReservationTime = System.currentTimeMillis();
-                        System.out.println(myAgent.getLocalName() + " reserved neighbor " + candidate);
-                    } else {
-                        block(500);
-                        return;
-                    }
-                } else {
-                    // 没有可预约的邻居，等待
-                    block(500);
-                    return;
-                }
-            }
-
-            // 如果已有预约邻居，移动到它
-            if (myReservedNeighbor != null) {
-                if (myId.equals(myReservedNeighbor)) {
-                    // 已经到达，释放预约并标记占据
-                    System.out.println(myAgent.getLocalName() + " reached reserved neighbor " + myReservedNeighbor);
-                    reservedNeighbors.remove(myReservedNeighbor);
-                    myReservedNeighbor = null;
-                    // 广播自己的位置（SharePositionBehaviour 会做，但为了及时，可以手动广播一次）
-                    return;
-                }
-                List<String> path = myMap.getShortestPath(myId, myReservedNeighbor);
-                if (path != null && !path.isEmpty()) {
-                    String nextStep = path.get(0);
-                    boolean moved = ((AbstractDedaleAgent) myAgent).moveTo(new GsLocation(nextStep));
-                    if (!moved) {
-                        System.out.println(myAgent.getLocalName() + " cannot move to " + nextStep + ", releasing reservation.");
-                        // 移动失败，释放预约
-                        reservedNeighbors.remove(myReservedNeighbor);
-                        myReservedNeighbor = null;
-                        try { Thread.sleep(200); } catch (InterruptedException e) {}
-                    } else {
-                        System.out.println(myAgent.getLocalName() + " moved towards " + myReservedNeighbor);
-                    }
-                } else {
-                    // 无路径，释放预约
-                    System.out.println(myAgent.getLocalName() + " no path to " + myReservedNeighbor + ", releasing.");
-                    reservedNeighbors.remove(myReservedNeighbor);
-                    myReservedNeighbor = null;
-                }
-            }
+            System.out.println(myAgent.getLocalName() + " no path to " + targetNeighbour);
         }
     }
 
-    private boolean reserveNeighbor(String node) {
-        // 发送预约请求（广播）
-        ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
-        msg.setProtocol(PROTOCOL_RESERVE);
-        msg.setSender(myAgent.getAID());
-        for (String name : getAllKnownAgents()) {
-            if (!name.equals(myAgent.getLocalName())) {
-                msg.addReceiver(new AID(name, AID.ISLOCALNAME));
+    // ---------- 捕获判定（基于实时观察，不依赖广播） ----------
+    private boolean isTargetBlockedByObservation(List<Couple<Location, List<Couple<Observation, String>>>> obs) {
+        List<String> neighbours = myMap.getNeighbors(currentTarget);
+        if (neighbours.isEmpty()) return false;
+        Set<String> occupied = new HashSet<>();
+        for (int i = 1; i < obs.size(); i++) {
+            String nodeId = obs.get(i).getLeft().getLocationId();
+            if (neighbours.contains(nodeId)) {
+                boolean hasAgent = obs.get(i).getRight().stream()
+                        .anyMatch(p -> p.getLeft() == Observation.AGENTNAME);
+                if (hasAgent) occupied.add(nodeId);
             }
         }
-        try {
-            msg.setContentObject(node);
-            ((AbstractDedaleAgent) myAgent).sendMessage(msg);
-        } catch (IOException e) {}
-        // 将节点加入本地预约集合
-        reservedNeighbors.put(node, new Reservation(node, System.currentTimeMillis()));
-        return true;
-    }
-
-    private void receiveReserveMessages() {
-        MessageTemplate tmpl = MessageTemplate.and(
-                MessageTemplate.MatchProtocol(PROTOCOL_RESERVE),
-                MessageTemplate.MatchPerformative(ACLMessage.REQUEST));
-        ACLMessage msg = myAgent.receive(tmpl);
-        while (msg != null) {
-            try {
-                String node = (String) msg.getContentObject();
-                // 如果节点未被占据且未被自己预约，则加入预约集合
-                String myId = ((AbstractDedaleAgent) myAgent).getCurrentPosition().getLocationId();
-                Set<String> occupied = new HashSet<>(agentPositions.values());
-                occupied.add(myId);
-                if (!occupied.contains(node) && !reservedNeighbors.containsKey(node)) {
-                    reservedNeighbors.put(node, new Reservation(node, System.currentTimeMillis()));
-                    System.out.println(myAgent.getLocalName() + " added reservation for " + node + " by " + msg.getSender().getLocalName());
-                }
-            } catch (UnreadableException e) {}
-            msg = myAgent.receive(tmpl);
-        }
-    }
-
-    private void sendConfirmToCoordinator() {
-        ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
-        msg.setProtocol(PROTOCOL_CONFIRM);
-        msg.setSender(myAgent.getAID());
-        msg.addReceiver(new AID(coordinatorName, AID.ISLOCALNAME));
-        try {
-            msg.setContentObject(currentTargetScent);
-            ((AbstractDedaleAgent) myAgent).sendMessage(msg);
-        } catch (IOException e) {}
-    }
-
-    private void receiveConfirmations() {
-        MessageTemplate tmpl = MessageTemplate.and(
-                MessageTemplate.MatchProtocol(PROTOCOL_CONFIRM),
-                MessageTemplate.MatchPerformative(ACLMessage.INFORM));
-        ACLMessage msg = myAgent.receive(tmpl);
-        while (msg != null) {
-            try {
-                String sender = msg.getSender().getLocalName();
-                String target = (String) msg.getContentObject();
-                if (target.equals(currentTargetScent)) {
-                    receivedConfirmations.add(sender);
-                    lastConfirmCheck = System.currentTimeMillis();
-                    System.out.println(myAgent.getLocalName() + " received CONFIRM from " + sender);
-                }
-            } catch (UnreadableException e) {}
-            msg = myAgent.receive(tmpl);
-        }
+        String myPos = ((AbstractDedaleAgent) myAgent).getCurrentPosition().getLocationId();
+        if (neighbours.contains(myPos)) occupied.add(myPos);
+        // 关键：不依赖广播，只依赖实时观察
+        return occupied.containsAll(neighbours);
     }
 
     private void captureSuccess(String golemNode) {
@@ -465,9 +406,9 @@ public class ExploCoopBehaviour extends SimpleBehaviour {
         ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
         msg.setProtocol(PROTOCOL_CAPTURE);
         msg.setSender(myAgent.getAID());
-        for (String name : getAllKnownAgents()) {
-            if (!name.equals(myAgent.getLocalName())) {
-                msg.addReceiver(new AID(name, AID.ISLOCALNAME));
+        for (AID aid : getAllExplorerAgents()) {
+            if (!aid.equals(myAgent.getAID())) {
+                msg.addReceiver(aid);
             }
         }
         try {
@@ -503,21 +444,14 @@ public class ExploCoopBehaviour extends SimpleBehaviour {
                 if (obj instanceof MapWithScent) {
                     MapWithScent mws = (MapWithScent) obj;
                     boolean changed = myMap.mergeMap(mws.graph, mws.scent);
-                    if (changed) shareBehaviour.markUpdate();
+                    if (changed && shareBehaviour != null) shareBehaviour.markUpdate();
                 }
             } catch (UnreadableException e) { e.printStackTrace(); }
         }
     }
 
-    private Set<String> getAllKnownAgents() {
-        Set<String> agents = new HashSet<>();
-        agents.add(myAgent.getLocalName());
-        agents.addAll(agentPositions.keySet());
-        return agents;
-    }
-
-    private Set<String> getAllExplorerAgentNames() {
-        Set<String> agents = new HashSet<>();
+    private List<AID> getAllExplorerAgents() {
+        List<AID> agents = new ArrayList<>();
         DFAgentDescription template = new DFAgentDescription();
         ServiceDescription sd = new ServiceDescription();
         sd.setType("agentExplo");
@@ -525,7 +459,7 @@ public class ExploCoopBehaviour extends SimpleBehaviour {
         try {
             DFAgentDescription[] results = DFService.search(myAgent, template);
             for (DFAgentDescription dfd : results) {
-                agents.add(dfd.getName().getLocalName());
+                agents.add(dfd.getName());
             }
         } catch (FIPAException e) {
             e.printStackTrace();
