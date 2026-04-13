@@ -75,12 +75,17 @@ public class HuntBehaviour extends OneShotBehaviour {
             agent.addOrUpdateGolem(e.getValue(), e.getKey(), true);
         }
 
-        // Check if any known golem is already surrounded
+        // ========== CHECK SURROUNDED GOLEMS ==========
+        // Check if any known golem is already surrounded (even if not directly observed)
         for (GolemInfo golem : agent.getKnownGolems().values()) {
             if (agent.getCapturedGolems().contains(golem.getId())) continue;
-            if (isGolemSurrounded(golem.getLastKnownPosition(), agent)) {
-                captureGolem(golem.getId(), agent);
-                return; // capture handled, exit behaviour
+            String pos = golem.getLastKnownPosition();
+            // If we are adjacent to the golem or standing on its node
+            if (myPosition.equals(pos) || agent.getMyMap().getNeighbors(myPosition).contains(pos)) {
+                if (isGolemSurrounded(pos, agent)) {
+                    captureGolem(golem.getId(), agent);
+                    return; // capture handled, exit behaviour
+                }
             }
         }
 
@@ -247,7 +252,7 @@ public class HuntBehaviour extends OneShotBehaviour {
                     .map(Couple::getRight)
                     .findFirst();
             if (golemName.isPresent()) {
-                String id = golemName.get();
+                String id = golemName.get();  // Use the actual observed name as unique ID
                 result.put(nodeId, id);
                 System.out.println(agent.getLocalName() + " [HUNT] Directly spotted Golem/Wumpus at " + nodeId + " -> " + id);
             }
@@ -259,8 +264,11 @@ public class HuntBehaviour extends OneShotBehaviour {
         List<String> neighbours = agent.getMyMap().getNeighbors(golemNode);
         if (neighbours.isEmpty()) return true;
         String myPos = ((AbstractDedaleAgent) myAgent).getCurrentPosition().getLocationId();
+        System.out.println(agent.getLocalName() + " [HUNT] Checking Golem at " + golemNode + ", neighbors: " + neighbours);
         for (String nb : neighbours) {
-            if (!agent.getPosition().contains(nb) && !nb.equals(myPos)) {
+            boolean occupied = agent.getPosition().contains(nb) || nb.equals(myPos);
+            System.out.println(agent.getLocalName() + " [HUNT]   neighbor " + nb + " occupied: " + occupied + " (myPos: " + myPos + ", known agents: " + agent.getPosition() + ")");
+            if (!occupied) {
                 return false;
             }
         }

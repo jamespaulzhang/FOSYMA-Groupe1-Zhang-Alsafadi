@@ -51,6 +51,8 @@ public class SignalBehaviour extends OneShotBehaviour {
         msgPos.setContent(myPosStr);
         ((AbstractDedaleAgent) myAgent).sendMessage(msgPos);
         System.out.println(myName + " [SEND] POSITION: " + myPosStr);
+        // IMPORTANT: Add own position to the list for accurate surround check
+        agent.addPosition(myPosStr);
 
         // 2. Receive positions
         inboxEmpty = false;
