@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -231,15 +232,24 @@ public class HuntBehaviour extends OneShotBehaviour {
     // ---------- MULTI-GOLEM HELPER METHODS ----------
     private Map<String, String> detectAllGolems(List<Couple<Location, List<Couple<Observation, String>>>> obs, FSMExploAgent agent) {
         Map<String, String> result = new HashMap<>();
-        int counter = 0;
         for (int i = 1; i < obs.size(); i++) {
             String nodeId = obs.get(i).getLeft().getLocationId();
-            boolean hasGolem = obs.get(i).getRight().stream()
-                    .anyMatch(p -> p.getLeft() == Observation.AGENTNAME && "Golem".equals(p.getRight()));
-            if (hasGolem) {
-                String golemId = "Golem_" + nodeId + "_" + (counter++);
-                result.put(nodeId, golemId);
-                System.out.println(agent.getLocalName() + " [HUNT] Directly spotted Golem at " + nodeId + " -> " + golemId);
+            for (Couple<Observation, String> p : obs.get(i).getRight()) {
+                if (p.getLeft() == Observation.AGENTNAME) {
+                    System.out.println(agent.getLocalName() + " [DEBUG] sees agent: '" + p.getRight() + "' at " + nodeId);
+                }
+            }
+            Optional<String> golemName = obs.get(i).getRight().stream()
+                    .filter(p -> p.getLeft() == Observation.AGENTNAME &&
+                            p.getRight() != null &&
+                            (p.getRight().toLowerCase().contains("wumpus") || 
+                             p.getRight().toLowerCase().contains("golem")))
+                    .map(Couple::getRight)
+                    .findFirst();
+            if (golemName.isPresent()) {
+                String id = golemName.get();
+                result.put(nodeId, id);
+                System.out.println(agent.getLocalName() + " [HUNT] Directly spotted Golem/Wumpus at " + nodeId + " -> " + id);
             }
         }
         return result;
