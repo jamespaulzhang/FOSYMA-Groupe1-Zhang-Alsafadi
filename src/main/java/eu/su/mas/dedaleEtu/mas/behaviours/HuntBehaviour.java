@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import dataStructures.tuple.Couple;
@@ -76,15 +77,39 @@ public class HuntBehaviour extends OneShotBehaviour {
         }
 
         // ========== CHECK SURROUNDED GOLEMS ==========
-        // Check if any known golem is already surrounded (even if not directly observed)
         for (GolemInfo golem : agent.getKnownGolems().values()) {
             if (agent.getCapturedGolems().contains(golem.getId())) continue;
             String pos = golem.getLastKnownPosition();
-            // If we are adjacent to the golem or standing on its node
             if (myPosition.equals(pos) || agent.getMyMap().getNeighbors(myPosition).contains(pos)) {
                 if (isGolemSurrounded(pos, agent)) {
                     captureGolem(golem.getId(), agent);
-                    return; // capture handled, exit behaviour
+                    return;
+                }
+            }
+        }
+
+        // ========== PREDICTIVE BLOCKING (Articulation Points) ==========
+        if (agent.getStyle() == 1) { // Graph mode
+            for (GolemInfo golem : agent.getKnownGolems().values()) {
+                if (agent.getCapturedGolems().contains(golem.getId())) continue;
+                Set<String> articulationPoints = agent.getMyMap().getArticulationPoints();
+                String golemPos = golem.getLastKnownPosition();
+                for (String ap : articulationPoints) {
+                    if (ap.equals(myPosition)) {
+                        agent.setBlockingNode(ap);
+                        agent.addBlockingTarget(golem.getId());
+                        agent.setMode(FSMExploAgent.MODE_BLOCKING);
+                        System.out.println(agent.getLocalName() + " switching to BLOCKING mode on AP: " + ap);
+                        return;
+                    } else if (agent.getMyMap().getShortestPath(golemPos, ap) != null &&
+                               agent.getMyMap().getShortestPath(golemPos, ap).size() <= 3) {
+                        List<String> path = agent.getMyMap().getShortestPath(myPosition, ap);
+                        if (path != null && !path.isEmpty()) {
+                            nextNode = path.get(0);
+                            agent.setBlockingNode(ap);
+                            agent.addBlockingTarget(golem.getId());
+                        }
+                    }
                 }
             }
         }
@@ -98,7 +123,7 @@ public class HuntBehaviour extends OneShotBehaviour {
             }
         }
 
-        // ========== ORIGINAL MOVEMENT LOGIC (preserved) ==========
+        // ========== MOVEMENT LOGIC ==========
         // Reset destination flags if reached
         if (myPosition.equals(agent.getDestination())) {
             agent.setDestination(null);
@@ -155,12 +180,20 @@ public class HuntBehaviour extends OneShotBehaviour {
                     }
                 }
             }
-            // Priority 3: existing non-random destination
+            // Priority 3: Graph mode - integrate shortest path towards strongest scent
+            if (nextNode == null && agent.getStyle() == 1 && !nodeStench.isEmpty()) {
+                String strongestScentNode = agent.getMyMap().getStrongestScentNode();
+                if (strongestScentNode != null && !strongestScentNode.equals(myPosition)) {
+                    List<String> path = agent.getMyMap().getShortestPath(myPosition, strongestScentNode);
+                    if (path != null && !path.isEmpty()) nextNode = path.get(0);
+                }
+            }
+            // Priority 4: existing non-random destination
             if (nextNode == null && agent.getDestination() != null && !agent.getDestinationAlea()) {
                 List<String> path = agent.getMyMap().getShortestPath(myPosition, agent.getDestination());
                 if (path != null && !path.isEmpty()) nextNode = path.get(0);
             }
-            // Priority 4: received stench direction (tree style)
+            // Priority 5: received stench direction (tree style)
             if (nextNode == null && !agent.getStenchDirection().isEmpty() && agent.getStyle() == 0) {
                 for (String dest : agent.getStenchDirection()) {
                     if (!dest.equals(myPosition)) {
@@ -176,7 +209,7 @@ public class HuntBehaviour extends OneShotBehaviour {
                     }
                 }
             }
-            // Priority 5: received inside stench (tree style)
+            // Priority 6: received inside stench (tree style)
             if (nextNode == null && !agent.getInsideStench().isEmpty() && agent.getStyle() == 0) {
                 List<String> inside = new ArrayList<>(agent.getInsideStench());
                 Collections.shuffle(inside);
@@ -194,7 +227,7 @@ public class HuntBehaviour extends OneShotBehaviour {
                     }
                 }
             }
-            // Priority 6: random walk
+            // Priority 7: random walk
             if (nextNode == null) {
                 String rando = null;
                 while (rando == null || rando.equals(myPosition)) {
@@ -237,7 +270,7 @@ public class HuntBehaviour extends OneShotBehaviour {
     // ---------- MULTI-GOLEM HELPER METHODS ----------
     private Map<String, String> detectAllGolems(List<Couple<Location, List<Couple<Observation, String>>>> obs, FSMExploAgent agent) {
         Map<String, String> result = new HashMap<>();
-        for (int i = 1; i < obs.size(); i++) {
+        for (int i = 0; i < obs.size(); i++) {
             String nodeId = obs.get(i).getLeft().getLocationId();
             for (Couple<Observation, String> p : obs.get(i).getRight()) {
                 if (p.getLeft() == Observation.AGENTNAME) {
@@ -252,7 +285,7 @@ public class HuntBehaviour extends OneShotBehaviour {
                     .map(Couple::getRight)
                     .findFirst();
             if (golemName.isPresent()) {
-                String id = golemName.get();  // Use the actual observed name as unique ID
+                String id = golemName.get();
                 result.put(nodeId, id);
                 System.out.println(agent.getLocalName() + " [HUNT] Directly spotted Golem/Wumpus at " + nodeId + " -> " + id);
             }
@@ -286,7 +319,8 @@ public class HuntBehaviour extends OneShotBehaviour {
         msg.setProtocol(PROTOCOL_CAPTURE);
         msg.setSender(myAgent.getAID());
         for (AID aid : agent.getServices("Explorer")) {
-            if (!aid.equals(myAgent.getAID())) {
+            if (!aid.equals(myAgent.getAID()) && agent.isWithinCommunicationRange(
+                    ((AbstractDedaleAgent)myAgent).getCurrentPosition().getLocationId())) {
                 msg.addReceiver(aid);
             }
         }
@@ -295,6 +329,7 @@ public class HuntBehaviour extends OneShotBehaviour {
             ((AbstractDedaleAgent) myAgent).sendMessage(msg);
             System.out.println(agent.getLocalName() + " [SEND] CAPTURE: " + golemId);
         } catch (IOException e) {}
+        // Redundant sends for reliability
         for (int i = 0; i < 2; i++) {
             try { Thread.sleep(100); } catch (InterruptedException e) {}
             ((AbstractDedaleAgent) myAgent).sendMessage(msg);

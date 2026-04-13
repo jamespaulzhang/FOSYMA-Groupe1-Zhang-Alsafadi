@@ -30,32 +30,25 @@ public class MapRepresentation implements Serializable {
 
     private static final long serialVersionUID = -1333959882640838272L;
 
-    // Graph structure (non‑serializable, rebuilt on migration)
     private transient Graph g;
     private transient Viewer viewer;
     private transient volatile boolean guiShown = false;
     private Integer nbEdges;
     private String agentName;
 
-    // Serializable version of the map (used for transmission and recovery)
     private SerializableSimpleGraph<String, MapAttribute> sg;
-    private Map<String, Boolean> serializableScent;   // serialized backup
+    private Map<String, Boolean> serializableScent;
 
-    // Scent management (runtime only)
     private transient Map<String, Integer> scentStrength;
     private transient Map<String, Boolean> wumpusScent;
     private static final int SCENT_DECAY_PER_STEP = 2;
     private static final int SCENT_THRESHOLD = 5;
 
-    // GUI style
     private final String nodeStyle = "node {" +
             "fill-color: black; size-mode:fit;text-alignment:under; text-size:14;text-color:white;text-background-mode:rounded-box;text-background-color:black;}" +
             "node.open {fill-color: forestgreen;}" +
             "node.agent {fill-color: blue;}";
 
-    // ----------------------------------------------------------------------
-    // Construction & Initialization
-    // ----------------------------------------------------------------------
     public MapRepresentation(String agentName) {
         System.setProperty("org.graphstream.ui", "javafx");
         this.g = new SingleGraph("My world vision");
@@ -67,9 +60,6 @@ public class MapRepresentation implements Serializable {
         this.guiShown = false;
     }
 
-    // ----------------------------------------------------------------------
-    // GUI Management
-    // ----------------------------------------------------------------------
     public synchronized void showGUI() {
         if (guiShown) return;
         if (viewer == null) {
@@ -111,9 +101,6 @@ public class MapRepresentation implements Serializable {
         }
     }
 
-    // ----------------------------------------------------------------------
-    // Node & Edge Operations
-    // ----------------------------------------------------------------------
     public synchronized void addNode(String id, MapAttribute attr) {
         Node n = g.getNode(id);
         if (n == null) n = g.addNode(id);
@@ -135,9 +122,7 @@ public class MapRepresentation implements Serializable {
             try {
                 g.addEdge(edgeId, id1, id2);
                 nbEdges++;
-            } catch (Exception e) {
-                // edge may already exist due to race condition
-            }
+            } catch (Exception e) {}
         }
     }
 
@@ -151,9 +136,6 @@ public class MapRepresentation implements Serializable {
         return n.neighborNodes().map(Node::getId).collect(Collectors.toList());
     }
 
-    // ----------------------------------------------------------------------
-    // Scent Management (with decay)
-    // ----------------------------------------------------------------------
     public synchronized void setScentStrength(String nodeId, int strength) {
         if (strength <= SCENT_THRESHOLD) {
             scentStrength.remove(nodeId);
@@ -208,9 +190,6 @@ public class MapRepresentation implements Serializable {
                 .orElse(null);
     }
 
-    // ----------------------------------------------------------------------
-    // Path Planning
-    // ----------------------------------------------------------------------
     public synchronized List<String> getShortestPath(String from, String to) {
         if (from == null || to == null) return null;
         if (from.equals(to)) return Collections.emptyList();
@@ -224,7 +203,6 @@ public class MapRepresentation implements Serializable {
         List<Node> path = dijk.getPath(toNode).getNodePath();
         dijk.clear();
         if (path == null || path.size() <= 1) return null;
-        // return nodes after the start
         return path.stream().skip(1).map(Node::getId).collect(Collectors.toList());
     }
 
@@ -262,9 +240,6 @@ public class MapRepresentation implements Serializable {
         });
     }
 
-    // ----------------------------------------------------------------------
-    // Serialization & Migration
-    // ----------------------------------------------------------------------
     public synchronized SerializableSimpleGraph<String, MapAttribute> getSerializableGraph() {
         serialize();
         return sg;
@@ -282,7 +257,7 @@ public class MapRepresentation implements Serializable {
             try {
                 attr = MapAttribute.valueOf(classAttr);
             } catch (IllegalArgumentException e) {
-                attr = MapAttribute.open; // fallback
+                attr = MapAttribute.open;
             }
             sg.addNode(n.getId(), attr);
         });
@@ -291,7 +266,6 @@ public class MapRepresentation implements Serializable {
             String target = e.getTargetNode().getId();
             sg.addEdge(e.getId(), source, target);
         });
-        // Save scent boolean map
         serializableScent = new HashMap<>(wumpusScent);
     }
 
@@ -320,28 +294,21 @@ public class MapRepresentation implements Serializable {
                 }
             }
         }
-        // Restore scent (boolean only, strengths will be rebuilt from observations)
         this.wumpusScent = new HashMap<>();
         this.scentStrength = new HashMap<>();
         if (serializableScent != null) {
             for (Map.Entry<String, Boolean> e : serializableScent.entrySet()) {
                 if (e.getValue()) {
                     wumpusScent.put(e.getKey(), true);
-                    // Give a moderate initial strength to avoid instant decay
                     scentStrength.put(e.getKey(), 50);
                 }
             }
         }
         System.out.println(agentName + " map loaded (" + (sg == null ? 0 : sg.getAllNodes().size()) + " nodes, " + edgeCounter + " edges)");
-        // do not automatically show GUI; caller must call showGUI()
     }
 
-    // ----------------------------------------------------------------------
-    // Map Merging
-    // ----------------------------------------------------------------------
     public synchronized boolean mergeMap(SerializableSimpleGraph<String, MapAttribute> received) {
         boolean changed = false;
-        // 1) merge nodes (update attributes)
         for (SerializableNode<String, MapAttribute> n : received.getAllNodes()) {
             Node existing = g.getNode(n.getNodeId());
             if (existing == null) {
@@ -349,14 +316,12 @@ public class MapRepresentation implements Serializable {
                 changed = true;
             } else {
                 String cur = (String) existing.getAttribute("ui.class");
-                // upgrade from open to closed if received is closed
                 if (cur != null && cur.equals(MapAttribute.open.toString()) && n.getNodeContent() == MapAttribute.closed) {
                     existing.setAttribute("ui.class", MapAttribute.closed.toString());
                     changed = true;
                 }
             }
         }
-        // 2) merge edges (only if both endpoints exist)
         for (SerializableNode<String, MapAttribute> n : received.getAllNodes()) {
             for (String target : received.getEdges(n.getNodeId())) {
                 String edgeId = n.getNodeId() + "-" + target;
@@ -386,9 +351,6 @@ public class MapRepresentation implements Serializable {
         return changed;
     }
 
-    // ----------------------------------------------------------------------
-    // Helper Methods (for new hunting logic)
-    // ----------------------------------------------------------------------
     public String getAgentName() {
         return agentName;
     }
@@ -401,9 +363,6 @@ public class MapRepresentation implements Serializable {
         wumpusScent.put(nodeId, hasScent);
     }
 
-    /**
-     * Find the shortest path to the closest open node that is not currently occupied by other agents.
-     */
     public List<String> getShortestPathToClosestOpenNode(String myPosition, List<String> agentNodes) {
         List<String> openNodes = getOpenNodes();
         openNodes.removeAll(agentNodes);
@@ -425,7 +384,7 @@ public class MapRepresentation implements Serializable {
 
     public synchronized List<String> getClosedNodes() {
         return g.nodes()
-                .filter(n -> n.getAttribute("ui.class") == MapAttribute.closed.toString())
+                .filter(n -> Objects.equals(n.getAttribute("ui.class"), MapAttribute.closed.toString()))
                 .map(Node::getId)
                 .collect(Collectors.toList());
     }
@@ -461,4 +420,58 @@ public class MapRepresentation implements Serializable {
         return hash;
     }
 
+    /**
+     * Compute articulation points using DFS.
+     * Fixed: use neighbor nodes instead of edges to avoid GraphStream API issues.
+     */
+    public synchronized Set<String> getArticulationPoints() {
+        Set<String> visited = new HashSet<>();
+        Map<String, Integer> disc = new HashMap<>();
+        Map<String, Integer> low = new HashMap<>();
+        Map<String, String> parent = new HashMap<>();
+        Set<String> aps = new HashSet<>();
+        int[] time = new int[]{0};
+
+        for (Node node : g) {
+            String u = node.getId();
+            if (!visited.contains(u)) {
+                dfsAP(u, visited, disc, low, parent, aps, time);
+            }
+        }
+        return aps;
+    }
+
+    private void dfsAP(String u, Set<String> visited, Map<String, Integer> disc, Map<String, Integer> low,
+            Map<String, String> parent, Set<String> aps, int[] time) {
+		int children = 0;
+		visited.add(u);
+		time[0]++;
+		disc.put(u, time[0]);
+		low.put(u, time[0]);
+		
+		Node nodeU = g.getNode(u);
+		if (nodeU == null) return;
+		
+		// Iterate over neighbors directly, avoiding edge objects
+		List<Node> neighbors = nodeU.neighborNodes().collect(Collectors.toList());
+		for (Node neighbor : neighbors) {
+		 String v = neighbor.getId();
+		 if (!visited.contains(v)) {
+		     children++;
+		     parent.put(v, u);
+		     dfsAP(v, visited, disc, low, parent, aps, time);
+		     low.put(u, Math.min(low.get(u), low.get(v)));
+		
+		     // Articulation point conditions
+		     if (parent.get(u) == null && children > 1) {
+		         aps.add(u);
+		     }
+		     if (parent.get(u) != null && low.get(v) >= disc.get(u)) {
+		         aps.add(u);
+		     }
+		 } else if (!v.equals(parent.get(u))) {
+		     low.put(u, Math.min(low.get(u), disc.get(v)));
+		 }
+		}
+}
 }

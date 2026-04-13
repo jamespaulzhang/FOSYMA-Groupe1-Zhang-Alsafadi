@@ -1,93 +1,74 @@
 package eu.su.mas.dedaleEtu.mas.behaviours;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+
+import dataStructures.serializableGraph.SerializableSimpleGraph;
 
 import eu.su.mas.dedale.mas.AbstractDedaleAgent;
 import eu.su.mas.dedaleEtu.mas.knowledge.MapRepresentation;
-import eu.su.mas.dedaleEtu.mas.knowledge.MapWithScent;
+import eu.su.mas.dedaleEtu.mas.knowledge.MapRepresentation.MapAttribute;
+
 import jade.core.AID;
+import jade.core.Agent;
 import jade.core.behaviours.TickerBehaviour;
-import jade.domain.DFService;
-import jade.domain.FIPAAgentManagement.DFAgentDescription;
-import jade.domain.FIPAAgentManagement.ServiceDescription;
-import jade.domain.FIPAException;
 import jade.lang.acl.ACLMessage;
 
-public class ShareMapBehaviour extends TickerBehaviour {
+/**
+ * The agent periodically share its map.
+ * It blindly tries to send all its graph to its friend(s)  	
+ * If it was written properly, this sharing action would NOT be in a ticker behaviour and only a subgraph would be shared.
 
-    private static final long serialVersionUID = 1L;
-    private final MapRepresentation myMap;
-    private int lastHash = 0;
-    private boolean hasUpdate = false;
+ * @author hc
+ *
+ */
+public class ShareMapBehaviour extends TickerBehaviour{
+	
+	private MapRepresentation myMap;
+	private List<String> receivers;
 
-    public ShareMapBehaviour(AbstractDedaleAgent a, long period, MapRepresentation myMap) {
-        super(a, period);
-        this.myMap = myMap;
-    }
+	/**
+	 * The agent periodically share its map.
+	 * It blindly tries to send all its graph to its friend(s)  	
+	 * If it was written properly, this sharing action would NOT be in a ticker behaviour and only a subgraph would be shared.
 
-    @Override
-    protected void onTick() {
-        int curHash = myMap.getSerializableGraph().hashCode();
-        if (curHash == lastHash && !hasUpdate) return;
-        lastHash = curHash;
-        hasUpdate = false;
+	 * @param a the agent
+	 * @param period the periodicity of the behaviour (in ms)
+	 * @param mymap (the map to share)
+	 * @param receivers the list of agents to send the map to
+	 */
+	public ShareMapBehaviour(Agent a, long period,MapRepresentation mymap, List<String> receivers) {
+		super(a, period);
+		this.myMap=mymap;
+		this.receivers=receivers;	
+	}
 
-        // 获取所有探索者代理的 AID（通过 DF）
-        List<AID> allExplorers = getAllExplorerAgents();
-        if (allExplorers.isEmpty()) return;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -568863390879327961L;
 
-        MapWithScent mws = new MapWithScent(myMap.getSerializableGraph(), myMap.getSerializableScent());
-        ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
-        msg.setProtocol("SHARE-TOPO");
-        msg.setSender(myAgent.getAID());
+	@Override
+	protected void onTick() {
+		//4) At each time step, the agent blindly send all its graph to its surrounding to illustrate how to share its knowledge (the topology currently) with the the others agents. 	
+		// If it was written properly, this sharing action should be in a dedicated behaviour set, the receivers be automatically computed, and only a subgraph would be shared.
+		
+		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+		msg.setProtocol("SHARE-TOPO");
+		msg.setSender(this.myAgent.getAID());
+		for (String agentName : receivers) {
+			msg.addReceiver(new AID(agentName,AID.ISLOCALNAME));
+		}
+			
+		SerializableSimpleGraph<String, MapAttribute> sg=this.myMap.getSerializableGraph();
+		try {					
+			msg.setContentObject(sg);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		((AbstractDedaleAgent)this.myAgent).sendMessage(msg);
 
-        // 添加所有其他探索者作为接收者
-        for (AID aid : allExplorers) {
-            if (!aid.equals(myAgent.getAID())) {
-                msg.addReceiver(aid);
-            }
-        }
+		
+	}
 
-        // 如果没有接收者，直接返回
-        if (!msg.getAllReceiver().hasNext()) return;
-
-        try {
-            msg.setContentObject(mws);
-            ((AbstractDedaleAgent) myAgent).sendMessage(msg);
-            // 打印日志时不要调用 msg.getReceiverCount()，改为手动计数
-            int receiverCount = 0;
-            var it = msg.getAllReceiver();
-            while (it.hasNext()) { it.next(); receiverCount++; }
-            System.out.println(myAgent.getLocalName() + " sent map to " + receiverCount + " agents (" +
-                               mws.graph.getAllNodes().size() + " nodes, " + mws.scent.size() + " scent nodes)");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * 通过 DF 服务获取所有类型为 "agentExplo" 的代理 AID。
-     */
-    private List<AID> getAllExplorerAgents() {
-        List<AID> agents = new ArrayList<>();
-        DFAgentDescription template = new DFAgentDescription();
-        ServiceDescription sd = new ServiceDescription();
-        sd.setType("agentExplo");   // 必须与 JSON 中的 agentType 一致
-        template.addServices(sd);
-        try {
-            DFAgentDescription[] results = DFService.search(myAgent, template);
-            for (DFAgentDescription dfd : results) {
-                agents.add(dfd.getName());
-            }
-        } catch (FIPAException e) {
-            e.printStackTrace();
-        }
-        return agents;
-    }
-
-    public void markUpdate() {
-        this.hasUpdate = true;
-    }
 }

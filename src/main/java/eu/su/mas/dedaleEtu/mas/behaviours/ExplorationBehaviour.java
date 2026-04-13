@@ -33,27 +33,19 @@ public class ExplorationBehaviour extends OneShotBehaviour {
 
         try { Thread.sleep(800); } catch (InterruptedException e) {}
 
-        // 确保地图已初始化
         if (agent.getMyMap() == null) {
             agent.initiateMyMap();
             agent.setWait(1);
             agent.setGetoutCnt(0);
         }
 
-        // 首先将当前位置添加到地图中（如果尚未添加）
-        boolean nodeAdded = agent.myMapAddNewNode(myPosition);
-        if (nodeAdded) {
-            agent.getMyMap().addNode(myPosition, MapAttribute.closed);
-        } else {
-            agent.getMyMap().addNode(myPosition, MapAttribute.closed);
-        }
+        agent.myMapAddNewNode(myPosition);
+        agent.getMyMap().addNode(myPosition, MapAttribute.closed);
 
-        // 观察周围，更新邻居信息
         List<Couple<Location, List<Couple<Observation, String>>>> lobs =
                 ((AbstractDedaleAgent) this.myAgent).observe();
-        Iterator<Couple<Location, List<Couple<Observation, String>>>> iter = lobs.iterator();
-        while (iter.hasNext()) {
-            String nodeId = iter.next().getLeft().getLocationId();
+        for (Couple<Location, List<Couple<Observation, String>>> entry : lobs) {
+            String nodeId = entry.getLeft().getLocationId();
             if (!myPosition.equals(nodeId)) {
                 boolean isNew = agent.myMapAddNewNode(nodeId);
                 agent.myMapAddEdge(myPosition, nodeId);
@@ -63,7 +55,6 @@ public class ExplorationBehaviour extends OneShotBehaviour {
             }
         }
 
-        // 检查是否应切换到狩猎模式
         if (agent.getGetoutCnt() >= 10 || !agent.getMyMap().hasOpenNode()) {
             agent.setMode(FSMExploAgent.MODE_HUNT);
             double cc = agent.getMyMap().checkTypeGraph();
@@ -72,12 +63,10 @@ public class ExplorationBehaviour extends OneShotBehaviour {
             return;
         }
 
-        // 重置 Wumpus 标记
         if (myPosition.equals(agent.getDestination())) {
             agent.setDest_wumpusfound(false);
         }
 
-        // 处理阻塞情况
         if (lastPosition.equals(myPosition) && agent.getPosition().contains(agent.getNextDest())) {
             String far = null;
             while (far == null || far.equals(myPosition) ||
@@ -85,10 +74,9 @@ public class ExplorationBehaviour extends OneShotBehaviour {
                     agent.getMyMap().getShortestPath(myPosition, far).contains(agent.getNextDest())) {
                 far = agent.getMyMap().getRandomNode();
             }
-            nextNode = agent.getMyMap().getShortestPath(myPosition, far).get(0);
-            if (new Random().nextDouble() >= 0.5) {
-                nextNode = agent.getNextDest();
-            }
+            List<String> path = agent.getMyMap().getShortestPath(myPosition, far);
+            if (path != null && !path.isEmpty()) nextNode = path.get(0);
+            if (new Random().nextDouble() >= 0.5) nextNode = agent.getNextDest();
         } else if (agent.isDest_wumpusfound() && agent.getDestination() != null) {
             List<String> path = agent.getMyMap().getShortestPath(myPosition, agent.getDestination());
             if (path != null && !path.isEmpty()) nextNode = path.get(0);
@@ -97,27 +85,18 @@ public class ExplorationBehaviour extends OneShotBehaviour {
             agent.increaseWumpusCnt();
             nextNode = agent.getNextDest();
         } else {
-            // 正常探索：检测气味并继续
             List<String> nodeStench = new ArrayList<>();
-            Iterator<Couple<Location, List<Couple<Observation, String>>>> iter2 = lobs.iterator();
-            while (iter2.hasNext()) {
-                Couple<Location, List<Couple<Observation, String>>> entry = iter2.next();
+            for (Couple<Location, List<Couple<Observation, String>>> entry : lobs) {
                 String nodeId = entry.getLeft().getLocationId();
-                if (!entry.getRight().isEmpty() && entry.getRight().get(0).getLeft() != null) {
-                    if (entry.getRight().get(0).getLeft().toString().equals("Stench")) {
-                        nodeStench.add(nodeId);
-                    }
+                if (!entry.getRight().isEmpty() && entry.getRight().get(0).getLeft() != null &&
+                        entry.getRight().get(0).getLeft().toString().equals("Stench")) {
+                    nodeStench.add(nodeId);
                 }
             }
 
-            if (nodeStench.size() == 1) {
-                agent.setOwnStenchDirection(nodeStench.get(0));
-            } else if (nodeStench.size() > 1) {
-                agent.setOwnInsideStench(myPosition);
-            } else {
-                agent.setOwnStenchDirection(null);
-                agent.setOwnInsideStench(null);
-            }
+            if (nodeStench.size() == 1) agent.setOwnStenchDirection(nodeStench.get(0));
+            else if (nodeStench.size() > 1) agent.setOwnInsideStench(myPosition);
+            else { agent.setOwnStenchDirection(null); agent.setOwnInsideStench(null); }
 
             agent.setWumpusCnt(0);
 
@@ -126,11 +105,8 @@ public class ExplorationBehaviour extends OneShotBehaviour {
                 if (path != null && !path.isEmpty()) nextNode = path.get(0);
             }
 
-            if (nextNode == null) {
-                agent.increaseGetoutCnt();
-            } else {
-                agent.setGetoutCnt(0);
-            }
+            if (nextNode == null) agent.increaseGetoutCnt();
+            else agent.setGetoutCnt(0);
         }
 
         if (agent.getWait() > 0) agent.decreaseWait();

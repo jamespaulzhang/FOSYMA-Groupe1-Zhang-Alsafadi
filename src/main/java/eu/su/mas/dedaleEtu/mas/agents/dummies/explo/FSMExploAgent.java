@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 import dataStructures.serializableGraph.SerializableSimpleGraph;
 import eu.su.mas.dedale.mas.AbstractDedaleAgent;
 import eu.su.mas.dedale.mas.agent.behaviours.platformManagment.StartMyBehaviours;
+import eu.su.mas.dedaleEtu.mas.behaviours.BlockerBehaviour;
 import eu.su.mas.dedaleEtu.mas.behaviours.ExplorationBehaviour;
 import eu.su.mas.dedaleEtu.mas.behaviours.HuntBehaviour;
 import eu.su.mas.dedaleEtu.mas.behaviours.SignalBehaviour;
@@ -37,7 +38,8 @@ public class FSMExploAgent extends AbstractDedaleAgent {
     // State constants
     public static final int MODE_EXPLORATION = 0;
     public static final int MODE_HUNT = 1;
-    public static final int MODE_CAPTURED = 2;
+    public static final int MODE_BLOCKING = 2;
+    public static final int MODE_CAPTURED = 3;
 
     private MapRepresentation myMap;
     private int mode = MODE_EXPLORATION;
@@ -79,15 +81,37 @@ public class FSMExploAgent extends AbstractDedaleAgent {
     private final Set<String> capturedGolems = Collections.synchronizedSet(new HashSet<>());
     // ===========================================
 
+    // Communication range (loaded from agent characteristics)
+    private int communicationRange = 0;
+
+    // Blocking mode variables
+    private String blockingNode = null;
+    private Set<String> blockingTargets = Collections.synchronizedSet(new HashSet<>());
+
+    // ========== MESSAGE DEDUPLICATION ==========
+    private final Set<String> receivedPositionMsgIds = Collections.synchronizedSet(new HashSet<>());
+    private final Set<String> receivedGolemInfoMsgIds = Collections.synchronizedSet(new HashSet<>());
+    private final Set<String> receivedStenchMsgIds = Collections.synchronizedSet(new HashSet<>());
+    private int positionMsgSeq = 0;
+    // ===========================================
+
     @Override
     protected void setup() {
         super.setup();
+
+        // Load communication range from characteristics if available
+        Object[] args = getArguments();
+        if (args != null && args.length > 0 && args[0] instanceof eu.su.mas.dedale.env.EntityCharacteristics) {
+            eu.su.mas.dedale.env.EntityCharacteristics ec = (eu.su.mas.dedale.env.EntityCharacteristics) args[0];
+            this.communicationRange = ec.getCommunicationReach();
+        }
 
         List<Behaviour> lb = new ArrayList<>();
 
         final String YellowSetup = "YellowSetup";
         final String Exploration = "Exploration";
         final String Hunt = "Hunt";
+        final String Blocking = "Blocking";
         final String Signal = "Signal";
         final String CheckMode = "CheckMode";
 
@@ -97,6 +121,7 @@ public class FSMExploAgent extends AbstractDedaleAgent {
         fsm.registerFirstState(new YellowSetupBehaviour(this, "Explorer"), YellowSetup);
         fsm.registerState(new ExplorationBehaviour(this), Exploration);
         fsm.registerState(new HuntBehaviour(this), Hunt);
+        fsm.registerState(new BlockerBehaviour(this), Blocking);
         fsm.registerState(new SignalBehaviour(this), Signal);
         fsm.registerState(new CheckModeBehaviour(), CheckMode);
 
@@ -104,14 +129,16 @@ public class FSMExploAgent extends AbstractDedaleAgent {
         fsm.registerDefaultTransition(YellowSetup, Exploration);
         fsm.registerTransition(Exploration, Signal, 0);
         fsm.registerTransition(Hunt, Signal, 0);
+        fsm.registerTransition(Blocking, Signal, 0);
         fsm.registerDefaultTransition(Signal, CheckMode);
         fsm.registerTransition(CheckMode, Exploration, 0);
         fsm.registerTransition(CheckMode, Hunt, 1);
+        fsm.registerTransition(CheckMode, Blocking, 2);
 
         lb.add(fsm);
         addBehaviour(new StartMyBehaviours(this, lb));
 
-        System.out.println("Agent " + getLocalName() + " started with multi-golem support.");
+        System.out.println("Agent " + getLocalName() + " started with multi-golem support. CommRange=" + communicationRange);
     }
 
     @Override
@@ -140,7 +167,9 @@ public class FSMExploAgent extends AbstractDedaleAgent {
 
         @Override
         public int onEnd() {
-            return (mode == MODE_EXPLORATION) ? 0 : 1;
+            if (mode == MODE_EXPLORATION) return 0;
+            else if (mode == MODE_HUNT) return 1;
+            else return 2; // blocking
         }
     }
 
@@ -169,6 +198,72 @@ public class FSMExploAgent extends AbstractDedaleAgent {
 
     public List<String> stringToData(String string) {
         return Stream.of(string.split(",", -1)).collect(Collectors.toList());
+    }
+
+    public int getCommunicationRange() {
+        return communicationRange;
+    }
+
+    /**
+     * Check if a target node is within communication range from my current position.
+     * Requires myMap to be initialized.
+     */
+    public boolean isWithinCommunicationRange(String myPos, String targetNode) {
+        if (communicationRange <= 0) return true; // unlimited
+        if (myPos == null || targetNode == null) return false;
+        if (myPos.equals(targetNode)) return true;
+        List<String> path = myMap.getShortestPath(myPos, targetNode);
+        // Path size = number of edges; distance in hops = path.size()
+        return path != null && path.size() <= communicationRange;
+    }
+
+    /**
+     * Compatibility method: use current position as source.
+     */
+    public boolean isWithinCommunicationRange(String targetNode) {
+        String myPos = getCurrentPosition().getLocationId();
+        return isWithinCommunicationRange(myPos, targetNode);
+    }
+
+    /**
+     * Get the last known position of an agent given its AID.
+     * We infer it from the shared position list: the AID's local name is used as a key.
+     * Assumes that each agent's position is stored in the format "nodeId" and that the
+     * position list contains entries like "nodeId" (no direct mapping to AID).
+     * For simplicity, we return the most recent position of any agent? Not accurate.
+     * Better: maintain a Map<AID, String> lastKnownPositions. We'll implement a simple version.
+     */
+    public String getLastKnownPositionOf(AID agentAID) {
+        // Since our position list only contains node IDs without agent association,
+        // this method cannot be implemented accurately without a dedicated map.
+        // As a workaround, we can try to find the position from the known map's agent attribute?
+        // For now, we'll return null and handle it in the caller.
+        return null;
+    }
+
+    // ===================== Message ID Generation =====================
+    public String generatePositionMsgId() {
+        return getLocalName() + "-POS-" + System.currentTimeMillis() + "-" + (++positionMsgSeq);
+    }
+
+    public String generateGolemInfoMsgId() {
+        return getLocalName() + "-GOLEM-" + System.currentTimeMillis();
+    }
+
+    public String generateStenchMsgId(String type) {
+        return getLocalName() + "-STENCH-" + type + "-" + System.currentTimeMillis();
+    }
+
+    public Set<String> getReceivedPositionMsgIds() {
+        return receivedPositionMsgIds;
+    }
+
+    public Set<String> getReceivedGolemInfoMsgIds() {
+        return receivedGolemInfoMsgIds;
+    }
+
+    public Set<String> getReceivedStenchMsgIds() {
+        return receivedStenchMsgIds;
     }
 
     // ===================== Getters and Setters =====================
@@ -322,4 +417,11 @@ public class FSMExploAgent extends AbstractDedaleAgent {
     public Set<String> getCapturedGolems() {
         return capturedGolems;
     }
+
+    // Blocking mode getters/setters
+    public String getBlockingNode() { return blockingNode; }
+    public void setBlockingNode(String node) { this.blockingNode = node; }
+    public Set<String> getBlockingTargets() { return blockingTargets; }
+    public void addBlockingTarget(String golemId) { blockingTargets.add(golemId); }
+    public void clearBlockingTargets() { blockingTargets.clear(); }
 }
