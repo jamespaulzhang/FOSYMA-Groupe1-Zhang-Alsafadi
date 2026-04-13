@@ -1,7 +1,14 @@
 package eu.su.mas.dedaleEtu.mas.agents.dummies.explo;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -12,6 +19,7 @@ import eu.su.mas.dedaleEtu.mas.behaviours.ExplorationBehaviour;
 import eu.su.mas.dedaleEtu.mas.behaviours.HuntBehaviour;
 import eu.su.mas.dedaleEtu.mas.behaviours.SignalBehaviour;
 import eu.su.mas.dedaleEtu.mas.behaviours.YellowSetupBehaviour;
+import eu.su.mas.dedaleEtu.mas.knowledge.GolemInfo;
 import eu.su.mas.dedaleEtu.mas.knowledge.MapRepresentation;
 import eu.su.mas.dedaleEtu.mas.knowledge.MapRepresentation.MapAttribute;
 import jade.core.AID;
@@ -65,6 +73,12 @@ public class FSMExploAgent extends AbstractDedaleAgent {
     private String ownStenchDirection;
     private String ownInsideStench;
 
+    // ========== MULTI-GOLEM MANAGEMENT ==========
+    private final Map<String, GolemInfo> knownGolems = new ConcurrentHashMap<>();
+    private String currentTargetGolemId = null;
+    private final Set<String> capturedGolems = Collections.synchronizedSet(new HashSet<>());
+    // ===========================================
+
     @Override
     protected void setup() {
         super.setup();
@@ -79,14 +93,14 @@ public class FSMExploAgent extends AbstractDedaleAgent {
 
         FSMBehaviour fsm = new FSMBehaviour(this);
 
-        // 注册状态
+        // Register states
         fsm.registerFirstState(new YellowSetupBehaviour(this, "Explorer"), YellowSetup);
         fsm.registerState(new ExplorationBehaviour(this), Exploration);
         fsm.registerState(new HuntBehaviour(this), Hunt);
         fsm.registerState(new SignalBehaviour(this), Signal);
         fsm.registerState(new CheckModeBehaviour(), CheckMode);
 
-        // 转换规则
+        // Transitions
         fsm.registerDefaultTransition(YellowSetup, Exploration);
         fsm.registerTransition(Exploration, Signal, 0);
         fsm.registerTransition(Hunt, Signal, 0);
@@ -97,7 +111,7 @@ public class FSMExploAgent extends AbstractDedaleAgent {
         lb.add(fsm);
         addBehaviour(new StartMyBehaviours(this, lb));
 
-        System.out.println("Agent " + getLocalName() + " started with FSM.");
+        System.out.println("Agent " + getLocalName() + " started with multi-golem support.");
     }
 
     @Override
@@ -109,7 +123,7 @@ public class FSMExploAgent extends AbstractDedaleAgent {
         }
     }
 
-    // ------------------ 模式检查内部行为 ------------------
+    // ------------------ Mode Check Behaviour ------------------
     private class CheckModeBehaviour extends Behaviour {
         private static final long serialVersionUID = 1L;
         private boolean finished = false;
@@ -157,7 +171,7 @@ public class FSMExploAgent extends AbstractDedaleAgent {
         return Stream.of(string.split(",", -1)).collect(Collectors.toList());
     }
 
-    // Getters and Setters...
+    // ===================== Getters and Setters =====================
     public int getWait() { return wait; }
     public void decreaseWait() { this.wait--; }
     public void setWait(int wait) { this.wait = wait; }
@@ -166,7 +180,7 @@ public class FSMExploAgent extends AbstractDedaleAgent {
     public void setMyMap(MapRepresentation myMap) { this.myMap = myMap; }
     public void initiateMyMap() {
         this.myMap = new MapRepresentation(getLocalName());
-        this.myMap.showGUI();   // 打开地图窗口
+        this.myMap.showGUI();
     }
     public void myMapAddNode(String node, MapAttribute attr) { myMap.addNode(node, attr); }
     public boolean myMapAddNewNode(String id) { return myMap.addNewNode(id); }
@@ -254,4 +268,58 @@ public class FSMExploAgent extends AbstractDedaleAgent {
     public int getGetoutCnt() { return getoutCnt; }
     public void increaseGetoutCnt() { getoutCnt++; }
     public void setGetoutCnt(int cnt) { this.getoutCnt = cnt; }
+
+    // ========== MULTI-GOLEM METHODS ==========
+    public void addOrUpdateGolem(String golemId, String position, boolean confirmed) {
+        knownGolems.compute(golemId, (id, info) -> {
+            if (info == null) {
+                System.out.println(getLocalName() + " discovered new Golem: " + golemId + " at " + position);
+                return new GolemInfo(golemId, position, confirmed);
+            } else {
+                info.updatePosition(position);
+                if (confirmed) info.setConfirmed();
+                return info;
+            }
+        });
+    }
+
+    public void markGolemCaptured(String golemId) {
+        capturedGolems.add(golemId);
+        knownGolems.remove(golemId);
+        if (currentTargetGolemId != null && currentTargetGolemId.equals(golemId)) {
+            currentTargetGolemId = null;
+        }
+        System.out.println(getLocalName() + " Golem CAPTURED: " + golemId);
+        if (knownGolems.isEmpty() && myMap != null && !myMap.hasOpenNode()) {
+            mode = MODE_CAPTURED;
+            System.out.println(getLocalName() + " ALL GOLEMS CAPTURED! Mission complete.");
+        }
+    }
+
+    public GolemInfo selectBestTarget(String myPos) {
+        if (knownGolems.isEmpty()) return null;
+        return knownGolems.values().stream()
+                .filter(g -> !capturedGolems.contains(g.getId()))
+                .min(Comparator.comparingInt(g -> {
+                    List<String> path = myMap.getShortestPath(myPos, g.getLastKnownPosition());
+                    return path == null ? Integer.MAX_VALUE : path.size();
+                }))
+                .orElse(null);
+    }
+
+    public Map<String, GolemInfo> getKnownGolems() {
+        return knownGolems;
+    }
+
+    public String getCurrentTargetGolemId() {
+        return currentTargetGolemId;
+    }
+
+    public void setCurrentTargetGolemId(String id) {
+        this.currentTargetGolemId = id;
+    }
+
+    public Set<String> getCapturedGolems() {
+        return capturedGolems;
+    }
 }

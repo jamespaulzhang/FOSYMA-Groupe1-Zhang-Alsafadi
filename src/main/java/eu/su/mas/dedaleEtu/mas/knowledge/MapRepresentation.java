@@ -460,4 +460,5 @@ public class MapRepresentation implements Serializable {
         hash = 31 * hash + wumpusScent.hashCode();
         return hash;
     }
+
 }

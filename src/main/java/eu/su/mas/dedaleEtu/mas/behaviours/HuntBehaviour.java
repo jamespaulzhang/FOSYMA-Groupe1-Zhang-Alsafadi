@@ -2,9 +2,12 @@ package eu.su.mas.dedaleEtu.mas.behaviours;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import dataStructures.tuple.Couple;
 import eu.su.mas.dedale.env.Location;
@@ -12,6 +15,7 @@ import eu.su.mas.dedale.env.Observation;
 import eu.su.mas.dedale.env.gs.GsLocation;
 import eu.su.mas.dedale.mas.AbstractDedaleAgent;
 import eu.su.mas.dedaleEtu.mas.agents.dummies.explo.FSMExploAgent;
+import eu.su.mas.dedaleEtu.mas.knowledge.GolemInfo;
 import jade.core.AID;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.lang.acl.ACLMessage;
@@ -37,11 +41,11 @@ public class HuntBehaviour extends OneShotBehaviour {
 
         try { Thread.sleep(800); } catch (InterruptedException e) {}
 
-        // 观察
+        // Observe surroundings
         List<Couple<Location, List<Couple<Observation, String>>>> lobs =
                 ((AbstractDedaleAgent) this.myAgent).observe();
 
-        // 检测气味
+        // Detect stenches
         List<String> nodeStench = new ArrayList<>();
         Iterator<Couple<Location, List<Couple<Observation, String>>>> iter = lobs.iterator();
         while (iter.hasNext()) {
@@ -64,17 +68,32 @@ public class HuntBehaviour extends OneShotBehaviour {
             agent.setOwnInsideStench(null);
         }
 
-        // 直接观察 Golem
-        String golemPos = detectGolemDirectly(lobs, agent);
-        if (golemPos != null) {
-            agent.setDestination(golemPos);
-            if (isGolemSurrounded(golemPos, agent)) {
-                captureSuccess(golemPos, agent);
-                return;
+        // ========== MULTI-GOLEM DETECTION ==========
+        Map<String, String> spottedGolems = detectAllGolems(lobs, agent);
+        for (Map.Entry<String, String> e : spottedGolems.entrySet()) {
+            agent.addOrUpdateGolem(e.getValue(), e.getKey(), true);
+        }
+
+        // Check if any known golem is already surrounded
+        for (GolemInfo golem : agent.getKnownGolems().values()) {
+            if (agent.getCapturedGolems().contains(golem.getId())) continue;
+            if (isGolemSurrounded(golem.getLastKnownPosition(), agent)) {
+                captureGolem(golem.getId(), agent);
+                return; // capture handled, exit behaviour
             }
         }
 
-        // 重置目的地标记
+        // Select target golem if none or current is invalid
+        if (agent.getCurrentTargetGolemId() == null ||
+                !agent.getKnownGolems().containsKey(agent.getCurrentTargetGolemId())) {
+            GolemInfo best = agent.selectBestTarget(myPosition);
+            if (best != null) {
+                agent.setCurrentTargetGolemId(best.getId());
+            }
+        }
+
+        // ========== ORIGINAL MOVEMENT LOGIC (preserved) ==========
+        // Reset destination flags if reached
         if (myPosition.equals(agent.getDestination())) {
             agent.setDestination(null);
             agent.setDestinationAlea(false);
@@ -83,7 +102,7 @@ public class HuntBehaviour extends OneShotBehaviour {
             agent.setDestinationInterblocage(false);
         }
 
-        // 处理阻塞
+        // Handle being blocked
         if (lastPosition.equals(myPosition) && agent.getPosition().contains(agent.getNextDest())) {
             if (!nodeStench.isEmpty() && agent.getStyle() == 1) {
                 for (String nb : nodeStench) {
@@ -114,13 +133,13 @@ public class HuntBehaviour extends OneShotBehaviour {
         } else {
             agent.setWumpusCnt(0);
 
-            // 优先级1: 本地气味方向
+            // Priority 1: local stench direction
             if (nodeStench.size() == 1 && agent.getStyle() == 1) {
                 if (!nodeStench.get(0).equals(myPosition)) {
                     nextNode = nodeStench.get(0);
                 }
             }
-            // 优先级2: 身处气味中
+            // Priority 2: inside stench (multiple directions)
             if (nextNode == null && nodeStench.size() > 1 && agent.getStyle() == 1) {
                 Collections.shuffle(nodeStench);
                 for (String nb : nodeStench) {
@@ -130,12 +149,12 @@ public class HuntBehaviour extends OneShotBehaviour {
                     }
                 }
             }
-            // 优先级3: 已有目的地（非随机）
+            // Priority 3: existing non-random destination
             if (nextNode == null && agent.getDestination() != null && !agent.getDestinationAlea()) {
                 List<String> path = agent.getMyMap().getShortestPath(myPosition, agent.getDestination());
                 if (path != null && !path.isEmpty()) nextNode = path.get(0);
             }
-            // 优先级4: 收到的气味方向（树状图）
+            // Priority 4: received stench direction (tree style)
             if (nextNode == null && !agent.getStenchDirection().isEmpty() && agent.getStyle() == 0) {
                 for (String dest : agent.getStenchDirection()) {
                     if (!dest.equals(myPosition)) {
@@ -151,7 +170,7 @@ public class HuntBehaviour extends OneShotBehaviour {
                     }
                 }
             }
-            // 优先级5: 收到的内部气味（树状图）
+            // Priority 5: received inside stench (tree style)
             if (nextNode == null && !agent.getInsideStench().isEmpty() && agent.getStyle() == 0) {
                 List<String> inside = new ArrayList<>(agent.getInsideStench());
                 Collections.shuffle(inside);
@@ -169,7 +188,7 @@ public class HuntBehaviour extends OneShotBehaviour {
                     }
                 }
             }
-            // 优先级6: 随机游荡
+            // Priority 6: random walk
             if (nextNode == null) {
                 String rando = null;
                 while (rando == null || rando.equals(myPosition)) {
@@ -188,6 +207,15 @@ public class HuntBehaviour extends OneShotBehaviour {
             }
         }
 
+        // If we have a target golem and nextNode is still null, move toward it
+        if (nextNode == null && agent.getCurrentTargetGolemId() != null) {
+            GolemInfo target = agent.getKnownGolems().get(agent.getCurrentTargetGolemId());
+            if (target != null) {
+                List<String> path = agent.getMyMap().getShortestPath(myPosition, target.getLastKnownPosition());
+                if (path != null && !path.isEmpty()) nextNode = path.get(0);
+            }
+        }
+
         agent.setLastPosition(myPosition);
         agent.setNextDest(nextNode);
         if (nextNode != null) {
@@ -200,38 +228,42 @@ public class HuntBehaviour extends OneShotBehaviour {
         agent.cleanNextNodes();
     }
 
-    // ---------- 辅助方法 ----------
-    private String detectGolemDirectly(List<Couple<Location, List<Couple<Observation, String>>>> obs, FSMExploAgent agent) {
+    // ---------- MULTI-GOLEM HELPER METHODS ----------
+    private Map<String, String> detectAllGolems(List<Couple<Location, List<Couple<Observation, String>>>> obs, FSMExploAgent agent) {
+        Map<String, String> result = new HashMap<>();
+        int counter = 0;
         for (int i = 1; i < obs.size(); i++) {
             String nodeId = obs.get(i).getLeft().getLocationId();
             boolean hasGolem = obs.get(i).getRight().stream()
                     .anyMatch(p -> p.getLeft() == Observation.AGENTNAME && "Golem".equals(p.getRight()));
             if (hasGolem) {
-                System.out.println(agent.getLocalName() + " [HUNT] Directly spotted Golem at " + nodeId);
-                return nodeId;
+                String golemId = "Golem_" + nodeId + "_" + (counter++);
+                result.put(nodeId, golemId);
+                System.out.println(agent.getLocalName() + " [HUNT] Directly spotted Golem at " + nodeId + " -> " + golemId);
             }
         }
-        return null;
+        return result;
     }
 
     private boolean isGolemSurrounded(String golemNode, FSMExploAgent agent) {
         List<String> neighbours = agent.getMyMap().getNeighbors(golemNode);
         if (neighbours.isEmpty()) return true;
+        String myPos = ((AbstractDedaleAgent) myAgent).getCurrentPosition().getLocationId();
         for (String nb : neighbours) {
-            if (!agent.getPosition().contains(nb) && !nb.equals(((AbstractDedaleAgent) myAgent).getCurrentPosition().getLocationId())) {
+            if (!agent.getPosition().contains(nb) && !nb.equals(myPos)) {
                 return false;
             }
         }
         return true;
     }
 
-    private void captureSuccess(String golemNode, FSMExploAgent agent) {
-        System.out.println(agent.getLocalName() + " [HUNT] *** GOLEM CAPTURED at " + golemNode + " ***");
-        agent.setMode(FSMExploAgent.MODE_CAPTURED);
-        broadcastCapture(golemNode, agent);
+    private void captureGolem(String golemId, FSMExploAgent agent) {
+        System.out.println(agent.getLocalName() + " [HUNT] *** GOLEM CAPTURED: " + golemId + " ***");
+        agent.markGolemCaptured(golemId);
+        broadcastCapture(golemId, agent);
     }
 
-    private void broadcastCapture(String golemNode, FSMExploAgent agent) {
+    private void broadcastCapture(String golemId, FSMExploAgent agent) {
         ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
         msg.setProtocol(PROTOCOL_CAPTURE);
         msg.setSender(myAgent.getAID());
@@ -241,9 +273,9 @@ public class HuntBehaviour extends OneShotBehaviour {
             }
         }
         try {
-            msg.setContentObject(golemNode);
+            msg.setContentObject(golemId);
             ((AbstractDedaleAgent) myAgent).sendMessage(msg);
-            System.out.println(agent.getLocalName() + " [SEND] CAPTURE: " + golemNode);
+            System.out.println(agent.getLocalName() + " [SEND] CAPTURE: " + golemId);
         } catch (IOException e) {}
         for (int i = 0; i < 2; i++) {
             try { Thread.sleep(100); } catch (InterruptedException e) {}

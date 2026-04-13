@@ -1,11 +1,15 @@
 package eu.su.mas.dedaleEtu.mas.behaviours;
 
 import java.io.IOException;
+import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import dataStructures.serializableGraph.SerializableSimpleGraph;
 import eu.su.mas.dedale.mas.AbstractDedaleAgent;
 import eu.su.mas.dedaleEtu.mas.agents.dummies.explo.FSMExploAgent;
+import eu.su.mas.dedaleEtu.mas.knowledge.GolemInfo;
 import eu.su.mas.dedaleEtu.mas.knowledge.MapRepresentation.MapAttribute;
 import eu.su.mas.dedaleEtu.mas.knowledge.MapWithScent;
 import jade.core.AID;
@@ -19,6 +23,7 @@ public class SignalBehaviour extends OneShotBehaviour {
 
     private static final long serialVersionUID = -568863390879327961L;
     private static final String PROTOCOL_CAPTURE = "CAPTURE";
+    private static final String PROTOCOL_GOLEM_INFO = "GOLEM-INFO";
 
     public SignalBehaviour(Agent myAgent) {
         super(myAgent);
@@ -31,13 +36,10 @@ public class SignalBehaviour extends OneShotBehaviour {
         AID[] receivers;
         boolean inboxEmpty;
 
-        // 检查捕获消息（若收到则终止）
-        if (checkCaptureMessage(agent, myName)) {
-            agent.setMode(FSMExploAgent.MODE_CAPTURED);
-            return;
-        }
+        // Check for capture messages (only remove specific golem)
+        checkCaptureMessage(agent, myName);
 
-        // 1. 发送我的位置
+        // 1. Send my position
         ACLMessage msgPos = new ACLMessage(ACLMessage.INFORM);
         msgPos.setSender(myAgent.getAID());
         msgPos.setProtocol("SHARE-POSITION");
@@ -50,7 +52,7 @@ public class SignalBehaviour extends OneShotBehaviour {
         ((AbstractDedaleAgent) myAgent).sendMessage(msgPos);
         System.out.println(myName + " [SEND] POSITION: " + myPosStr);
 
-        // 2. 接收位置
+        // 2. Receive positions
         inboxEmpty = false;
         do {
             MessageTemplate tmpl = MessageTemplate.MatchProtocol("SHARE-POSITION");
@@ -58,12 +60,14 @@ public class SignalBehaviour extends OneShotBehaviour {
             if (msg != null) {
                 String pos = msg.getContent();
                 String sender = msg.getSender().getLocalName();
-                if (pos != null) agent.addPosition(pos);
-                System.out.println(myName + " [RECV] POSITION from " + sender + ": " + pos);
+                if (pos != null) {
+                    agent.addPosition(pos);
+                    System.out.println(myName + " [RECV] POSITION from " + sender + ": " + pos + " (total known: " + agent.getPosition().size() + ")");
+                }
             } else inboxEmpty = true;
         } while (!inboxEmpty);
 
-        // 3. 发送 Wumpus 发现 (如果卡住)
+        // 3. Send Wumpus found (stuck)
         if (!agent.getPosition().isEmpty() && agent.getWumpusCnt() > 100) {
             ACLMessage msgW = new ACLMessage(ACLMessage.INFORM);
             msgW.setSender(myAgent.getAID());
@@ -75,7 +79,7 @@ public class SignalBehaviour extends OneShotBehaviour {
             System.out.println(myName + " [SEND] WUMPUS_FOUND (stuck)");
         }
 
-        // 4. 接收 Wumpus 发现
+        // 4. Receive Wumpus found
         inboxEmpty = false;
         do {
             MessageTemplate tmpl = MessageTemplate.MatchProtocol("SHARE-WUMPUSFOUND");
@@ -96,7 +100,7 @@ public class SignalBehaviour extends OneShotBehaviour {
             } else inboxEmpty = true;
         } while (!inboxEmpty);
 
-        // 5. 发送气味方向
+        // 5. Send stench direction
         if (agent.getOwnStenchDirection() != null) {
             ACLMessage msgSD = new ACLMessage(ACLMessage.INFORM);
             msgSD.setSender(myAgent.getAID());
@@ -108,7 +112,7 @@ public class SignalBehaviour extends OneShotBehaviour {
             System.out.println(myName + " [SEND] STENCH_DIRECTION: " + agent.getOwnStenchDirection());
         }
 
-        // 6. 发送内部气味
+        // 6. Send inside stench
         if (agent.getOwnInsideStench() != null) {
             ACLMessage msgIS = new ACLMessage(ACLMessage.INFORM);
             msgIS.setSender(myAgent.getAID());
@@ -120,7 +124,7 @@ public class SignalBehaviour extends OneShotBehaviour {
             System.out.println(myName + " [SEND] INSIDE_STENCH: " + agent.getOwnInsideStench());
         }
 
-        // 7. 接收气味方向
+        // 7. Receive stench direction
         inboxEmpty = false;
         do {
             MessageTemplate tmpl = MessageTemplate.MatchProtocol("SHARE-STENCHDIRECTION");
@@ -133,7 +137,7 @@ public class SignalBehaviour extends OneShotBehaviour {
             } else inboxEmpty = true;
         } while (!inboxEmpty);
 
-        // 8. 接收内部气味
+        // 8. Receive inside stench
         inboxEmpty = false;
         do {
             MessageTemplate tmpl = MessageTemplate.MatchProtocol("SHARE-INSIDESTENCH");
@@ -146,7 +150,48 @@ public class SignalBehaviour extends OneShotBehaviour {
             } else inboxEmpty = true;
         } while (!inboxEmpty);
 
-        // 9. 按需共享地图（仅探索模式，且内容变化时）
+        // ========== MULTI-GOLEM INFO SHARING ==========
+        // 9. Send known golems
+        if (!agent.getKnownGolems().isEmpty()) {
+            ACLMessage giMsg = new ACLMessage(ACLMessage.INFORM);
+            giMsg.setProtocol(PROTOCOL_GOLEM_INFO);
+            giMsg.setSender(myAgent.getAID());
+            receivers = agent.getServices("Explorer");
+            for (AID r : receivers) if (!r.equals(myAgent.getAID())) giMsg.addReceiver(r);
+            try {
+                Map<String, String> simpleMap = new HashMap<>();
+                for (GolemInfo gi : agent.getKnownGolems().values()) {
+                    simpleMap.put(gi.getId(), gi.getLastKnownPosition());
+                }
+                giMsg.setContentObject((Serializable) simpleMap);
+                ((AbstractDedaleAgent) myAgent).sendMessage(giMsg);
+                System.out.println(myName + " [SEND] GOLEM_INFO: " + simpleMap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // 10. Receive golem info
+        inboxEmpty = false;
+        do {
+            MessageTemplate tmpl = MessageTemplate.MatchProtocol(PROTOCOL_GOLEM_INFO);
+            ACLMessage msg = myAgent.receive(tmpl);
+            if (msg != null) {
+                try {
+                    Map<String, String> map = (Map<String, String>) msg.getContentObject();
+                    String sender = msg.getSender().getLocalName();
+                    for (Map.Entry<String, String> e : map.entrySet()) {
+                        agent.addOrUpdateGolem(e.getKey(), e.getValue(), false);
+                    }
+                    System.out.println(myName + " [RECV] GOLEM_INFO from " + sender + ": " + map);
+                } catch (UnreadableException e) {
+                    e.printStackTrace();
+                }
+            } else inboxEmpty = true;
+        } while (!inboxEmpty);
+        // =============================================
+
+        // 11. Share map (exploration mode only)
         if (agent.getMode() == FSMExploAgent.MODE_EXPLORATION) {
             int currentHash = agent.getMyMap().getContentHash();
             if (currentHash != agent.getLastMapHash()) {
@@ -174,7 +219,7 @@ public class SignalBehaviour extends OneShotBehaviour {
             }
         }
 
-        // 10. 接收并合并地图（仅探索模式）
+        // 12. Receive and merge map (exploration mode only)
         if (agent.getMode() == FSMExploAgent.MODE_EXPLORATION) {
             inboxEmpty = false;
             do {
@@ -204,15 +249,19 @@ public class SignalBehaviour extends OneShotBehaviour {
         }
     }
 
-    private boolean checkCaptureMessage(FSMExploAgent agent, String myName) {
+    private void checkCaptureMessage(FSMExploAgent agent, String myName) {
         MessageTemplate tmpl = MessageTemplate.and(
                 MessageTemplate.MatchProtocol(PROTOCOL_CAPTURE),
                 MessageTemplate.MatchPerformative(ACLMessage.INFORM));
         ACLMessage msg = myAgent.receive(tmpl);
         if (msg != null) {
-            System.out.println(myName + " [RECV] CAPTURE from " + msg.getSender().getLocalName());
-            return true;
+            try {
+                String golemId = (String) msg.getContentObject();
+                System.out.println(myName + " [RECV] CAPTURE from " + msg.getSender().getLocalName() + ": " + golemId);
+                agent.markGolemCaptured(golemId);
+            } catch (UnreadableException e) {
+                e.printStackTrace();
+            }
         }
-        return false;
     }
 }
