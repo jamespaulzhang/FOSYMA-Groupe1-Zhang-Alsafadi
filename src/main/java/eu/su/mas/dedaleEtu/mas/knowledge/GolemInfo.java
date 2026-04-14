@@ -6,7 +6,7 @@ public class GolemInfo implements Serializable {
     private static final long serialVersionUID = 1L;
     private final String id;
     private String lastKnownPosition;
-    private boolean confirmed; 
+    private boolean confirmed;
 
     public GolemInfo(String id, String position, boolean confirmed) {
         this.id = id;
