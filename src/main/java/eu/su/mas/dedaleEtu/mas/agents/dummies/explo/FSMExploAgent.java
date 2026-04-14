@@ -69,7 +69,7 @@ public class FSMExploAgent extends AbstractDedaleAgent {
     // Informations
     private String destination = null;
     private String nextDest;
-    private List<String> position = new ArrayList<>();
+    private List<String> position = new ArrayList<>();                 // 旧版位置列表，暂时保留用于其他功能
     private List<String> stenchDirection = new ArrayList<>();
     private List<String> insideStench = new ArrayList<>();
     private String ownStenchDirection;
@@ -95,11 +95,23 @@ public class FSMExploAgent extends AbstractDedaleAgent {
     private int positionMsgSeq = 0;
     // ===========================================
 
+    // ========== BLOCKING NEGOTIATION ==========
+    public boolean isManager = false;
+    public String activeCFPGolemId = null;
+    public long cfpStartTime = 0;
+    public static final long CFP_TIMEOUT = 1500;
+    // ===========================================
+
+    // ========== AGENT POSITION TRACKING ==========
+    private final Map<String, String> agentPositions = new ConcurrentHashMap<>();      // agentLocalName -> nodeId
+    private final Map<String, Long> positionTimestamps = new ConcurrentHashMap<>();    // agentLocalName -> timestamp (ms)
+    private static final long POSITION_EXPIRY_MS = 15000;  // 15秒未更新则视为过期
+    // ===========================================
+
     @Override
     protected void setup() {
         super.setup();
 
-        // Load communication range from characteristics if available
         Object[] args = getArguments();
         if (args != null && args.length > 0 && args[0] instanceof eu.su.mas.dedale.env.EntityCharacteristics) {
             eu.su.mas.dedale.env.EntityCharacteristics ec = (eu.su.mas.dedale.env.EntityCharacteristics) args[0];
@@ -117,7 +129,6 @@ public class FSMExploAgent extends AbstractDedaleAgent {
 
         FSMBehaviour fsm = new FSMBehaviour(this);
 
-        // Register states
         fsm.registerFirstState(new YellowSetupBehaviour(this, "Explorer"), YellowSetup);
         fsm.registerState(new ExplorationBehaviour(this), Exploration);
         fsm.registerState(new HuntBehaviour(this), Hunt);
@@ -125,7 +136,6 @@ public class FSMExploAgent extends AbstractDedaleAgent {
         fsm.registerState(new SignalBehaviour(this), Signal);
         fsm.registerState(new CheckModeBehaviour(), CheckMode);
 
-        // Transitions
         fsm.registerDefaultTransition(YellowSetup, Exploration);
         fsm.registerTransition(Exploration, Signal, 0);
         fsm.registerTransition(Hunt, Signal, 0);
@@ -150,7 +160,6 @@ public class FSMExploAgent extends AbstractDedaleAgent {
         }
     }
 
-    // ------------------ Mode Check Behaviour ------------------
     private class CheckModeBehaviour extends Behaviour {
         private static final long serialVersionUID = 1L;
         private boolean finished = false;
@@ -169,7 +178,7 @@ public class FSMExploAgent extends AbstractDedaleAgent {
         public int onEnd() {
             if (mode == MODE_EXPLORATION) return 0;
             else if (mode == MODE_HUNT) return 1;
-            else return 2; // blocking
+            else return 2;
         }
     }
 
@@ -204,41 +213,17 @@ public class FSMExploAgent extends AbstractDedaleAgent {
         return communicationRange;
     }
 
-    /**
-     * Check if a target node is within communication range from my current position.
-     * Requires myMap to be initialized.
-     */
     public boolean isWithinCommunicationRange(String myPos, String targetNode) {
-        if (communicationRange <= 0) return true; // unlimited
+        if (communicationRange <= 0) return true;
         if (myPos == null || targetNode == null) return false;
         if (myPos.equals(targetNode)) return true;
         List<String> path = myMap.getShortestPath(myPos, targetNode);
-        // Path size = number of edges; distance in hops = path.size()
         return path != null && path.size() <= communicationRange;
     }
 
-    /**
-     * Compatibility method: use current position as source.
-     */
     public boolean isWithinCommunicationRange(String targetNode) {
         String myPos = getCurrentPosition().getLocationId();
         return isWithinCommunicationRange(myPos, targetNode);
-    }
-
-    /**
-     * Get the last known position of an agent given its AID.
-     * We infer it from the shared position list: the AID's local name is used as a key.
-     * Assumes that each agent's position is stored in the format "nodeId" and that the
-     * position list contains entries like "nodeId" (no direct mapping to AID).
-     * For simplicity, we return the most recent position of any agent? Not accurate.
-     * Better: maintain a Map<AID, String> lastKnownPositions. We'll implement a simple version.
-     */
-    public String getLastKnownPositionOf(AID agentAID) {
-        // Since our position list only contains node IDs without agent association,
-        // this method cannot be implemented accurately without a dedicated map.
-        // As a workaround, we can try to find the position from the known map's agent attribute?
-        // For now, we'll return null and handle it in the caller.
-        return null;
     }
 
     // ===================== Message ID Generation =====================
@@ -264,6 +249,23 @@ public class FSMExploAgent extends AbstractDedaleAgent {
 
     public Set<String> getReceivedStenchMsgIds() {
         return receivedStenchMsgIds;
+    }
+
+    // ===================== Agent Position Tracking =====================
+    public void updateAgentPosition(String agentName, String nodeId) {
+        agentPositions.put(agentName, nodeId);
+        positionTimestamps.put(agentName, System.currentTimeMillis());
+    }
+
+    public Set<String> getKnownAgentPositions() {
+        long now = System.currentTimeMillis();
+        positionTimestamps.entrySet().removeIf(e -> now - e.getValue() > POSITION_EXPIRY_MS);
+        agentPositions.keySet().retainAll(positionTimestamps.keySet());
+        return new HashSet<>(agentPositions.values());
+    }
+
+    public String getAgentPosition(String agentName) {
+        return agentPositions.get(agentName);
     }
 
     // ===================== Getters and Setters =====================
@@ -418,7 +420,6 @@ public class FSMExploAgent extends AbstractDedaleAgent {
         return capturedGolems;
     }
 
-    // Blocking mode getters/setters
     public String getBlockingNode() { return blockingNode; }
     public void setBlockingNode(String node) { this.blockingNode = node; }
     public Set<String> getBlockingTargets() { return blockingTargets; }

@@ -32,7 +32,11 @@ public class SignalBehaviour extends OneShotBehaviour {
     private static final String PROTOCOL_WUMPUS_FOUND = "SHARE-WUMPUSFOUND";
     private static final String PROTOCOL_MAP = "SHARE-MAP";
 
-    private static final int DEFAULT_TTL = 3;  // limit hops
+    private static final String PROTOCOL_CFP = "CFP-BLOCK";
+    private static final String PROTOCOL_PROPOSE = "PROPOSE-BLOCK";
+    private static final String PROTOCOL_AWARD = "AWARD-BLOCK";
+
+    private static final int DEFAULT_TTL = 3;
 
     public SignalBehaviour(Agent myAgent) {
         super(myAgent);
@@ -44,35 +48,30 @@ public class SignalBehaviour extends OneShotBehaviour {
         String myName = myAgent.getLocalName();
         String myPos = ((AbstractDedaleAgent) myAgent).getCurrentPosition().getLocationId();
 
-        // --- 1. Capture messages (no TTL, but broadcast with range check) ---
         checkCaptureMessage(agent, myName);
 
-        // --- 2. Position sharing (with ID + TTL) ---
         sharePosition(agent, myName, myPos);
         receivePositionMessages(agent, myName, myPos);
 
-        // --- 3. Wumpus found (simple broadcast, TTL not critical) ---
         shareWumpusFound(agent, myName);
         receiveWumpusFound(agent, myName);
 
-        // --- 4. Stench direction (ID + TTL) ---
         shareStenchDirection(agent, myName, myPos);
         receiveStenchDirection(agent, myName);
 
-        // --- 5. Inside stench (ID + TTL) ---
         shareInsideStench(agent, myName, myPos);
         receiveInsideStench(agent, myName);
 
-        // --- 6. Golem info (ID + anti-entropy) ---
         shareGolemInfo(agent, myName, myPos);
         receiveGolemInfo(agent, myName);
 
-        // --- 7. Map sharing (only in exploration, hash-based, no TTL) ---
         shareMap(agent, myName);
         receiveMap(agent, myName);
+
+        handleBlockingCFP(agent);
+        handleBlockingAward(agent);
     }
 
-    // ======================= POSITION =========================
     private void sharePosition(FSMExploAgent agent, String myName, String myPos) {
         String msgId = agent.generatePositionMsgId();
         ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
@@ -88,6 +87,8 @@ public class SignalBehaviour extends OneShotBehaviour {
             System.out.println(myName + " [SEND] POSITION: " + myPos + " ID=" + msgId);
         }
         agent.addPosition(myPos);
+        // 更新自己的位置记录
+        agent.updateAgentPosition(myName, myPos);
     }
 
     private void receivePositionMessages(FSMExploAgent agent, String myName, String myPos) {
@@ -103,6 +104,8 @@ public class SignalBehaviour extends OneShotBehaviour {
             String pos = msg.getContent();
             String sender = msg.getSender().getLocalName();
             agent.addPosition(pos);
+            // 核心修复：更新该 Agent 的最新位置
+            agent.updateAgentPosition(sender, pos);
             System.out.println(myName + " [RECV] POSITION from " + sender + ": " + pos + " ID=" + msgId);
 
             String ttlStr = msg.getUserDefinedParameter("TTL");
@@ -124,7 +127,6 @@ public class SignalBehaviour extends OneShotBehaviour {
         }
     }
 
-    // ======================= STENCH DIRECTION =========================
     private void shareStenchDirection(FSMExploAgent agent, String myName, String myPos) {
         if (agent.getOwnStenchDirection() == null) return;
         String content = agent.getOwnStenchDirection();
@@ -171,7 +173,6 @@ public class SignalBehaviour extends OneShotBehaviour {
         }
     }
 
-    // ======================= INSIDE STENCH =========================
     private void shareInsideStench(FSMExploAgent agent, String myName, String myPos) {
         if (agent.getOwnInsideStench() == null) return;
         String content = agent.getOwnInsideStench();
@@ -218,7 +219,6 @@ public class SignalBehaviour extends OneShotBehaviour {
         }
     }
 
-    // ======================= WUMPUS FOUND =========================
     private void shareWumpusFound(FSMExploAgent agent, String myName) {
         if (!agent.getPosition().isEmpty() && agent.getWumpusCnt() > 100) {
             ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
@@ -251,7 +251,6 @@ public class SignalBehaviour extends OneShotBehaviour {
         }
     }
 
-    // ======================= GOLEM INFO =========================
     private void shareGolemInfo(FSMExploAgent agent, String myName, String myPos) {
         if (agent.getKnownGolems().isEmpty() && agent.getCapturedGolems().isEmpty()) return;
         String msgId = agent.generateGolemInfoMsgId();
@@ -305,7 +304,6 @@ public class SignalBehaviour extends OneShotBehaviour {
         }
     }
 
-    // ======================= MAP SHARING =========================
     private void shareMap(FSMExploAgent agent, String myName) {
         if (agent.getMode() != FSMExploAgent.MODE_EXPLORATION) return;
         int currentHash = agent.getMyMap().getContentHash();
@@ -350,7 +348,6 @@ public class SignalBehaviour extends OneShotBehaviour {
         }
     }
 
-    // ======================= CAPTURE =========================
     private void checkCaptureMessage(FSMExploAgent agent, String myName) {
         MessageTemplate tmpl = MessageTemplate.and(
                 MessageTemplate.MatchProtocol(PROTOCOL_CAPTURE),
@@ -367,7 +364,71 @@ public class SignalBehaviour extends OneShotBehaviour {
         }
     }
 
-    // ======================= HELPER METHODS =========================
+    private void handleBlockingCFP(FSMExploAgent agent) {
+        MessageTemplate tmpl = MessageTemplate.MatchProtocol(PROTOCOL_CFP);
+        ACLMessage cfp = myAgent.receive(tmpl);
+        if (cfp == null) return;
+
+        String content = cfp.getContent();
+        String[] parts = content.split(":");
+        if (parts.length < 2) return;
+        String golemId = parts[0];
+        String[] neighbors = parts[1].split(",");
+        String myPos = ((AbstractDedaleAgent) agent).getCurrentPosition().getLocationId();
+
+        Map<String, Integer> costs = new HashMap<>();
+        for (String node : neighbors) {
+            if (node.equals(myPos)) continue;
+            List<String> path = agent.getMyMap().getShortestPath(myPos, node);
+            if (path != null) {
+                costs.put(node, path.size());
+            }
+        }
+
+        if (costs.isEmpty()) return;
+
+        StringBuilder sb = new StringBuilder(golemId + ":");
+        for (Map.Entry<String, Integer> e : costs.entrySet()) {
+            sb.append(e.getKey()).append("=").append(e.getValue()).append(",");
+        }
+        sb.deleteCharAt(sb.length() - 1);
+
+        ACLMessage propose = cfp.createReply();
+        propose.setPerformative(ACLMessage.PROPOSE);
+        propose.setProtocol(PROTOCOL_PROPOSE);
+        propose.setSender(agent.getAID());
+        propose.setContent(sb.toString());
+        ((AbstractDedaleAgent) myAgent).sendMessage(propose);
+        System.out.println(agent.getLocalName() + " [PROPOSE] for " + golemId + ": " + sb.toString());
+    }
+
+    private void handleBlockingAward(FSMExploAgent agent) {
+        MessageTemplate tmpl = MessageTemplate.MatchProtocol(PROTOCOL_AWARD);
+        ACLMessage award = myAgent.receive(tmpl);
+        if (award == null) return;
+
+        String content = award.getContent();
+        String[] parts = content.split(":");
+        if (parts.length < 2) return;
+        String golemId = parts[0];
+        String[] assignments = parts[1].split(",");
+
+        for (String assign : assignments) {
+            String[] pair = assign.split("=");
+            if (pair.length == 2) {
+                String node = pair[0];
+                String agentName = pair[1];
+                if (agentName.equals(agent.getLocalName())) {
+                    agent.setBlockingNode(node);
+                    agent.addBlockingTarget(golemId);
+                    agent.setMode(FSMExploAgent.MODE_BLOCKING);
+                    System.out.println(agent.getLocalName() + " [AWARD] assigned to block " + node + " for Golem " + golemId);
+                    break;
+                }
+            }
+        }
+    }
+
     private void addReceiversInRange(ACLMessage msg, FSMExploAgent agent, String myPos) {
         for (AID r : agent.getServices("Explorer")) {
             if (!r.equals(myAgent.getAID())) {
