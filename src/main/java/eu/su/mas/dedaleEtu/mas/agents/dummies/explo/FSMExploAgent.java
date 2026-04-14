@@ -103,7 +103,7 @@ public class FSMExploAgent extends AbstractDedaleAgent {
     // ===========================================
 
     // ========== AGENT POSITION TRACKING ==========
-    private final Map<String, String> agentPositions = new ConcurrentHashMap<>();      // agentLocalName -> nodeId
+    public final Map<String, String> agentPositions = new ConcurrentHashMap<>();      // agentLocalName -> nodeId
     private final Map<String, Long> positionTimestamps = new ConcurrentHashMap<>();    // agentLocalName -> timestamp (ms)
     private static final long POSITION_EXPIRY_MS = 15000;  // 15秒未更新则视为过期
     // ===========================================

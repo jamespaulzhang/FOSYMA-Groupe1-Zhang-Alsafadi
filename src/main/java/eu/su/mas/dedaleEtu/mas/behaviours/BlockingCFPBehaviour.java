@@ -115,6 +115,7 @@ public class BlockingCFPBehaviour extends OneShotBehaviour {
     private Map<String, String> decideAssignments() {
         Map<String, String> assignments = new HashMap<>();
         
+        // 1. 根据收到的投标进行分配
         for (Map.Entry<String, List<Proposal>> entry : proposals.entrySet()) {
             String node = entry.getKey();
             Proposal best = entry.getValue().stream()
@@ -126,6 +127,7 @@ public class BlockingCFPBehaviour extends OneShotBehaviour {
             }
         }
 
+        // 2. 如果没有收到任何投标，Manager 自己承担一个邻居节点
         if (assignments.isEmpty()) {
             System.out.println(agent.getLocalName() + " [CFP] No proposals received, assigning self to a neighbor.");
             String myPos = ((AbstractDedaleAgent) myAgent).getCurrentPosition().getLocationId();
@@ -166,6 +168,7 @@ public class BlockingCFPBehaviour extends OneShotBehaviour {
         for (AID responder : responders) {
             award.addReceiver(responder);
         }
+        // 即使没有 responders，也要发送 Award，因为可能有自我分配
         if (!assignments.isEmpty()) {
             ((AbstractDedaleAgent) myAgent).sendMessage(award);
             System.out.println(agent.getLocalName() + " [AWARD] sent: " + award.getContent());

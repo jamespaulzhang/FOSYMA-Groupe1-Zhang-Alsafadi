@@ -3,12 +3,14 @@ package eu.su.mas.dedaleEtu.mas.behaviours;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import dataStructures.tuple.Couple;
 import eu.su.mas.dedale.env.Location;
@@ -76,13 +78,11 @@ public class HuntBehaviour extends OneShotBehaviour {
             agent.addOrUpdateGolem(e.getValue(), e.getKey(), true);
         }
 
-        // 包围检测（使用连续确认计数器）
         for (GolemInfo golem : agent.getKnownGolems().values()) {
             if (agent.getCapturedGolems().contains(golem.getId())) continue;
             String pos = golem.getLastKnownPosition();
             if (myPosition.equals(pos) || agent.getMyMap().getNeighbors(myPosition).contains(pos)) {
                 if (isGolemSurrounded(pos, agent)) {
-                    // 检查是否是同一个 Golem，否则重置计数器
                     if (lastCheckedGolemId == null || !lastCheckedGolemId.equals(golem.getId())) {
                         surroundedCount = 0;
                         lastCheckedGolemId = golem.getId();
@@ -132,12 +132,16 @@ public class HuntBehaviour extends OneShotBehaviour {
             List<String> neighbors = agent.getMyMap().getNeighbors(myPosition);
             if (myPosition.equals(golemPos) || neighbors.contains(golemPos)) {
                 if (!agent.isManager) {
-                    System.out.println(agent.getLocalName() + " [HUNT] adjacent to Golem " + golem.getId() + ", starting CFP");
-                    agent.isManager = true;
-                    agent.activeCFPGolemId = golem.getId();
-                    agent.cfpStartTime = System.currentTimeMillis();
-                    agent.addBehaviour(new BlockingCFPBehaviour(agent, golem.getId(), golemPos));
-                    return;
+                    if (canFormBlockingCoalition(golem, agent)) {
+                        System.out.println(agent.getLocalName() + " [HUNT] adjacent to Golem " + golem.getId() + ", coalition feasible. Starting CFP.");
+                        agent.isManager = true;
+                        agent.activeCFPGolemId = golem.getId();
+                        agent.cfpStartTime = System.currentTimeMillis();
+                        agent.addBehaviour(new BlockingCFPBehaviour(agent, golem.getId(), golemPos));
+                        return;
+                    } else {
+                        System.out.println(agent.getLocalName() + " [HUNT] adjacent to Golem " + golem.getId() + " but coalition INFEASIBLE. Tracking only.");
+                    }
                 }
             }
         }
@@ -281,6 +285,52 @@ public class HuntBehaviour extends OneShotBehaviour {
         agent.cleanStenchDirection();
         agent.cleanInsideStench();
         agent.cleanNextNodes();
+    }
+
+    private boolean canFormBlockingCoalition(GolemInfo golem, FSMExploAgent agent) {
+        String golemPos = golem.getLastKnownPosition();
+        if (golemPos == null) return false;
+
+        List<String> neighbors = agent.getMyMap().getNeighbors(golemPos);
+        int requiredBlockers = neighbors.size();
+
+        if (requiredBlockers == 0) return true;
+
+        Set<String> availableAgents = getAvailableBlockingAgents(golemPos, agent);
+        int availableCount = availableAgents.size();
+
+        boolean feasible = availableCount >= requiredBlockers;
+        if (!feasible) {
+            System.out.println(agent.getLocalName() + " [COALITION] Feasibility check failed: need " 
+                    + requiredBlockers + " blockers, have " + availableCount + " available (" + availableAgents + ")");
+        } else {
+            System.out.println(agent.getLocalName() + " [COALITION] Feasibility OK: " + availableCount 
+                    + " agents can cover " + requiredBlockers + " neighbors.");
+        }
+        return feasible;
+    }
+
+    private Set<String> getAvailableBlockingAgents(String golemPos, FSMExploAgent agent) {
+        Set<String> candidates = new HashSet<>();
+        String myName = agent.getLocalName();
+        String myPos = ((AbstractDedaleAgent) myAgent).getCurrentPosition().getLocationId();
+
+        if (agent.getMode() != FSMExploAgent.MODE_BLOCKING) {
+            candidates.add(myName);
+        }
+
+        Set<String> knownPositions = agent.getKnownAgentPositions();
+        for (Map.Entry<String, String> entry : agent.agentPositions.entrySet()) {
+            String otherName = entry.getKey();
+            String otherPos = entry.getValue();
+            if (otherName.equals(myName)) continue;
+
+            if (agent.isWithinCommunicationRange(golemPos, otherPos)) {
+                candidates.add(otherName);
+            }
+        }
+
+        return candidates;
     }
 
     private Map<String, String> detectAllGolems(List<Couple<Location, List<Couple<Observation, String>>>> obs, FSMExploAgent agent) {
