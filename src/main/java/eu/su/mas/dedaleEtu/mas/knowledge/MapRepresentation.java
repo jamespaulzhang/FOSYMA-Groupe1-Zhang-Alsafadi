@@ -44,6 +44,10 @@ public class MapRepresentation implements Serializable {
     private static final int SCENT_DECAY_PER_STEP = 2;
     private static final int SCENT_THRESHOLD = 5;
 
+    // 增量共享追踪
+    private final Set<String> sharedNodes = new HashSet<>();
+    private final Set<String> sharedEdges = new HashSet<>(); // 存储 "source-target"
+
     private final String nodeStyle = "node {" +
             "fill-color: black; size-mode:fit;text-alignment:under; text-size:14;text-color:white;text-background-mode:rounded-box;text-background-color:black;}" +
             "node.open {fill-color: forestgreen;}" +
@@ -103,9 +107,12 @@ public class MapRepresentation implements Serializable {
 
     public synchronized void addNode(String id, MapAttribute attr) {
         Node n = g.getNode(id);
-        if (n == null) n = g.addNode(id);
+        if (n == null) {
+            n = g.addNode(id);
+        }
         n.setAttribute("ui.class", attr.toString());
         n.setAttribute("ui.label", id);
+        // 不自动加入 sharedNodes，新节点将在下次 getDeltaSinceLastShare 中被捕获
     }
 
     public synchronized boolean addNewNode(String id) {
@@ -124,6 +131,7 @@ public class MapRepresentation implements Serializable {
                 nbEdges++;
             } catch (Exception e) {}
         }
+        // 不自动加入 sharedEdges
     }
 
     public synchronized boolean hasNode(String nodeId) {
@@ -422,7 +430,6 @@ public class MapRepresentation implements Serializable {
 
     /**
      * Compute articulation points using DFS.
-     * Fixed: use neighbor nodes instead of edges to avoid GraphStream API issues.
      */
     public synchronized Set<String> getArticulationPoints() {
         Set<String> visited = new HashSet<>();
@@ -443,35 +450,78 @@ public class MapRepresentation implements Serializable {
 
     private void dfsAP(String u, Set<String> visited, Map<String, Integer> disc, Map<String, Integer> low,
             Map<String, String> parent, Set<String> aps, int[] time) {
-		int children = 0;
-		visited.add(u);
-		time[0]++;
-		disc.put(u, time[0]);
-		low.put(u, time[0]);
-		
-		Node nodeU = g.getNode(u);
-		if (nodeU == null) return;
-		
-		// Iterate over neighbors directly, avoiding edge objects
-		List<Node> neighbors = nodeU.neighborNodes().collect(Collectors.toList());
-		for (Node neighbor : neighbors) {
-		 String v = neighbor.getId();
-		 if (!visited.contains(v)) {
-		     children++;
-		     parent.put(v, u);
-		     dfsAP(v, visited, disc, low, parent, aps, time);
-		     low.put(u, Math.min(low.get(u), low.get(v)));
-		
-		     // Articulation point conditions
-		     if (parent.get(u) == null && children > 1) {
-		         aps.add(u);
-		     }
-		     if (parent.get(u) != null && low.get(v) >= disc.get(u)) {
-		         aps.add(u);
-		     }
-		 } else if (!v.equals(parent.get(u))) {
-		     low.put(u, Math.min(low.get(u), disc.get(v)));
-		 }
-		}
-}
+        int children = 0;
+        visited.add(u);
+        time[0]++;
+        disc.put(u, time[0]);
+        low.put(u, time[0]);
+        
+        Node nodeU = g.getNode(u);
+        if (nodeU == null) return;
+        
+        List<Node> neighbors = nodeU.neighborNodes().collect(Collectors.toList());
+        for (Node neighbor : neighbors) {
+            String v = neighbor.getId();
+            if (!visited.contains(v)) {
+                children++;
+                parent.put(v, u);
+                dfsAP(v, visited, disc, low, parent, aps, time);
+                low.put(u, Math.min(low.get(u), low.get(v)));
+                
+                if (parent.get(u) == null && children > 1) {
+                    aps.add(u);
+                }
+                if (parent.get(u) != null && low.get(v) >= disc.get(u)) {
+                    aps.add(u);
+                }
+            } else if (!v.equals(parent.get(u))) {
+                low.put(u, Math.min(low.get(u), disc.get(v)));
+            }
+        }
+    }
+
+    // ========== 增量共享方法 ==========
+    /**
+     * 获取自上次调用以来新增的节点和边，并更新内部共享标记。
+     */
+    public synchronized SerializableSimpleGraph<String, MapAttribute> getDeltaSinceLastShare() {
+        SerializableSimpleGraph<String, MapAttribute> delta = new SerializableSimpleGraph<>();
+
+        // 1. 新增节点
+        for (Node node : g) {
+            String nodeId = node.getId();
+            if (!sharedNodes.contains(nodeId)) {
+                String classAttr = (String) node.getAttribute("ui.class");
+                MapAttribute attr;
+                try {
+                    attr = MapAttribute.valueOf(classAttr);
+                } catch (IllegalArgumentException e) {
+                    attr = MapAttribute.open;
+                }
+                delta.addNode(nodeId, attr);
+                sharedNodes.add(nodeId);
+            }
+        }
+
+        // 2. 新增边
+        for (Edge edge : g.edges().collect(Collectors.toList())) {
+            String source = edge.getSourceNode().getId();
+            String target = edge.getTargetNode().getId();
+            String edgeKey = source + "-" + target;
+            if (!sharedEdges.contains(edgeKey)) {
+                delta.addEdge(edgeKey, source, target);
+                sharedEdges.add(edgeKey);
+            }
+        }
+
+        return delta;
+    }
+
+    /**
+     * 重置增量追踪状态（例如在迁移后调用）。
+     */
+    public synchronized void resetDeltaTracking() {
+        sharedNodes.clear();
+        sharedEdges.clear();
+    }
 }
