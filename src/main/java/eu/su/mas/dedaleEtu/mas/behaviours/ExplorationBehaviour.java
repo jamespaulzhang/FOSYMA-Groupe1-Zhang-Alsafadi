@@ -39,9 +39,11 @@ public class ExplorationBehaviour extends OneShotBehaviour {
             agent.setGetoutCnt(0);
         }
 
+        // Mark current node as closed (explored)
         agent.myMapAddNewNode(myPosition);
         agent.getMyMap().addNode(myPosition, MapAttribute.closed);
 
+        // Observe surroundings
         List<Couple<Location, List<Couple<Observation, String>>>> lobs =
                 ((AbstractDedaleAgent) this.myAgent).observe();
         for (Couple<Location, List<Couple<Observation, String>>> entry : lobs) {
@@ -55,6 +57,7 @@ public class ExplorationBehaviour extends OneShotBehaviour {
             }
         }
 
+        // Check if exploration is complete
         if (agent.getGetoutCnt() >= 10 || !agent.getMyMap().hasOpenNode()) {
             agent.setMode(FSMExploAgent.MODE_HUNT);
             double cc = agent.getMyMap().checkTypeGraph();
@@ -63,10 +66,12 @@ public class ExplorationBehaviour extends OneShotBehaviour {
             return;
         }
 
+        // Destination management
         if (myPosition.equals(agent.getDestination())) {
             agent.setDest_wumpusfound(false);
         }
 
+        // Movement decision
         if (lastPosition.equals(myPosition) && agent.getPosition().contains(agent.getNextDest())) {
             String far = null;
             while (far == null || far.equals(myPosition) ||
@@ -85,6 +90,7 @@ public class ExplorationBehaviour extends OneShotBehaviour {
             agent.increaseWumpusCnt();
             nextNode = agent.getNextDest();
         } else {
+            // Detect stench for later use (but exploration just records it)
             List<String> nodeStench = new ArrayList<>();
             for (Couple<Location, List<Couple<Observation, String>>> entry : lobs) {
                 String nodeId = entry.getLeft().getLocationId();
@@ -97,6 +103,11 @@ public class ExplorationBehaviour extends OneShotBehaviour {
             if (nodeStench.size() == 1) agent.setOwnStenchDirection(nodeStench.get(0));
             else if (nodeStench.size() > 1) agent.setOwnInsideStench(myPosition);
             else { agent.setOwnStenchDirection(null); agent.setOwnInsideStench(null); }
+
+            // Update scent map (will be shared via delta)
+            if (!nodeStench.isEmpty()) {
+                agent.getMyMap().updateScentFromObservation(new java.util.HashSet<>(nodeStench));
+            }
 
             agent.setWumpusCnt(0);
 

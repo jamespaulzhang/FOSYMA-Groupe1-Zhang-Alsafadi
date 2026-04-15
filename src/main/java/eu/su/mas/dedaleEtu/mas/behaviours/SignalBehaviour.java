@@ -12,6 +12,7 @@ import dataStructures.serializableGraph.SerializableSimpleGraph;
 import eu.su.mas.dedale.mas.AbstractDedaleAgent;
 import eu.su.mas.dedaleEtu.mas.agents.dummies.explo.FSMExploAgent;
 import eu.su.mas.dedaleEtu.mas.knowledge.GolemInfo;
+import eu.su.mas.dedaleEtu.mas.knowledge.MapDelta;
 import eu.su.mas.dedaleEtu.mas.knowledge.MapRepresentation.MapAttribute;
 import eu.su.mas.dedaleEtu.mas.knowledge.MapWithScent;
 import jade.core.AID;
@@ -30,11 +31,13 @@ public class SignalBehaviour extends OneShotBehaviour {
     private static final String PROTOCOL_STENCH_DIR = "SHARE-STENCHDIRECTION";
     private static final String PROTOCOL_INSIDE_STENCH = "SHARE-INSIDESTENCH";
     private static final String PROTOCOL_WUMPUS_FOUND = "SHARE-WUMPUSFOUND";
-    private static final String PROTOCOL_MAP = "SHARE-MAP";
+    private static final String PROTOCOL_MAP_DELTA = "SHARE-MAP-DELTA";
+    private static final String PROTOCOL_FULL_MAP = "SHARE-MAP-FULL";
 
     private static final String PROTOCOL_CFP = "CFP-BLOCK";
     private static final String PROTOCOL_PROPOSE = "PROPOSE-BLOCK";
     private static final String PROTOCOL_AWARD = "AWARD-BLOCK";
+    private static final String PROTOCOL_AWARD_ACK = "AWARD-ACK";
 
     private static final int DEFAULT_TTL = 3;
 
@@ -49,6 +52,7 @@ public class SignalBehaviour extends OneShotBehaviour {
         String myPos = ((AbstractDedaleAgent) myAgent).getCurrentPosition().getLocationId();
 
         checkCaptureMessage(agent, myName);
+        checkAwardAckMessage(agent);
 
         sharePosition(agent, myName, myPos);
         receivePositionMessages(agent, myName, myPos);
@@ -65,11 +69,46 @@ public class SignalBehaviour extends OneShotBehaviour {
         shareGolemInfo(agent, myName, myPos);
         receiveGolemInfo(agent, myName);
 
-        shareMap(agent, myName);
-        receiveMap(agent, myName);
+        shareMapDelta(agent, myName, myPos);
+        receiveMapDelta(agent, myName);
 
         handleBlockingCFP(agent);
         handleBlockingAward(agent);
+    }
+
+    private void shareMapDelta(FSMExploAgent agent, String myName, String myPos) {
+        MapDelta delta = agent.getMyMap().getPendingDelta();
+        if (delta == null || delta.isEmpty()) return;
+
+        ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+        msg.setSender(myAgent.getAID());
+        msg.setProtocol(PROTOCOL_MAP_DELTA);
+        addReceiversInRange(msg, agent, myPos);
+        if (!hasReceivers(msg)) return;
+
+        try {
+            msg.setContentObject(delta);
+            ((AbstractDedaleAgent) myAgent).sendMessage(msg);
+            System.out.println(myName + " [SEND] MAP_DELTA: " + delta.newEdges.size() + " edges");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void receiveMapDelta(FSMExploAgent agent, String myName) {
+        MessageTemplate tmpl = MessageTemplate.MatchProtocol(PROTOCOL_MAP_DELTA);
+        ACLMessage msg;
+        while ((msg = myAgent.receive(tmpl)) != null) {
+            try {
+                MapDelta delta = (MapDelta) msg.getContentObject();
+                boolean changed = agent.getMyMap().applyDelta(delta);
+                if (changed) {
+                    System.out.println(myName + " [RECV] MAP_DELTA from " + msg.getSender().getLocalName());
+                }
+            } catch (UnreadableException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void sharePosition(FSMExploAgent agent, String myName, String myPos) {
@@ -87,7 +126,6 @@ public class SignalBehaviour extends OneShotBehaviour {
             System.out.println(myName + " [SEND] POSITION: " + myPos + " ID=" + msgId);
         }
         agent.addPosition(myPos);
-        // 更新自己的位置记录
         agent.updateAgentPosition(myName, myPos);
     }
 
@@ -96,15 +134,12 @@ public class SignalBehaviour extends OneShotBehaviour {
         ACLMessage msg;
         while ((msg = myAgent.receive(tmpl)) != null) {
             String msgId = msg.getConversationId();
-            if (msgId == null || agent.getReceivedPositionMsgIds().contains(msgId)) {
-                continue;
-            }
+            if (msgId == null || agent.getReceivedPositionMsgIds().contains(msgId)) continue;
             agent.getReceivedPositionMsgIds().add(msgId);
 
             String pos = msg.getContent();
             String sender = msg.getSender().getLocalName();
             agent.addPosition(pos);
-            // 核心修复：更新该 Agent 的最新位置
             agent.updateAgentPosition(sender, pos);
             System.out.println(myName + " [RECV] POSITION from " + sender + ": " + pos + " ID=" + msgId);
 
@@ -117,7 +152,6 @@ public class SignalBehaviour extends OneShotBehaviour {
                 relay.setConversationId(msgId);
                 relay.addUserDefinedParameter("TTL", String.valueOf(ttl - 1));
                 relay.setContent(pos);
-
                 addReceiversInRangeExcept(relay, agent, myPos, msg.getSender());
                 if (hasReceivers(relay)) {
                     ((AbstractDedaleAgent) myAgent).sendMessage(relay);
@@ -304,50 +338,6 @@ public class SignalBehaviour extends OneShotBehaviour {
         }
     }
 
-    private void shareMap(FSMExploAgent agent, String myName) {
-        if (agent.getMode() != FSMExploAgent.MODE_EXPLORATION) return;
-        int currentHash = agent.getMyMap().getContentHash();
-        if (currentHash == agent.getLastMapHash()) return;
-        agent.setLastMapHash(currentHash);
-
-        ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
-        msg.setSender(myAgent.getAID());
-        msg.setProtocol(PROTOCOL_MAP);
-        addReceiversInRange(msg, agent, ((AbstractDedaleAgent)myAgent).getCurrentPosition().getLocationId());
-        if (!hasReceivers(msg)) return;
-
-        try {
-            MapWithScent mws = new MapWithScent(agent.getMyMapSerial(), agent.getMyMap().getSerializableScent());
-            msg.setContentObject(mws);
-            ((AbstractDedaleAgent) myAgent).sendMessage(msg);
-            System.out.println(myName + " [SEND] MAP (hash=" + currentHash + ")");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void receiveMap(FSMExploAgent agent, String myName) {
-        if (agent.getMode() != FSMExploAgent.MODE_EXPLORATION) return;
-        MessageTemplate tmpl = MessageTemplate.MatchProtocol(PROTOCOL_MAP);
-        ACLMessage msg;
-        while ((msg = myAgent.receive(tmpl)) != null) {
-            try {
-                Object obj = msg.getContentObject();
-                if (obj instanceof MapWithScent) {
-                    MapWithScent mws = (MapWithScent) obj;
-                    agent.getMyMap().mergeMap(mws.graph, mws.scent);
-                    System.out.println(myName + " [RECV] MAP from " + msg.getSender().getLocalName());
-                } else if (obj instanceof SerializableSimpleGraph) {
-                    @SuppressWarnings("unchecked")
-                    SerializableSimpleGraph<String, MapAttribute> sg = (SerializableSimpleGraph<String, MapAttribute>) obj;
-                    agent.getMyMap().mergeMap(sg);
-                }
-            } catch (UnreadableException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     private void checkCaptureMessage(FSMExploAgent agent, String myName) {
         MessageTemplate tmpl = MessageTemplate.and(
                 MessageTemplate.MatchProtocol(PROTOCOL_CAPTURE),
@@ -360,6 +350,18 @@ public class SignalBehaviour extends OneShotBehaviour {
                 agent.markGolemCaptured(golemId);
             } catch (UnreadableException e) {
                 e.printStackTrace();
+            }
+        }
+    }
+
+    private void checkAwardAckMessage(FSMExploAgent agent) {
+        MessageTemplate tmpl = MessageTemplate.MatchProtocol(PROTOCOL_AWARD_ACK);
+        ACLMessage ack;
+        while ((ack = myAgent.receive(tmpl)) != null) {
+            String sender = ack.getSender().getLocalName();
+            if (agent.expectedAcks.containsKey(sender)) {
+                agent.expectedAcks.put(sender, true);
+                System.out.println(agent.getLocalName() + " [ACK] received from " + sender);
             }
         }
     }
@@ -423,6 +425,13 @@ public class SignalBehaviour extends OneShotBehaviour {
                     agent.addBlockingTarget(golemId);
                     agent.setMode(FSMExploAgent.MODE_BLOCKING);
                     System.out.println(agent.getLocalName() + " [AWARD] assigned to block " + node + " for Golem " + golemId);
+                    
+                    // Send ACK
+                    ACLMessage ack = award.createReply();
+                    ack.setPerformative(ACLMessage.INFORM);
+                    ack.setProtocol(PROTOCOL_AWARD_ACK);
+                    ack.setContent("ACK");
+                    ((AbstractDedaleAgent) myAgent).sendMessage(ack);
                     break;
                 }
             }

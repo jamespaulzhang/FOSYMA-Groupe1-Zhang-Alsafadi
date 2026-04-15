@@ -3,14 +3,12 @@ package eu.su.mas.dedaleEtu.mas.behaviours;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import dataStructures.tuple.Couple;
 import eu.su.mas.dedale.env.Location;
@@ -64,6 +62,7 @@ public class HuntBehaviour extends OneShotBehaviour {
             }
         }
 
+        // Update own stench observations
         if (nodeStench.size() == 1) {
             agent.setOwnStenchDirection(nodeStench.get(0));
         } else if (nodeStench.size() > 1) {
@@ -73,11 +72,18 @@ public class HuntBehaviour extends OneShotBehaviour {
             agent.setOwnInsideStench(null);
         }
 
+        // Update scent map for sharing via delta
+        if (!nodeStench.isEmpty()) {
+            agent.getMyMap().updateScentFromObservation(new java.util.HashSet<>(nodeStench));
+        }
+
+        // Detect Golems in sight
         Map<String, String> spottedGolems = detectAllGolems(lobs, agent);
         for (Map.Entry<String, String> e : spottedGolems.entrySet()) {
             agent.addOrUpdateGolem(e.getValue(), e.getKey(), true);
         }
 
+        // Surrounded detection (with consecutive confirmation)
         for (GolemInfo golem : agent.getKnownGolems().values()) {
             if (agent.getCapturedGolems().contains(golem.getId())) continue;
             String pos = golem.getLastKnownPosition();
@@ -101,6 +107,7 @@ public class HuntBehaviour extends OneShotBehaviour {
             }
         }
 
+        // Graph-style hunt: use articulation points to block
         if (agent.getStyle() == 1) {
             for (GolemInfo golem : agent.getKnownGolems().values()) {
                 if (agent.getCapturedGolems().contains(golem.getId())) continue;
@@ -126,26 +133,24 @@ public class HuntBehaviour extends OneShotBehaviour {
             }
         }
 
+        // If adjacent to a Golem and not already a manager, start CFP
         for (GolemInfo golem : agent.getKnownGolems().values()) {
             if (agent.getCapturedGolems().contains(golem.getId())) continue;
             String golemPos = golem.getLastKnownPosition();
             List<String> neighbors = agent.getMyMap().getNeighbors(myPosition);
             if (myPosition.equals(golemPos) || neighbors.contains(golemPos)) {
-                if (!agent.isManager) {
-                    if (canFormBlockingCoalition(golem, agent)) {
-                        System.out.println(agent.getLocalName() + " [HUNT] adjacent to Golem " + golem.getId() + ", coalition feasible. Starting CFP.");
-                        agent.isManager = true;
-                        agent.activeCFPGolemId = golem.getId();
-                        agent.cfpStartTime = System.currentTimeMillis();
-                        agent.addBehaviour(new BlockingCFPBehaviour(agent, golem.getId(), golemPos));
-                        return;
-                    } else {
-                        System.out.println(agent.getLocalName() + " [HUNT] adjacent to Golem " + golem.getId() + " but coalition INFEASIBLE. Tracking only.");
-                    }
+                if (!agent.isManager && agent.activeCFPGolemId == null) {
+                    System.out.println(agent.getLocalName() + " [HUNT] adjacent to Golem " + golem.getId() + ", starting CFP");
+                    agent.isManager = true;
+                    agent.activeCFPGolemId = golem.getId();
+                    agent.cfpStartTime = System.currentTimeMillis();
+                    agent.addBehaviour(new BlockingCFPBehaviour(agent, golem.getId(), golemPos));
+                    return;
                 }
             }
         }
 
+        // Target selection
         if (agent.getCurrentTargetGolemId() == null ||
                 !agent.getKnownGolems().containsKey(agent.getCurrentTargetGolemId())) {
             GolemInfo best = agent.selectBestTarget(myPosition);
@@ -154,6 +159,7 @@ public class HuntBehaviour extends OneShotBehaviour {
             }
         }
 
+        // Destination management
         if (myPosition.equals(agent.getDestination())) {
             agent.setDestination(null);
             agent.setDestinationAlea(false);
@@ -162,6 +168,7 @@ public class HuntBehaviour extends OneShotBehaviour {
             agent.setDestinationInterblocage(false);
         }
 
+        // Movement decision
         if (lastPosition.equals(myPosition) && agent.getPosition().contains(agent.getNextDest())) {
             if (!nodeStench.isEmpty() && agent.getStyle() == 1) {
                 for (String nb : nodeStench) {
@@ -267,6 +274,7 @@ public class HuntBehaviour extends OneShotBehaviour {
             }
         }
 
+        // Fallback: move towards current target Golem
         if (nextNode == null && agent.getCurrentTargetGolemId() != null) {
             GolemInfo target = agent.getKnownGolems().get(agent.getCurrentTargetGolemId());
             if (target != null) {
@@ -285,52 +293,6 @@ public class HuntBehaviour extends OneShotBehaviour {
         agent.cleanStenchDirection();
         agent.cleanInsideStench();
         agent.cleanNextNodes();
-    }
-
-    private boolean canFormBlockingCoalition(GolemInfo golem, FSMExploAgent agent) {
-        String golemPos = golem.getLastKnownPosition();
-        if (golemPos == null) return false;
-
-        List<String> neighbors = agent.getMyMap().getNeighbors(golemPos);
-        int requiredBlockers = neighbors.size();
-
-        if (requiredBlockers == 0) return true;
-
-        Set<String> availableAgents = getAvailableBlockingAgents(golemPos, agent);
-        int availableCount = availableAgents.size();
-
-        boolean feasible = availableCount >= requiredBlockers;
-        if (!feasible) {
-            System.out.println(agent.getLocalName() + " [COALITION] Feasibility check failed: need " 
-                    + requiredBlockers + " blockers, have " + availableCount + " available (" + availableAgents + ")");
-        } else {
-            System.out.println(agent.getLocalName() + " [COALITION] Feasibility OK: " + availableCount 
-                    + " agents can cover " + requiredBlockers + " neighbors.");
-        }
-        return feasible;
-    }
-
-    private Set<String> getAvailableBlockingAgents(String golemPos, FSMExploAgent agent) {
-        Set<String> candidates = new HashSet<>();
-        String myName = agent.getLocalName();
-        String myPos = ((AbstractDedaleAgent) myAgent).getCurrentPosition().getLocationId();
-
-        if (agent.getMode() != FSMExploAgent.MODE_BLOCKING) {
-            candidates.add(myName);
-        }
-
-        Set<String> knownPositions = agent.getKnownAgentPositions();
-        for (Map.Entry<String, String> entry : agent.agentPositions.entrySet()) {
-            String otherName = entry.getKey();
-            String otherPos = entry.getValue();
-            if (otherName.equals(myName)) continue;
-
-            if (agent.isWithinCommunicationRange(golemPos, otherPos)) {
-                candidates.add(otherName);
-            }
-        }
-
-        return candidates;
     }
 
     private Map<String, String> detectAllGolems(List<Couple<Location, List<Couple<Observation, String>>>> obs, FSMExploAgent agent) {
@@ -385,8 +347,7 @@ public class HuntBehaviour extends OneShotBehaviour {
         msg.setProtocol(PROTOCOL_CAPTURE);
         msg.setSender(myAgent.getAID());
         for (AID aid : agent.getServices("Explorer")) {
-            if (!aid.equals(myAgent.getAID()) && agent.isWithinCommunicationRange(
-                    ((AbstractDedaleAgent)myAgent).getCurrentPosition().getLocationId())) {
+            if (!aid.equals(myAgent.getAID())) {
                 msg.addReceiver(aid);
             }
         }
@@ -395,9 +356,8 @@ public class HuntBehaviour extends OneShotBehaviour {
             ((AbstractDedaleAgent) myAgent).sendMessage(msg);
             System.out.println(agent.getLocalName() + " [SEND] CAPTURE: " + golemId);
         } catch (IOException e) {}
-        for (int i = 0; i < 2; i++) {
-            try { Thread.sleep(100); } catch (InterruptedException e) {}
-            ((AbstractDedaleAgent) myAgent).sendMessage(msg);
-        }
+        // Simple retry
+        try { Thread.sleep(100); } catch (InterruptedException e) {}
+        ((AbstractDedaleAgent) myAgent).sendMessage(msg);
     }
 }

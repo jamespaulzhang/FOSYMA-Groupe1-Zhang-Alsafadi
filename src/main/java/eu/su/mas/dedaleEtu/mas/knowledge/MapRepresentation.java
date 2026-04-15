@@ -18,6 +18,7 @@ import org.graphstream.ui.view.Viewer;
 import dataStructures.serializableGraph.SerializableNode;
 import dataStructures.serializableGraph.SerializableSimpleGraph;
 import dataStructures.tuple.Couple;
+import eu.su.mas.dedaleEtu.mas.knowledge.MapDelta;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
@@ -43,6 +44,12 @@ public class MapRepresentation implements Serializable {
     private transient Map<String, Boolean> wumpusScent;
     private static final int SCENT_DECAY_PER_STEP = 2;
     private static final int SCENT_THRESHOLD = 5;
+
+    // ========== DELTA TRACKING ==========
+    private transient Set<String> pendingNewEdges = new HashSet<>(); // format "nodeA-nodeB"
+    private transient Map<String, MapAttribute> pendingNodeUpdates = new HashMap<>();
+    private transient Map<String, Boolean> pendingScentUpdates = new HashMap<>();
+    // =====================================
 
     private final String nodeStyle = "node {" +
             "fill-color: black; size-mode:fit;text-alignment:under; text-size:14;text-color:white;text-background-mode:rounded-box;text-background-color:black;}" +
@@ -103,8 +110,18 @@ public class MapRepresentation implements Serializable {
 
     public synchronized void addNode(String id, MapAttribute attr) {
         Node n = g.getNode(id);
-        if (n == null) n = g.addNode(id);
-        n.setAttribute("ui.class", attr.toString());
+        boolean isNew = false;
+        if (n == null) {
+            n = g.addNode(id);
+            isNew = true;
+        }
+        String curClass = (String) n.getAttribute("ui.class");
+        if (curClass == null || !curClass.equals(attr.toString())) {
+            n.setAttribute("ui.class", attr.toString());
+            if (!isNew) {
+                pendingNodeUpdates.put(id, attr);
+            }
+        }
         n.setAttribute("ui.label", id);
     }
 
@@ -122,6 +139,7 @@ public class MapRepresentation implements Serializable {
             try {
                 g.addEdge(edgeId, id1, id2);
                 nbEdges++;
+                pendingNewEdges.add(edgeId);
             } catch (Exception e) {}
         }
     }
@@ -140,9 +158,11 @@ public class MapRepresentation implements Serializable {
         if (strength <= SCENT_THRESHOLD) {
             scentStrength.remove(nodeId);
             wumpusScent.remove(nodeId);
+            pendingScentUpdates.put(nodeId, false);
         } else {
             scentStrength.put(nodeId, strength);
             wumpusScent.put(nodeId, true);
+            pendingScentUpdates.put(nodeId, true);
         }
     }
 
@@ -165,6 +185,7 @@ public class MapRepresentation implements Serializable {
         for (String node : toRemove) {
             scentStrength.remove(node);
             wumpusScent.remove(node);
+            pendingScentUpdates.put(node, false);
         }
     }
 
@@ -247,6 +268,71 @@ public class MapRepresentation implements Serializable {
 
     public synchronized Map<String, Boolean> getSerializableScent() {
         return new HashMap<>(wumpusScent);
+    }
+
+    // ========== DELTA METHODS ==========
+    public synchronized MapDelta getPendingDelta() {
+        if (pendingNewEdges.isEmpty() && pendingNodeUpdates.isEmpty() && pendingScentUpdates.isEmpty()) {
+            return null;
+        }
+        MapDelta delta = new MapDelta();
+        delta.newEdges = new HashSet<>(pendingNewEdges);
+        delta.nodeUpdates = new HashMap<>(pendingNodeUpdates);
+        delta.scentUpdates = new HashMap<>(pendingScentUpdates);
+        
+        pendingNewEdges.clear();
+        pendingNodeUpdates.clear();
+        pendingScentUpdates.clear();
+        return delta;
+    }
+
+    public synchronized boolean applyDelta(MapDelta delta) {
+        if (delta == null) return false;
+        boolean changed = false;
+        
+        for (String edgeStr : delta.newEdges) {
+            String[] parts = edgeStr.split("-");
+            if (parts.length == 2) {
+                String id1 = parts[0];
+                String id2 = parts[1];
+                if (g.getNode(id1) == null) addNode(id1, MapAttribute.open);
+                if (g.getNode(id2) == null) addNode(id2, MapAttribute.open);
+                if (g.getEdge(edgeStr) == null) {
+                    try {
+                        g.addEdge(edgeStr, id1, id2);
+                        nbEdges++;
+                        changed = true;
+                    } catch (Exception ignored) {}
+                }
+            }
+        }
+        
+        for (Map.Entry<String, MapAttribute> e : delta.nodeUpdates.entrySet()) {
+            Node n = g.getNode(e.getKey());
+            if (n != null) {
+                String cur = (String) n.getAttribute("ui.class");
+                if (!e.getValue().toString().equals(cur)) {
+                    n.setAttribute("ui.class", e.getValue().toString());
+                    changed = true;
+                }
+            }
+        }
+        
+        for (Map.Entry<String, Boolean> e : delta.scentUpdates.entrySet()) {
+            if (e.getValue()) {
+                if (!wumpusScent.containsKey(e.getKey())) {
+                    wumpusScent.put(e.getKey(), true);
+                    scentStrength.put(e.getKey(), 50);
+                    changed = true;
+                }
+            } else {
+                if (wumpusScent.remove(e.getKey()) != null) {
+                    scentStrength.remove(e.getKey());
+                    changed = true;
+                }
+            }
+        }
+        return changed;
     }
 
     private void serialize() {
@@ -351,17 +437,9 @@ public class MapRepresentation implements Serializable {
         return changed;
     }
 
-    public String getAgentName() {
-        return agentName;
-    }
-
-    public synchronized Graph getGraph() {
-        return g;
-    }
-    
-    public synchronized void setWumpusScent(String nodeId, boolean hasScent) {
-        wumpusScent.put(nodeId, hasScent);
-    }
+    public String getAgentName() { return agentName; }
+    public synchronized Graph getGraph() { return g; }
+    public synchronized void setWumpusScent(String nodeId, boolean hasScent) { wumpusScent.put(nodeId, hasScent); }
 
     public List<String> getShortestPathToClosestOpenNode(String myPosition, List<String> agentNodes) {
         List<String> openNodes = getOpenNodes();
@@ -420,10 +498,6 @@ public class MapRepresentation implements Serializable {
         return hash;
     }
 
-    /**
-     * Compute articulation points using DFS.
-     * Fixed: use neighbor nodes instead of edges to avoid GraphStream API issues.
-     */
     public synchronized Set<String> getArticulationPoints() {
         Set<String> visited = new HashSet<>();
         Map<String, Integer> disc = new HashMap<>();
@@ -443,35 +517,28 @@ public class MapRepresentation implements Serializable {
 
     private void dfsAP(String u, Set<String> visited, Map<String, Integer> disc, Map<String, Integer> low,
             Map<String, String> parent, Set<String> aps, int[] time) {
-		int children = 0;
-		visited.add(u);
-		time[0]++;
-		disc.put(u, time[0]);
-		low.put(u, time[0]);
-		
-		Node nodeU = g.getNode(u);
-		if (nodeU == null) return;
-		
-		// Iterate over neighbors directly, avoiding edge objects
-		List<Node> neighbors = nodeU.neighborNodes().collect(Collectors.toList());
-		for (Node neighbor : neighbors) {
-		 String v = neighbor.getId();
-		 if (!visited.contains(v)) {
-		     children++;
-		     parent.put(v, u);
-		     dfsAP(v, visited, disc, low, parent, aps, time);
-		     low.put(u, Math.min(low.get(u), low.get(v)));
-		
-		     // Articulation point conditions
-		     if (parent.get(u) == null && children > 1) {
-		         aps.add(u);
-		     }
-		     if (parent.get(u) != null && low.get(v) >= disc.get(u)) {
-		         aps.add(u);
-		     }
-		 } else if (!v.equals(parent.get(u))) {
-		     low.put(u, Math.min(low.get(u), disc.get(v)));
-		 }
-		}
-}
+        int children = 0;
+        visited.add(u);
+        time[0]++;
+        disc.put(u, time[0]);
+        low.put(u, time[0]);
+        
+        Node nodeU = g.getNode(u);
+        if (nodeU == null) return;
+        
+        List<Node> neighbors = nodeU.neighborNodes().collect(Collectors.toList());
+        for (Node neighbor : neighbors) {
+            String v = neighbor.getId();
+            if (!visited.contains(v)) {
+                children++;
+                parent.put(v, u);
+                dfsAP(v, visited, disc, low, parent, aps, time);
+                low.put(u, Math.min(low.get(u), low.get(v)));
+                if (parent.get(u) == null && children > 1) aps.add(u);
+                if (parent.get(u) != null && low.get(v) >= disc.get(u)) aps.add(u);
+            } else if (!v.equals(parent.get(u))) {
+                low.put(u, Math.min(low.get(u), disc.get(v)));
+            }
+        }
+    }
 }

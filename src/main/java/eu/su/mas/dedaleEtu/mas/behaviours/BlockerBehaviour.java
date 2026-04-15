@@ -54,7 +54,7 @@ public class BlockerBehaviour extends CyclicBehaviour {
             System.out.println(agent.getLocalName() + " [BLOCKING] all targets captured, leaving.");
             agent.clearBlockingTargets();
             agent.setBlockingNode(null);
-            agent.setMode(FSMExploAgent.MODE_EXPLORATION);
+            agent.setMode(FSMExploAgent.MODE_HUNT);
             myAgent.removeBehaviour(this);
             return;
         }
@@ -62,11 +62,13 @@ public class BlockerBehaviour extends CyclicBehaviour {
         // Timeout protection
         if (System.currentTimeMillis() - startTime > MAX_BLOCK_TIME) {
             System.out.println(agent.getLocalName() + " [BLOCKING] timeout, aborting block.");
-            agent.setMode(FSMExploAgent.MODE_EXPLORATION);
+            agent.setMode(FSMExploAgent.MODE_HUNT);
             myAgent.removeBehaviour(this);
             return;
         }
 
-        block(1000); // Check every second
+        // Periodically check if Golem is still there or if we should reposition
+        // (simple: just stay put)
+        block(1000);
     }
 }

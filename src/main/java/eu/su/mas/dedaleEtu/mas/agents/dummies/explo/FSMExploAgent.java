@@ -69,7 +69,7 @@ public class FSMExploAgent extends AbstractDedaleAgent {
     // Informations
     private String destination = null;
     private String nextDest;
-    private List<String> position = new ArrayList<>();                 // 旧版位置列表，暂时保留用于其他功能
+    private List<String> position = new ArrayList<>();
     private List<String> stenchDirection = new ArrayList<>();
     private List<String> insideStench = new ArrayList<>();
     private String ownStenchDirection;
@@ -81,7 +81,7 @@ public class FSMExploAgent extends AbstractDedaleAgent {
     private final Set<String> capturedGolems = Collections.synchronizedSet(new HashSet<>());
     // ===========================================
 
-    // Communication range (loaded from agent characteristics)
+    // Communication range
     private int communicationRange = 0;
 
     // Blocking mode variables
@@ -95,17 +95,22 @@ public class FSMExploAgent extends AbstractDedaleAgent {
     private int positionMsgSeq = 0;
     // ===========================================
 
-    // ========== BLOCKING NEGOTIATION ==========
+    // ========== BLOCKING NEGOTIATION (2PC Enhanced) ==========
     public boolean isManager = false;
     public String activeCFPGolemId = null;
     public long cfpStartTime = 0;
     public static final long CFP_TIMEOUT = 1500;
+    public static final long AWARD_ACK_TIMEOUT = 2000;
+    
+    // Track assigned blockers for ACK
+    public Map<String, Boolean> expectedAcks = Collections.synchronizedMap(new HashMap<>());
+    public Map<String, String> assignedBlockers = Collections.synchronizedMap(new HashMap<>()); // agentName -> node
     // ===========================================
 
     // ========== AGENT POSITION TRACKING ==========
-    public final Map<String, String> agentPositions = new ConcurrentHashMap<>();      // agentLocalName -> nodeId
-    private final Map<String, Long> positionTimestamps = new ConcurrentHashMap<>();    // agentLocalName -> timestamp (ms)
-    private static final long POSITION_EXPIRY_MS = 15000;  // 15秒未更新则视为过期
+    public final Map<String, String> agentPositions = new ConcurrentHashMap<>();
+    private final Map<String, Long> positionTimestamps = new ConcurrentHashMap<>();
+    private static final long POSITION_EXPIRY_MS = 15000;
     // ===========================================
 
     @Override
@@ -176,8 +181,9 @@ public class FSMExploAgent extends AbstractDedaleAgent {
 
         @Override
         public int onEnd() {
-            if (mode == MODE_EXPLORATION) return 0;
-            else if (mode == MODE_HUNT) return 1;
+            int currentMode = getMode();
+            if (currentMode == MODE_EXPLORATION) return 0;
+            else if (currentMode == MODE_HUNT) return 1;
             else return 2;
         }
     }
@@ -325,8 +331,8 @@ public class FSMExploAgent extends AbstractDedaleAgent {
     public void cleanStenchNodes() { stenchNodes.clear(); }
     public void addStenchNodes(String node) { stenchNodes.add(node); }
 
-    public int getMode() { return mode; }
-    public void setMode(int mode) { this.mode = mode; }
+    public synchronized int getMode() { return mode; }
+    public synchronized void setMode(int mode) { this.mode = mode; }
 
     public void setDestinationInterblocage(boolean t) { dest_interblocage = t; }
     public boolean getDestinationInterblocage() { return dest_interblocage; }
@@ -367,7 +373,7 @@ public class FSMExploAgent extends AbstractDedaleAgent {
     public void setGetoutCnt(int cnt) { this.getoutCnt = cnt; }
 
     // ========== MULTI-GOLEM METHODS ==========
-    public void addOrUpdateGolem(String golemId, String position, boolean confirmed) {
+    public synchronized void addOrUpdateGolem(String golemId, String position, boolean confirmed) {
         knownGolems.compute(golemId, (id, info) -> {
             if (info == null) {
                 System.out.println(getLocalName() + " discovered new Golem: " + golemId + " at " + position);
@@ -380,11 +386,16 @@ public class FSMExploAgent extends AbstractDedaleAgent {
         });
     }
 
-    public void markGolemCaptured(String golemId) {
+    public synchronized void markGolemCaptured(String golemId) {
         capturedGolems.add(golemId);
         knownGolems.remove(golemId);
         if (currentTargetGolemId != null && currentTargetGolemId.equals(golemId)) {
             currentTargetGolemId = null;
+        }
+        // Clear any pending blocking tasks for this golem
+        blockingTargets.remove(golemId);
+        if (blockingTargets.isEmpty()) {
+            blockingNode = null;
         }
         System.out.println(getLocalName() + " Golem CAPTURED: " + golemId);
         if (knownGolems.isEmpty() && myMap != null && !myMap.hasOpenNode()) {
