@@ -287,6 +287,7 @@ public class SignalBehaviour extends OneShotBehaviour {
 
     private void shareGolemInfo(FSMExploAgent agent, String myName, String myPos) {
         if (agent.getKnownGolems().isEmpty() && agent.getCapturedGolems().isEmpty()) return;
+
         String msgId = agent.generateGolemInfoMsgId();
         ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
         msg.setSender(myAgent.getAID());
@@ -297,15 +298,22 @@ public class SignalBehaviour extends OneShotBehaviour {
 
         try {
             Map<String, Object> payload = new HashMap<>();
-            Map<String, String> simpleMap = new HashMap<>();
+            List<Map<String, Object>> golemDataList = new ArrayList<>();
+
             for (GolemInfo gi : agent.getKnownGolems().values()) {
-                simpleMap.put(gi.getId(), gi.getLastKnownPosition());
+                Map<String, Object> giData = new HashMap<>();
+                giData.put("id", gi.getId());
+                giData.put("pos", gi.getLastKnownPosition());
+                giData.put("confirmed", gi.isConfirmed());
+                giData.put("timestamp", gi.getTimestamp());
+                golemDataList.add(giData);
             }
-            payload.put("golems", simpleMap);
+
+            payload.put("golems", golemDataList);
             payload.put("captured", new ArrayList<>(agent.getCapturedGolems()));
             msg.setContentObject((Serializable) payload);
             ((AbstractDedaleAgent) myAgent).sendMessage(msg);
-            System.out.println(myName + " [SEND] GOLEM_INFO: " + simpleMap + " captured=" + agent.getCapturedGolems());
+            System.out.println(myName + " [SEND] GOLEM_INFO: " + golemDataList + " captured=" + agent.getCapturedGolems());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -321,16 +329,24 @@ public class SignalBehaviour extends OneShotBehaviour {
 
             try {
                 Map<String, Object> payload = (Map<String, Object>) msg.getContentObject();
-                Map<String, String> map = (Map<String, String>) payload.get("golems");
+                List<Map<String, Object>> golemDataList = (List<Map<String, Object>>) payload.get("golems");
                 List<String> captured = (List<String>) payload.get("captured");
-                for (Map.Entry<String, String> e : map.entrySet()) {
-                    agent.addOrUpdateGolem(e.getKey(), e.getValue(), false);
-                }
+
                 for (String cid : captured) {
                     if (!agent.getCapturedGolems().contains(cid)) {
                         agent.markGolemCaptured(cid);
                     }
                 }
+
+                for (Map<String, Object> giData : golemDataList) {
+                    String id = (String) giData.get("id");
+                    String pos = (String) giData.get("pos");
+                    boolean confirmed = (Boolean) giData.get("confirmed");
+                    long timestamp = (Long) giData.get("timestamp");
+
+                    agent.addOrUpdateGolem(id, pos, confirmed);
+                }
+
                 System.out.println(myName + " [RECV] GOLEM_INFO from " + msg.getSender().getLocalName());
             } catch (UnreadableException e) {
                 e.printStackTrace();

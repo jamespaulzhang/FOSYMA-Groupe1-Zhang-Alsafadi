@@ -374,16 +374,41 @@ public class FSMExploAgent extends AbstractDedaleAgent {
 
     // ========== MULTI-GOLEM METHODS ==========
     public synchronized void addOrUpdateGolem(String golemId, String position, boolean confirmed) {
-        knownGolems.compute(golemId, (id, info) -> {
-            if (info == null) {
-                System.out.println(getLocalName() + " discovered new Golem: " + golemId + " at " + position);
-                return new GolemInfo(golemId, position, confirmed);
-            } else {
-                info.updatePosition(position);
-                if (confirmed) info.setConfirmed();
-                return info;
+        GolemInfo existing = knownGolems.get(golemId);
+        long now = System.currentTimeMillis();
+
+        if (existing == null) {
+            GolemInfo newInfo = new GolemInfo(golemId, position, confirmed);
+            System.out.println(getLocalName() + " discovered new Golem: " + golemId + " at " + position
+                    + " (confirmed=" + confirmed + ")");
+            knownGolems.put(golemId, newInfo);
+            return;
+        }
+
+        boolean shouldUpdate = false;
+
+        if (confirmed && !existing.isConfirmed()) {
+            shouldUpdate = true;
+        }
+        else if (confirmed && existing.isConfirmed() && now > existing.getTimestamp()) {
+            shouldUpdate = true;
+        }
+        else if (!confirmed && !existing.isConfirmed() && now > existing.getTimestamp()) {
+            shouldUpdate = true;
+        }
+
+        if (shouldUpdate) {
+            existing.updatePosition(position);
+            if (confirmed) {
+                existing.setConfirmed();
             }
-        });
+            existing.setTimestamp(now);
+            System.out.println(getLocalName() + " updated Golem " + golemId + " to " + position
+                    + " (confirmed=" + existing.isConfirmed() + ", timestamp=" + now + ")");
+        } else {
+            System.out.println(getLocalName() + " ignored stale/unconfirmed update for Golem " + golemId
+                    + " from " + position);
+        }
     }
 
     public synchronized void markGolemCaptured(String golemId) {

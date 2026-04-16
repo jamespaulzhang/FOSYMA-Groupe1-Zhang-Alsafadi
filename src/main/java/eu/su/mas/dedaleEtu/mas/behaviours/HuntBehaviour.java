@@ -80,6 +80,7 @@ public class HuntBehaviour extends OneShotBehaviour {
         // Detect Golems in sight
         Map<String, String> spottedGolems = detectAllGolems(lobs, agent);
         for (Map.Entry<String, String> e : spottedGolems.entrySet()) {
+            // 直接目击：confirmed = true
             agent.addOrUpdateGolem(e.getValue(), e.getKey(), true);
         }
 
@@ -135,7 +136,9 @@ public class HuntBehaviour extends OneShotBehaviour {
 
         // If adjacent to a Golem and not already a manager, start CFP
         for (GolemInfo golem : agent.getKnownGolems().values()) {
-            if (agent.getCapturedGolems().contains(golem.getId())) continue;
+            if (agent.getCapturedGolems().contains(golem.getId())) {
+                continue;
+            }
             String golemPos = golem.getLastKnownPosition();
             List<String> neighbors = agent.getMyMap().getNeighbors(myPosition);
             if (myPosition.equals(golemPos) || neighbors.contains(golemPos)) {

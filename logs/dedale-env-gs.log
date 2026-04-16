@@ -2810,3 +2810,373 @@
  	 detection radius: 0
  	 Expertise: [<LockPicking, 1>, <Strength, 1>]
  	 UserParameters: []
+14:27:54.363 [GK] INFO  - Loading configuration for environment MultiTypesV2
+14:27:54.363 [GK] INFO  - Generator type:MANUAL
+14:27:54.827 [Golem] INFO  - Entity Golem deployed in 41
+ Characteristics:  type : 
+ AgentName: Golem
+ 	 Instance of eu.su.mas.dedaleEtu.mas.agents.dummies.Golem
+ 	 Initial container: Ithaq_container2
+ 	 Initial location: null
+ 	 Entitytype: Wumpus
+ 	 TreasureType : None; diamondCapa: -1; goldCapa: -1
+ 	 comReach: 0
+ 	 detection radius: 2
+ 	 Expertise: [<Strength, 0>, <LockPicking, 0>]
+ 	 UserParameters: []
+14:27:54.830 [Explo4] INFO  - Entity Explo4 deployed in 36
+ Characteristics:  type : 
+ AgentName: Explo4
+ 	 Instance of eu.su.mas.dedaleEtu.mas.agents.dummies.explo.FSMExploAgent
+ 	 Initial container: Ithaq_container2
+ 	 Initial location: null
+ 	 Entitytype: AgentExplo
+ 	 TreasureType : None; diamondCapa: -1; goldCapa: -1
+ 	 comReach: 3
+ 	 detection radius: 0
+ 	 Expertise: [<Strength, 1>, <LockPicking, 1>]
+ 	 UserParameters: []
+14:27:54.830 [Explo5] INFO  - Entity Explo5 deployed in 18
+ Characteristics:  type : 
+ AgentName: Explo5
+ 	 Instance of eu.su.mas.dedaleEtu.mas.agents.dummies.explo.FSMExploAgent
+ 	 Initial container: Ithaq_container2
+ 	 Initial location: null
+ 	 Entitytype: AgentExplo
+ 	 TreasureType : None; diamondCapa: -1; goldCapa: -1
+ 	 comReach: 1
+ 	 detection radius: 0
+ 	 Expertise: [<Strength, 1>, <LockPicking, 1>]
+ 	 UserParameters: []
+14:27:54.830 [Explo1] INFO  - Entity Explo1 deployed in 25
+ Characteristics:  type : 
+ AgentName: Explo1
+ 	 Instance of eu.su.mas.dedaleEtu.mas.agents.dummies.explo.FSMExploAgent
+ 	 Initial container: Ithaq_container2
+ 	 Initial location: null
+ 	 Entitytype: AgentExplo
+ 	 TreasureType : None; diamondCapa: -1; goldCapa: -1
+ 	 comReach: 3
+ 	 detection radius: 0
+ 	 Expertise: [<Strength, 1>, <LockPicking, 1>]
+ 	 UserParameters: []
+14:27:54.830 [Explo2] INFO  - Entity Explo2 deployed in 16
+ Characteristics:  type : 
+ AgentName: Explo2
+ 	 Instance of eu.su.mas.dedaleEtu.mas.agents.dummies.explo.FSMExploAgent
+ 	 Initial container: Ithaq_container2
+ 	 Initial location: null
+ 	 Entitytype: AgentExplo
+ 	 TreasureType : None; diamondCapa: -1; goldCapa: -1
+ 	 comReach: 2
+ 	 detection radius: 0
+ 	 Expertise: [<Strength, 1>, <LockPicking, 1>]
+ 	 UserParameters: []
+14:27:54.831 [Explo3] INFO  - Entity Explo3 deployed in 13
+ Characteristics:  type : 
+ AgentName: Explo3
+ 	 Instance of eu.su.mas.dedaleEtu.mas.agents.dummies.explo.FSMExploAgent
+ 	 Initial container: Ithaq_container2
+ 	 Initial location: null
+ 	 Entitytype: AgentExplo
+ 	 TreasureType : None; diamondCapa: -1; goldCapa: -1
+ 	 comReach: 2
+ 	 detection radius: 0
+ 	 Expertise: [<Strength, 1>, <LockPicking, 1>]
+ 	 UserParameters: []
+14:36:40.666 [GK] INFO  - Loading configuration for environment MultiTypesV2
+14:36:40.666 [GK] INFO  - Generator type:MANUAL
+14:36:41.118 [Golem] INFO  - Entity Golem deployed in 39
+ Characteristics:  type : 
+ AgentName: Golem
+ 	 Instance of eu.su.mas.dedaleEtu.mas.agents.dummies.Golem
+ 	 Initial container: Ithaq_container2
+ 	 Initial location: null
+ 	 Entitytype: Wumpus
+ 	 TreasureType : None; diamondCapa: -1; goldCapa: -1
+ 	 comReach: 0
+ 	 detection radius: 2
+ 	 Expertise: [<LockPicking, 0>, <Strength, 0>]
+ 	 UserParameters: []
+14:36:41.121 [Explo5] INFO  - Entity Explo5 deployed in 14
+ Characteristics:  type : 
+ AgentName: Explo5
+ 	 Instance of eu.su.mas.dedaleEtu.mas.agents.dummies.explo.FSMExploAgent
+ 	 Initial container: Ithaq_container2
+ 	 Initial location: null
+ 	 Entitytype: AgentExplo
+ 	 TreasureType : None; diamondCapa: -1; goldCapa: -1
+ 	 comReach: 1
+ 	 detection radius: 0
+ 	 Expertise: [<LockPicking, 1>, <Strength, 1>]
+ 	 UserParameters: []
+14:36:41.122 [Explo2] INFO  - Entity Explo2 deployed in 33
+ Characteristics:  type : 
+ AgentName: Explo2
+ 	 Instance of eu.su.mas.dedaleEtu.mas.agents.dummies.explo.FSMExploAgent
+ 	 Initial container: Ithaq_container2
+ 	 Initial location: null
+ 	 Entitytype: AgentExplo
+ 	 TreasureType : None; diamondCapa: -1; goldCapa: -1
+ 	 comReach: 2
+ 	 detection radius: 0
+ 	 Expertise: [<LockPicking, 1>, <Strength, 1>]
+ 	 UserParameters: []
+14:36:41.122 [Explo3] INFO  - Entity Explo3 deployed in 13
+ Characteristics:  type : 
+ AgentName: Explo3
+ 	 Instance of eu.su.mas.dedaleEtu.mas.agents.dummies.explo.FSMExploAgent
+ 	 Initial container: Ithaq_container2
+ 	 Initial location: null
+ 	 Entitytype: AgentExplo
+ 	 TreasureType : None; diamondCapa: -1; goldCapa: -1
+ 	 comReach: 2
+ 	 detection radius: 0
+ 	 Expertise: [<LockPicking, 1>, <Strength, 1>]
+ 	 UserParameters: []
+14:36:41.123 [Explo1] INFO  - Entity Explo1 deployed in 24
+ Characteristics:  type : 
+ AgentName: Explo1
+ 	 Instance of eu.su.mas.dedaleEtu.mas.agents.dummies.explo.FSMExploAgent
+ 	 Initial container: Ithaq_container2
+ 	 Initial location: null
+ 	 Entitytype: AgentExplo
+ 	 TreasureType : None; diamondCapa: -1; goldCapa: -1
+ 	 comReach: 3
+ 	 detection radius: 0
+ 	 Expertise: [<LockPicking, 1>, <Strength, 1>]
+ 	 UserParameters: []
+14:36:41.125 [Explo4] INFO  - Entity Explo4 deployed in 9
+ Characteristics:  type : 
+ AgentName: Explo4
+ 	 Instance of eu.su.mas.dedaleEtu.mas.agents.dummies.explo.FSMExploAgent
+ 	 Initial container: Ithaq_container2
+ 	 Initial location: null
+ 	 Entitytype: AgentExplo
+ 	 TreasureType : None; diamondCapa: -1; goldCapa: -1
+ 	 comReach: 3
+ 	 detection radius: 0
+ 	 Expertise: [<LockPicking, 1>, <Strength, 1>]
+ 	 UserParameters: []
+14:43:57.272 [GK] INFO  - Loading configuration for environment MultiTypesV2
+14:43:57.272 [GK] INFO  - Generator type:MANUAL
+14:43:57.717 [Golem] INFO  - Entity Golem deployed in 25
+ Characteristics:  type : 
+ AgentName: Golem
+ 	 Instance of eu.su.mas.dedaleEtu.mas.agents.dummies.Golem
+ 	 Initial container: Ithaq_container2
+ 	 Initial location: null
+ 	 Entitytype: Wumpus
+ 	 TreasureType : None; diamondCapa: -1; goldCapa: -1
+ 	 comReach: 0
+ 	 detection radius: 2
+ 	 Expertise: [<LockPicking, 0>, <Strength, 0>]
+ 	 UserParameters: []
+14:43:57.721 [Explo1] INFO  - Entity Explo1 deployed in 41
+ Characteristics:  type : 
+ AgentName: Explo1
+ 	 Instance of eu.su.mas.dedaleEtu.mas.agents.dummies.explo.FSMExploAgent
+ 	 Initial container: Ithaq_container2
+ 	 Initial location: null
+ 	 Entitytype: AgentExplo
+ 	 TreasureType : None; diamondCapa: -1; goldCapa: -1
+ 	 comReach: 3
+ 	 detection radius: 0
+ 	 Expertise: [<LockPicking, 1>, <Strength, 1>]
+ 	 UserParameters: []
+14:43:57.722 [Explo2] INFO  - Entity Explo2 deployed in 32
+ Characteristics:  type : 
+ AgentName: Explo2
+ 	 Instance of eu.su.mas.dedaleEtu.mas.agents.dummies.explo.FSMExploAgent
+ 	 Initial container: Ithaq_container2
+ 	 Initial location: null
+ 	 Entitytype: AgentExplo
+ 	 TreasureType : None; diamondCapa: -1; goldCapa: -1
+ 	 comReach: 2
+ 	 detection radius: 0
+ 	 Expertise: [<LockPicking, 1>, <Strength, 1>]
+ 	 UserParameters: []
+14:43:57.723 [Explo5] INFO  - Entity Explo5 deployed in 28
+ Characteristics:  type : 
+ AgentName: Explo5
+ 	 Instance of eu.su.mas.dedaleEtu.mas.agents.dummies.explo.FSMExploAgent
+ 	 Initial container: Ithaq_container2
+ 	 Initial location: null
+ 	 Entitytype: AgentExplo
+ 	 TreasureType : None; diamondCapa: -1; goldCapa: -1
+ 	 comReach: 1
+ 	 detection radius: 0
+ 	 Expertise: [<LockPicking, 1>, <Strength, 1>]
+ 	 UserParameters: []
+14:43:57.723 [Explo4] INFO  - Entity Explo4 deployed in 10
+ Characteristics:  type : 
+ AgentName: Explo4
+ 	 Instance of eu.su.mas.dedaleEtu.mas.agents.dummies.explo.FSMExploAgent
+ 	 Initial container: Ithaq_container2
+ 	 Initial location: null
+ 	 Entitytype: AgentExplo
+ 	 TreasureType : None; diamondCapa: -1; goldCapa: -1
+ 	 comReach: 3
+ 	 detection radius: 0
+ 	 Expertise: [<LockPicking, 1>, <Strength, 1>]
+ 	 UserParameters: []
+14:43:57.724 [Explo3] INFO  - Entity Explo3 deployed in 39
+ Characteristics:  type : 
+ AgentName: Explo3
+ 	 Instance of eu.su.mas.dedaleEtu.mas.agents.dummies.explo.FSMExploAgent
+ 	 Initial container: Ithaq_container2
+ 	 Initial location: null
+ 	 Entitytype: AgentExplo
+ 	 TreasureType : None; diamondCapa: -1; goldCapa: -1
+ 	 comReach: 2
+ 	 detection radius: 0
+ 	 Expertise: [<LockPicking, 1>, <Strength, 1>]
+ 	 UserParameters: []
+12:49:16.505 [GK] INFO  - Loading configuration for environment MultiTypesV2
+12:49:16.506 [GK] INFO  - Generator type:MANUAL
+12:49:16.997 [Golem] INFO  - Entity Golem deployed in 31
+ Characteristics:  type : 
+ AgentName: Golem
+ 	 Instance of eu.su.mas.dedaleEtu.mas.agents.dummies.Golem
+ 	 Initial container: Ithaq_container2
+ 	 Initial location: null
+ 	 Entitytype: Wumpus
+ 	 TreasureType : None; diamondCapa: -1; goldCapa: -1
+ 	 comReach: 0
+ 	 detection radius: 2
+ 	 Expertise: [<Strength, 0>, <LockPicking, 0>]
+ 	 UserParameters: []
+12:49:17.000 [Explo4] INFO  - Entity Explo4 deployed in 9
+ Characteristics:  type : 
+ AgentName: Explo4
+ 	 Instance of eu.su.mas.dedaleEtu.mas.agents.dummies.explo.FSMExploAgent
+ 	 Initial container: Ithaq_container2
+ 	 Initial location: null
+ 	 Entitytype: AgentExplo
+ 	 TreasureType : None; diamondCapa: -1; goldCapa: -1
+ 	 comReach: 3
+ 	 detection radius: 0
+ 	 Expertise: [<LockPicking, 1>, <Strength, 1>]
+ 	 UserParameters: []
+12:49:17.000 [Explo2] INFO  - Entity Explo2 deployed in 18
+ Characteristics:  type : 
+ AgentName: Explo2
+ 	 Instance of eu.su.mas.dedaleEtu.mas.agents.dummies.explo.FSMExploAgent
+ 	 Initial container: Ithaq_container2
+ 	 Initial location: null
+ 	 Entitytype: AgentExplo
+ 	 TreasureType : None; diamondCapa: -1; goldCapa: -1
+ 	 comReach: 2
+ 	 detection radius: 0
+ 	 Expertise: [<LockPicking, 1>, <Strength, 1>]
+ 	 UserParameters: []
+12:49:17.001 [Explo3] INFO  - Entity Explo3 deployed in 10
+ Characteristics:  type : 
+ AgentName: Explo3
+ 	 Instance of eu.su.mas.dedaleEtu.mas.agents.dummies.explo.FSMExploAgent
+ 	 Initial container: Ithaq_container2
+ 	 Initial location: null
+ 	 Entitytype: AgentExplo
+ 	 TreasureType : None; diamondCapa: -1; goldCapa: -1
+ 	 comReach: 2
+ 	 detection radius: 0
+ 	 Expertise: [<LockPicking, 1>, <Strength, 1>]
+ 	 UserParameters: []
+12:49:17.001 [Explo5] INFO  - Entity Explo5 deployed in 33
+ Characteristics:  type : 
+ AgentName: Explo5
+ 	 Instance of eu.su.mas.dedaleEtu.mas.agents.dummies.explo.FSMExploAgent
+ 	 Initial container: Ithaq_container2
+ 	 Initial location: null
+ 	 Entitytype: AgentExplo
+ 	 TreasureType : None; diamondCapa: -1; goldCapa: -1
+ 	 comReach: 1
+ 	 detection radius: 0
+ 	 Expertise: [<LockPicking, 1>, <Strength, 1>]
+ 	 UserParameters: []
+12:49:17.001 [Explo1] INFO  - Entity Explo1 deployed in 28
+ Characteristics:  type : 
+ AgentName: Explo1
+ 	 Instance of eu.su.mas.dedaleEtu.mas.agents.dummies.explo.FSMExploAgent
+ 	 Initial container: Ithaq_container2
+ 	 Initial location: null
+ 	 Entitytype: AgentExplo
+ 	 TreasureType : None; diamondCapa: -1; goldCapa: -1
+ 	 comReach: 3
+ 	 detection radius: 0
+ 	 Expertise: [<LockPicking, 1>, <Strength, 1>]
+ 	 UserParameters: []
+12:50:30.743 [GK] INFO  - Loading configuration for environment MultiTypesV2
+12:50:30.743 [GK] INFO  - Generator type:MANUAL
+12:50:31.225 [Golem] INFO  - Entity Golem deployed in 9
+ Characteristics:  type : 
+ AgentName: Golem
+ 	 Instance of eu.su.mas.dedaleEtu.mas.agents.dummies.Golem
+ 	 Initial container: Ithaq_container2
+ 	 Initial location: null
+ 	 Entitytype: Wumpus
+ 	 TreasureType : None; diamondCapa: -1; goldCapa: -1
+ 	 comReach: 0
+ 	 detection radius: 2
+ 	 Expertise: [<LockPicking, 0>, <Strength, 0>]
+ 	 UserParameters: []
+12:50:31.232 [Explo2] INFO  - Entity Explo2 deployed in 33
+ Characteristics:  type : 
+ AgentName: Explo2
+ 	 Instance of eu.su.mas.dedaleEtu.mas.agents.dummies.explo.FSMExploAgent
+ 	 Initial container: Ithaq_container2
+ 	 Initial location: null
+ 	 Entitytype: AgentExplo
+ 	 TreasureType : None; diamondCapa: -1; goldCapa: -1
+ 	 comReach: 2
+ 	 detection radius: 0
+ 	 Expertise: [<LockPicking, 1>, <Strength, 1>]
+ 	 UserParameters: []
+12:50:31.232 [Explo4] INFO  - Entity Explo4 deployed in 17
+ Characteristics:  type : 
+ AgentName: Explo4
+ 	 Instance of eu.su.mas.dedaleEtu.mas.agents.dummies.explo.FSMExploAgent
+ 	 Initial container: Ithaq_container2
+ 	 Initial location: null
+ 	 Entitytype: AgentExplo
+ 	 TreasureType : None; diamondCapa: -1; goldCapa: -1
+ 	 comReach: 3
+ 	 detection radius: 0
+ 	 Expertise: [<LockPicking, 1>, <Strength, 1>]
+ 	 UserParameters: []
+12:50:31.233 [Explo3] INFO  - Entity Explo3 deployed in 41
+ Characteristics:  type : 
+ AgentName: Explo3
+ 	 Instance of eu.su.mas.dedaleEtu.mas.agents.dummies.explo.FSMExploAgent
+ 	 Initial container: Ithaq_container2
+ 	 Initial location: null
+ 	 Entitytype: AgentExplo
+ 	 TreasureType : None; diamondCapa: -1; goldCapa: -1
+ 	 comReach: 2
+ 	 detection radius: 0
+ 	 Expertise: [<LockPicking, 1>, <Strength, 1>]
+ 	 UserParameters: []
+12:50:31.234 [Explo1] INFO  - Entity Explo1 deployed in 23
+ Characteristics:  type : 
+ AgentName: Explo1
+ 	 Instance of eu.su.mas.dedaleEtu.mas.agents.dummies.explo.FSMExploAgent
+ 	 Initial container: Ithaq_container2
+ 	 Initial location: null
+ 	 Entitytype: AgentExplo
+ 	 TreasureType : None; diamondCapa: -1; goldCapa: -1
+ 	 comReach: 3
+ 	 detection radius: 0
+ 	 Expertise: [<LockPicking, 1>, <Strength, 1>]
+ 	 UserParameters: []
+12:50:31.235 [Explo5] INFO  - Entity Explo5 deployed in 25
+ Characteristics:  type : 
+ AgentName: Explo5
+ 	 Instance of eu.su.mas.dedaleEtu.mas.agents.dummies.explo.FSMExploAgent
+ 	 Initial container: Ithaq_container2
+ 	 Initial location: null
+ 	 Entitytype: AgentExplo
+ 	 TreasureType : None; diamondCapa: -1; goldCapa: -1
+ 	 comReach: 1
+ 	 detection radius: 0
+ 	 Expertise: [<LockPicking, 1>, <Strength, 1>]
+ 	 UserParameters: []
