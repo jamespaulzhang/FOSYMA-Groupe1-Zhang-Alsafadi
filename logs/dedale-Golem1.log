@@ -1920,3 +1920,564 @@
 20:15:51.815 [Golem1] DEBUG - getCurrentPosition(): h7
 20:15:51.815 [Golem1] DEBUG - Observations: [<h7, [<Stench, >]>, <h1, [<Stench, >]>, <h6, [<Stench, >]>, <h8, [<Stench, >]>, <h21, [<Stench, >]>, <h22, [<Stench, >]>, <h23, [<Stench, >]>]
 20:15:51.815 [Golem1] DEBUG - MoveTo: h8 - Success
+20:15:52.418 [Golem1] DEBUG - getCurrentPosition(): h8
+20:15:52.418 [Golem1] DEBUG - Observations: [<h8, [<Stench, >]>, <h1, [<Stench, >]>, <h7, [<Stench, >]>, <h9, [<Stench, >]>, <h23, [<Stench, >]>, <h25, [<Stench, >]>, <h40, [<Stench, >]>]
+20:15:52.418 [Golem1] DEBUG - MoveTo: h9 - Success
+20:15:53.022 [Golem1] DEBUG - getCurrentPosition(): h9
+20:15:53.023 [Golem1] DEBUG - Observations: [<h9, [<Stench, >]>, <h1, [<Stench, >]>, <h2, [<Stench, >]>, <h8, [<Stench, >]>, <h11, [<Stench, >]>, <h25, [<Stench, >]>, <h26, [<Stench, >]>]
+20:15:53.023 [Golem1] DEBUG - MoveTo: h25 - Success
+20:15:53.627 [Golem1] DEBUG - getCurrentPosition(): h25
+20:15:53.627 [Golem1] DEBUG - Observations: [<h25, [<Stench, >]>, <h8, [<Stench, >]>, <h9, [<Stench, >]>, <h26, [<Stench, >]>, <h40, [<Stench, >]>]
+20:15:53.628 [Golem1] DEBUG - MoveTo: h9 - Success
+20:15:54.233 [Golem1] DEBUG - getCurrentPosition(): h9
+20:15:54.233 [Golem1] DEBUG - Observations: [<h9, [<Stench, >]>, <h1, [<Stench, >]>, <h2, [<Stench, >]>, <h8, [<Stench, >]>, <h11, [<Stench, >]>, <h25, [<Stench, >]>, <h26, [<Stench, >]>]
+20:15:54.233 [Golem1] DEBUG - MoveTo: h25 - Success
+20:15:54.838 [Golem1] DEBUG - getCurrentPosition(): h25
+20:15:54.838 [Golem1] DEBUG - Observations: [<h25, [<Stench, >]>, <h8, [<Stench, >]>, <h9, [<Stench, >]>, <h26, [<Stench, >]>, <h40, [<Stench, >]>]
+20:15:54.838 [Golem1] DEBUG - MoveTo: h9 - Success
+20:15:55.441 [Golem1] DEBUG - getCurrentPosition(): h9
+20:15:55.441 [Golem1] DEBUG - Observations: [<h9, [<Stench, >]>, <h1, [<Stench, >]>, <h2, [<Stench, >]>, <h8, [<Stench, >]>, <h11, [<Stench, >]>, <h25, [<Stench, >]>, <h26, [<Stench, >]>]
+20:15:55.441 [Golem1] DEBUG - MoveTo: h1 - Success
+20:15:56.046 [Golem1] DEBUG - getCurrentPosition(): h1
+20:15:56.046 [Golem1] DEBUG - Observations: [<h1, [<Stench, >]>, <h2, [<Stench, >]>, <h3, [<Stench, >]>, <h4, [<Stench, >]>, <h5, [<Stench, >]>, <h6, [<Stench, >]>, <h7, [<Stench, >]>, <h8, [<Stench, >]>, <h9, [<Stench, >]>]
+20:15:56.046 [Golem1] DEBUG - MoveTo: h4 - Success
+20:15:56.651 [Golem1] DEBUG - getCurrentPosition(): h4
+20:15:56.651 [Golem1] DEBUG - Observations: [<h4, [<Stench, >]>, <h1, [<Stench, >]>, <h3, [<Stench, >]>, <h5, [<Stench, >]>, <h15, [<Stench, >]>, <h16, [<Stench, >]>, <h17, [<Stench, >]>]
+20:15:56.651 [Golem1] DEBUG - MoveTo: h16 - Success
+20:15:57.253 [Golem1] DEBUG - getCurrentPosition(): h16
+20:15:57.253 [Golem1] DEBUG - Observations: [<h16, [<Stench, >]>, <h15, [<Stench, >]>, <h17, [<Stench, >]>, <h4, [<Stench, >]>]
+20:15:57.253 [Golem1] DEBUG - MoveTo: h15 - Success
+20:15:57.858 [Golem1] DEBUG - getCurrentPosition(): h15
+20:15:57.858 [Golem1] DEBUG - Observations: [<h15, [<Stench, >]>, <h14, [<Stench, >]>, <h16, [<Stench, >]>, <h3, [<Stench, >]>, <h4, [<Stench, >]>]
+20:15:57.858 [Golem1] DEBUG - MoveTo: h3 - Success
+20:15:58.463 [Golem1] DEBUG - getCurrentPosition(): h3
+20:15:58.463 [Golem1] DEBUG - Observations: [<h3, [<Stench, >]>, <h1, [<Stench, >]>, <h2, [<Stench, >]>, <h4, [<Stench, >]>, <h13, [<Stench, >]>, <h14, [<Stench, >]>, <h15, [<Stench, >]>]
+20:15:58.463 [Golem1] DEBUG - MoveTo: h15 - Success
+20:15:59.065 [Golem1] DEBUG - getCurrentPosition(): h15
+20:15:59.066 [Golem1] DEBUG - Observations: [<h15, [<Stench, >]>, <h14, [<Stench, >]>, <h16, [<Stench, >]>, <h3, [<Stench, >]>, <h4, [<Stench, >]>]
+20:15:59.066 [Golem1] DEBUG - MoveTo: h3 - Success
+20:15:59.669 [Golem1] DEBUG - getCurrentPosition(): h3
+20:15:59.669 [Golem1] DEBUG - Observations: [<h3, [<Stench, >]>, <h1, [<Stench, >]>, <h2, [<Stench, >]>, <h4, [<Stench, >]>, <h13, [<Stench, >]>, <h14, [<Stench, >]>, <h15, [<Stench, >]>]
+20:15:59.669 [Golem1] DEBUG - MoveTo: h15 - Success
+20:16:00.272 [Golem1] DEBUG - getCurrentPosition(): h15
+20:16:00.272 [Golem1] DEBUG - Observations: [<h15, [<Stench, >]>, <h14, [<Stench, >]>, <h16, [<Stench, >]>, <h3, [<Stench, >]>, <h4, [<Stench, >]>]
+20:16:00.272 [Golem1] DEBUG - MoveTo: h4 - Success
+20:16:00.876 [Golem1] DEBUG - getCurrentPosition(): h4
+20:16:00.876 [Golem1] DEBUG - Observations: [<h4, [<Stench, >]>, <h1, [<Stench, >]>, <h3, [<Stench, >]>, <h5, [<Stench, >]>, <h15, [<Stench, >]>, <h16, [<Stench, >]>, <h17, [<Stench, >]>]
+20:16:00.876 [Golem1] DEBUG - MoveTo: h5 - Success
+20:16:01.481 [Golem1] DEBUG - getCurrentPosition(): h5
+20:16:01.481 [Golem1] DEBUG - Observations: [<h5, [<Stench, >]>, <h1, [<Stench, >]>, <h4, [<Stench, >]>, <h6, [<Stench, >]>, <h17, [<Stench, >]>, <h18, [<Stench, >]>, <h19, [<Stench, >]>]
+20:16:01.482 [Golem1] DEBUG - MoveTo: h19 - Success
+20:16:02.084 [Golem1] DEBUG - getCurrentPosition(): h19
+20:16:02.084 [Golem1] DEBUG - Observations: [<h19, [<Stench, >]>, <h18, [<Stench, >]>, <h20, [<Stench, >]>, <h5, [<Stench, >]>, <h6, [<Stench, >]>]
+20:16:02.084 [Golem1] DEBUG - MoveTo: h18 - Success
+20:16:02.689 [Golem1] DEBUG - getCurrentPosition(): h18
+20:16:02.689 [Golem1] DEBUG - Observations: [<h18, [<Stench, >]>, <h17, [<Stench, >]>, <h19, [<Stench, >]>, <h5, [<Stench, >]>]
+20:16:02.689 [Golem1] DEBUG - MoveTo: h19 - Success
+20:16:03.291 [Golem1] DEBUG - getCurrentPosition(): h19
+20:16:03.292 [Golem1] DEBUG - Observations: [<h19, [<Stench, >]>, <h18, [<Stench, >]>, <h20, [<Stench, >]>, <h5, [<Stench, >]>, <h6, [<Stench, >]>]
+20:16:03.292 [Golem1] DEBUG - MoveTo: h5 - Success
+20:16:03.897 [Golem1] DEBUG - getCurrentPosition(): h5
+20:16:03.897 [Golem1] DEBUG - Observations: [<h5, [<Stench, >]>, <h1, [<Stench, >]>, <h4, [<Stench, >]>, <h6, [<Stench, >]>, <h17, [<Stench, >]>, <h18, [<Stench, >]>, <h19, [<Stench, >]>]
+20:16:03.897 [Golem1] DEBUG - MoveTo: h6 - Success
+20:16:04.499 [Golem1] DEBUG - getCurrentPosition(): h6
+20:16:04.499 [Golem1] DEBUG - Observations: [<h6, [<Stench, >]>, <h1, [<Stench, >]>, <h5, [<Stench, >]>, <h7, [<Stench, >]>, <h19, [<Stench, >]>, <h20, [<Stench, >]>, <h21, [<Stench, >]>]
+20:16:04.499 [Golem1] DEBUG - MoveTo: h21 - Success
+20:16:05.101 [Golem1] DEBUG - getCurrentPosition(): h21
+20:16:05.102 [Golem1] DEBUG - Observations: [<h21, [<Stench, >]>, <h20, [<Stench, >]>, <h22, [<Stench, >]>, <h6, [<Stench, >]>, <h7, [<Stench, >]>]
+20:16:05.102 [Golem1] DEBUG - MoveTo: h22 - Success
+20:16:05.704 [Golem1] DEBUG - getCurrentPosition(): h22
+20:16:05.704 [Golem1] DEBUG - Observations: [<h22, [<Stench, >]>, <h21, [<Stench, >]>, <h23, [<Stench, >]>, <h7, [<Stench, >]>]
+20:16:05.704 [Golem1] DEBUG - MoveTo: h21 - Success
+20:16:06.305 [Golem1] DEBUG - getCurrentPosition(): h21
+20:16:06.305 [Golem1] DEBUG - Observations: [<h21, [<Stench, >]>, <h20, [<Stench, >]>, <h22, [<Stench, >]>, <h6, [<Stench, >]>, <h7, [<Stench, >]>]
+20:16:06.305 [Golem1] DEBUG - MoveTo: h7 - Success
+20:16:06.906 [Golem1] DEBUG - getCurrentPosition(): h7
+20:16:06.906 [Golem1] DEBUG - Observations: [<h7, [<Stench, >]>, <h1, [<Stench, >]>, <h6, [<Stench, >]>, <h8, [<Stench, >]>, <h21, [<Stench, >]>, <h22, [<Stench, >]>, <h23, [<Stench, >]>]
+20:16:06.906 [Golem1] DEBUG - MoveTo: h22 - Success
+20:16:07.510 [Golem1] DEBUG - getCurrentPosition(): h22
+20:16:07.510 [Golem1] DEBUG - Observations: [<h22, [<Stench, >]>, <h21, [<Stench, >]>, <h23, [<Stench, >]>, <h7, [<Stench, >]>]
+20:16:07.511 [Golem1] DEBUG - MoveTo: h7 - Success
+20:16:08.115 [Golem1] DEBUG - getCurrentPosition(): h7
+20:16:08.115 [Golem1] DEBUG - Observations: [<h7, [<Stench, >]>, <h1, [<Stench, >]>, <h6, [<Stench, >]>, <h8, [<Stench, >]>, <h21, [<Stench, >]>, <h22, [<Stench, >]>, <h23, [<Stench, >]>]
+20:16:08.115 [Golem1] DEBUG - MoveTo: h6 - Success
+20:16:08.716 [Golem1] DEBUG - getCurrentPosition(): h6
+20:16:08.716 [Golem1] DEBUG - Observations: [<h6, [<Stench, >]>, <h1, [<Stench, >]>, <h5, [<Stench, >]>, <h7, [<Stench, >]>, <h19, [<Stench, >]>, <h20, [<Stench, >]>, <h21, [<Stench, >]>]
+20:16:08.716 [Golem1] DEBUG - MoveTo: h5 - Success
+20:16:09.318 [Golem1] DEBUG - getCurrentPosition(): h5
+20:16:09.318 [Golem1] DEBUG - Observations: [<h5, [<Stench, >]>, <h1, [<Stench, >]>, <h4, [<Stench, >]>, <h6, [<Stench, >]>, <h17, [<Stench, >]>, <h18, [<Stench, >]>, <h19, [<Stench, >]>]
+20:16:09.318 [Golem1] DEBUG - MoveTo: h6 - Success
+20:16:09.920 [Golem1] DEBUG - getCurrentPosition(): h6
+20:16:09.920 [Golem1] DEBUG - Observations: [<h6, [<Stench, >]>, <h1, [<Stench, >]>, <h5, [<Stench, >]>, <h7, [<Stench, >]>, <h19, [<Stench, >]>, <h20, [<Stench, >]>, <h21, [<Stench, >]>]
+20:16:09.920 [Golem1] DEBUG - MoveTo: h1 - Success
+20:16:10.525 [Golem1] DEBUG - getCurrentPosition(): h1
+20:16:10.525 [Golem1] DEBUG - Observations: [<h1, [<Stench, >]>, <h2, [<Stench, >]>, <h3, [<Stench, >]>, <h4, [<Stench, >]>, <h5, [<Stench, >]>, <h6, [<Stench, >]>, <h7, [<Stench, >]>, <h8, [<Stench, >]>, <h9, [<Stench, >]>]
+20:16:10.525 [Golem1] DEBUG - MoveTo: h2 - Success
+20:16:11.129 [Golem1] DEBUG - getCurrentPosition(): h2
+20:16:11.129 [Golem1] DEBUG - Observations: [<h2, [<Stench, >]>, <h1, [<Stench, >]>, <h3, [<Stench, >]>, <h9, [<Stench, >]>, <h11, [<Stench, >]>, <h12, [<Stench, >]>, <h13, [<Stench, >]>]
+20:16:11.129 [Golem1] DEBUG - MoveTo: h12 - Success
+20:16:11.731 [Golem1] DEBUG - getCurrentPosition(): h12
+20:16:11.731 [Golem1] DEBUG - Observations: [<h12, [<Stench, >]>, <h11, [<Stench, >]>, <h13, [<Stench, >]>, <h2, [<Stench, >]>]
+20:16:11.731 [Golem1] DEBUG - MoveTo: h13 - Success
+20:16:12.336 [Golem1] DEBUG - getCurrentPosition(): h13
+20:16:12.336 [Golem1] DEBUG - Observations: [<h13, [<Stench, >]>, <h12, [<Stench, >]>, <h14, [<Stench, >]>, <h2, [<Stench, >]>, <h3, [<Stench, >]>]
+20:16:12.336 [Golem1] DEBUG - MoveTo: h3 - Success
+20:16:12.938 [Golem1] DEBUG - getCurrentPosition(): h3
+20:16:12.939 [Golem1] DEBUG - Observations: [<h3, [<Stench, >]>, <h1, [<Stench, >]>, <h2, [<Stench, >]>, <h4, [<Stench, >]>, <h13, [<Stench, >]>, <h14, [<Stench, >]>, <h15, [<Stench, >]>]
+20:16:12.939 [Golem1] DEBUG - MoveTo: h15 - Success
+20:16:13.543 [Golem1] DEBUG - getCurrentPosition(): h15
+20:16:13.544 [Golem1] DEBUG - Observations: [<h15, [<Stench, >]>, <h14, [<Stench, >]>, <h16, [<Stench, >]>, <h3, [<Stench, >]>, <h4, [<Stench, >]>]
+20:16:13.544 [Golem1] DEBUG - MoveTo: h4 - Success
+20:16:14.147 [Golem1] DEBUG - getCurrentPosition(): h4
+20:16:14.147 [Golem1] DEBUG - Observations: [<h4, [<Stench, >]>, <h1, [<Stench, >]>, <h3, [<Stench, >]>, <h5, [<Stench, >]>, <h15, [<Stench, >]>, <h16, [<Stench, >]>, <h17, [<Stench, >]>]
+20:16:14.147 [Golem1] DEBUG - MoveTo: h16 - Success
+20:16:14.751 [Golem1] DEBUG - getCurrentPosition(): h16
+20:16:14.751 [Golem1] DEBUG - Observations: [<h16, [<Stench, >]>, <h15, [<Stench, >]>, <h17, [<Stench, >]>, <h4, [<Stench, >]>]
+20:16:14.751 [Golem1] DEBUG - MoveTo: h15 - Success
+20:16:15.356 [Golem1] DEBUG - getCurrentPosition(): h15
+20:16:15.356 [Golem1] DEBUG - Observations: [<h15, [<Stench, >]>, <h14, [<Stench, >]>, <h16, [<Stench, >]>, <h3, [<Stench, >]>, <h4, [<Stench, >]>]
+20:16:15.357 [Golem1] DEBUG - MoveTo: h4 - Success
+20:16:15.959 [Golem1] DEBUG - getCurrentPosition(): h4
+20:16:15.959 [Golem1] DEBUG - Observations: [<h4, [<Stench, >]>, <h1, [<Stench, >]>, <h3, [<Stench, >]>, <h5, [<Stench, >]>, <h15, [<Stench, >]>, <h16, [<Stench, >]>, <h17, [<Stench, >]>]
+20:16:15.959 [Golem1] DEBUG - MoveTo: h17 - Success
+20:16:16.564 [Golem1] DEBUG - getCurrentPosition(): h17
+20:16:16.564 [Golem1] DEBUG - Observations: [<h17, [<Stench, >]>, <h16, [<Stench, >]>, <h18, [<Stench, >]>, <h4, [<Stench, >]>, <h5, [<Stench, >]>]
+20:16:16.564 [Golem1] DEBUG - MoveTo: h18 - Success
+20:16:17.166 [Golem1] DEBUG - getCurrentPosition(): h18
+20:16:17.166 [Golem1] DEBUG - Observations: [<h18, [<Stench, >]>, <h17, [<Stench, >]>, <h19, [<Stench, >]>, <h5, [<Stench, >]>]
+20:16:17.166 [Golem1] DEBUG - MoveTo: h17 - Success
+20:16:17.775 [Golem1] DEBUG - getCurrentPosition(): h17
+20:16:17.775 [Golem1] DEBUG - Observations: [<h17, [<Stench, >]>, <h16, [<Stench, >]>, <h18, [<Stench, >]>, <h4, [<Stench, >]>, <h5, [<Stench, >]>]
+20:16:17.775 [Golem1] DEBUG - MoveTo: h18 - Success
+20:16:18.379 [Golem1] DEBUG - getCurrentPosition(): h18
+20:16:18.379 [Golem1] DEBUG - Observations: [<h18, [<Stench, >]>, <h17, [<Stench, >]>, <h19, [<Stench, >]>, <h5, [<Stench, >]>]
+20:16:18.379 [Golem1] DEBUG - MoveTo: h5 - Success
+20:16:18.983 [Golem1] DEBUG - getCurrentPosition(): h5
+20:16:18.984 [Golem1] DEBUG - Observations: [<h5, [<Stench, >]>, <h1, [<Stench, >]>, <h4, [<Stench, >]>, <h6, [<Stench, >]>, <h17, [<Stench, >]>, <h18, [<Stench, >]>, <h19, [<Stench, >]>]
+20:16:18.984 [Golem1] DEBUG - MoveTo: h6 - Success
+20:16:19.589 [Golem1] DEBUG - getCurrentPosition(): h6
+20:16:19.589 [Golem1] DEBUG - Observations: [<h6, [<Stench, >]>, <h1, [<Stench, >]>, <h5, [<Stench, >]>, <h7, [<Stench, >]>, <h19, [<Stench, >]>, <h20, [<Stench, >]>, <h21, [<Stench, >]>]
+20:16:19.589 [Golem1] DEBUG - MoveTo: h19 - Success
+20:16:20.190 [Golem1] DEBUG - getCurrentPosition(): h19
+20:16:20.190 [Golem1] DEBUG - Observations: [<h19, [<Stench, >]>, <h18, [<Stench, >]>, <h20, [<Stench, >]>, <h5, [<Stench, >]>, <h6, [<Stench, >]>]
+20:16:20.190 [Golem1] DEBUG - MoveTo: h5 - Success
+20:16:20.794 [Golem1] DEBUG - getCurrentPosition(): h5
+20:16:20.794 [Golem1] DEBUG - Observations: [<h5, [<Stench, >]>, <h1, [<Stench, >]>, <h4, [<Stench, >]>, <h6, [<Stench, >]>, <h17, [<Stench, >]>, <h18, [<Stench, >]>, <h19, [<Stench, >]>]
+20:16:20.794 [Golem1] DEBUG - MoveTo: h4 - Success
+20:16:21.395 [Golem1] DEBUG - getCurrentPosition(): h4
+20:16:21.395 [Golem1] DEBUG - Observations: [<h4, [<Stench, >]>, <h1, [<Stench, >]>, <h3, [<Stench, >]>, <h5, [<Stench, >]>, <h15, [<Stench, >]>, <h16, [<Stench, >]>, <h17, [<Stench, >]>]
+20:16:21.395 [Golem1] DEBUG - MoveTo: h3 - Success
+20:16:22.000 [Golem1] DEBUG - getCurrentPosition(): h3
+20:16:22.000 [Golem1] DEBUG - Observations: [<h3, [<Stench, >]>, <h1, [<Stench, >]>, <h2, [<Stench, >]>, <h4, [<Stench, >]>, <h13, [<Stench, >]>, <h14, [<Stench, >]>, <h15, [<Stench, >]>]
+20:16:22.000 [Golem1] DEBUG - MoveTo: h1 - Success
+20:16:22.602 [Golem1] DEBUG - getCurrentPosition(): h1
+20:16:22.602 [Golem1] DEBUG - Observations: [<h1, [<Stench, >]>, <h2, [<Stench, >]>, <h3, [<Stench, >]>, <h4, [<Stench, >]>, <h5, [<Stench, >]>, <h6, [<Stench, >]>, <h7, [<Stench, >]>, <h8, [<Stench, >]>, <h9, [<Stench, >]>]
+20:16:22.603 [Golem1] DEBUG - MoveTo: h7 - Success
+20:16:23.205 [Golem1] DEBUG - getCurrentPosition(): h7
+20:16:23.205 [Golem1] DEBUG - Observations: [<h7, [<Stench, >]>, <h1, [<Stench, >]>, <h6, [<Stench, >]>, <h8, [<Stench, >]>, <h21, [<Stench, >]>, <h22, [<Stench, >]>, <h23, [<Stench, >]>]
+20:16:23.205 [Golem1] DEBUG - MoveTo: h8 - Success
+20:16:23.810 [Golem1] DEBUG - getCurrentPosition(): h8
+20:16:23.810 [Golem1] DEBUG - Observations: [<h8, [<Stench, >]>, <h1, [<Stench, >]>, <h7, [<Stench, >]>, <h9, [<Stench, >]>, <h23, [<Stench, >]>, <h25, [<Stench, >]>, <h40, [<Stench, >]>]
+20:16:23.810 [Golem1] DEBUG - MoveTo: h40 - Success
+20:16:24.415 [Golem1] DEBUG - getCurrentPosition(): h40
+20:16:24.415 [Golem1] DEBUG - Observations: [<h40, [<Stench, >]>, <h23, [<Stench, >]>, <h25, [<Stench, >]>, <h8, [<Stench, >]>, <M26, [<Stench, >]>]
+20:16:24.415 [Golem1] DEBUG - MoveTo: M26 - Success
+20:16:25.019 [Golem1] DEBUG - getCurrentPosition(): M26
+20:16:25.019 [Golem1] DEBUG - Observations: [<M26, [<Stench, >]>, <M25, [<Stench, >]>, <M22, [<Stench, >]>, <48, [<Stench, >]>, <h40, [<Stench, >]>]
+20:16:25.019 [Golem1] DEBUG - MoveTo: M25 - Success
+20:16:25.623 [Golem1] DEBUG - getCurrentPosition(): M25
+20:16:25.623 [Golem1] DEBUG - Observations: [<M25, [<Stench, >]>, <M24, [<Stench, >]>, <M26, [<Stench, >]>]
+20:16:25.623 [Golem1] DEBUG - MoveTo: M24 - Success
+20:16:26.227 [Golem1] DEBUG - getCurrentPosition(): M24
+20:16:26.227 [Golem1] DEBUG - Observations: [<M24, [<Stench, >]>, <M22, [<Stench, >]>, <M25, [<Stench, >]>, <M23, [<Stench, >]>]
+20:16:26.227 [Golem1] DEBUG - MoveTo: M23 - Success
+20:16:26.832 [Golem1] DEBUG - getCurrentPosition(): M23
+20:16:26.832 [Golem1] DEBUG - Observations: [<M23, [<Stench, >]>, <M39, [<Stench, >]>, <M21, [<Stench, >]>, <M24, [<Stench, >]>]
+20:16:26.832 [Golem1] DEBUG - MoveTo: M21 - Success
+20:16:27.436 [Golem1] DEBUG - getCurrentPosition(): M21
+20:16:27.436 [Golem1] DEBUG - Observations: [<M21, [<Stench, >]>, <M23, [<Stench, >]>, <M8, [<Stench, >]>, <M22, [<Stench, >]>]
+20:16:27.436 [Golem1] DEBUG - MoveTo: M22 - Success
+20:16:28.039 [Golem1] DEBUG - getCurrentPosition(): M22
+20:16:28.039 [Golem1] DEBUG - Observations: [<M22, [<Stench, >]>, <M20, [<Stench, >]>, <M24, [<Stench, >]>, <M26, [<Stench, >]>, <M21, [<Stench, >]>]
+20:16:28.039 [Golem1] DEBUG - MoveTo: M20 - Success
+20:16:28.641 [Golem1] DEBUG - getCurrentPosition(): M20
+20:16:28.641 [Golem1] DEBUG - Observations: [<M20, [<Stench, >]>, <M8, [<Stench, >]>, <M19, [<Stench, >]>, <M22, [<Stench, >]>]
+20:16:28.641 [Golem1] DEBUG - MoveTo: M8 - Success
+20:16:29.246 [Golem1] DEBUG - getCurrentPosition(): M8
+20:16:29.246 [Golem1] DEBUG - Observations: [<M8, [<Stench, >]>, <M7, [<Stench, >]>, <M4, [<AgentName, Explo2>, <Stench, >]>, <M21, [<Stench, >]>, <M20, [<Stench, >]>]
+20:16:29.247 [Golem1] DEBUG - MoveTo: M21 - Success
+20:16:29.852 [Golem1] DEBUG - getCurrentPosition(): M21
+20:16:29.852 [Golem1] DEBUG - Observations: [<M21, [<Stench, >]>, <M23, [<Stench, >]>, <M8, [<Stench, >]>, <M22, [<Stench, >]>]
+20:16:29.852 [Golem1] DEBUG - MoveTo: M23 - Success
+20:16:30.455 [Golem1] DEBUG - getCurrentPosition(): M23
+20:16:30.455 [Golem1] DEBUG - Observations: [<M23, [<Stench, >]>, <M39, [<Stench, >]>, <M21, [<Stench, >]>, <M24, [<Stench, >]>]
+20:16:30.455 [Golem1] DEBUG - MoveTo: M39 - Success
+20:16:31.059 [Golem1] DEBUG - getCurrentPosition(): M39
+20:16:31.059 [Golem1] DEBUG - Observations: [<M39, [<Stench, >]>, <M23, [<Stench, >]>, <M28, [<Stench, >]>, <M40, [<Stench, >]>]
+20:16:31.059 [Golem1] DEBUG - MoveTo: M23 - Success
+20:16:31.664 [Golem1] DEBUG - getCurrentPosition(): M23
+20:16:31.664 [Golem1] DEBUG - Observations: [<M23, [<Stench, >]>, <M39, [<Stench, >]>, <M21, [<Stench, >]>, <M24, [<Stench, >]>]
+20:16:31.665 [Golem1] DEBUG - MoveTo: M39 - Success
+20:16:32.269 [Golem1] DEBUG - getCurrentPosition(): M39
+20:16:32.269 [Golem1] DEBUG - Observations: [<M39, [<Stench, >]>, <M23, [<Stench, >]>, <M28, [<Stench, >]>, <M40, [<Stench, >]>]
+20:16:32.269 [Golem1] DEBUG - MoveTo: M40 - Success
+20:16:32.874 [Golem1] DEBUG - getCurrentPosition(): M40
+20:16:32.874 [Golem1] DEBUG - Observations: [<M40, [<Stench, >]>, <M39, [<Stench, >]>]
+20:16:32.874 [Golem1] DEBUG - MoveTo: M39 - Success
+20:16:33.479 [Golem1] DEBUG - getCurrentPosition(): M39
+20:16:33.479 [Golem1] DEBUG - Observations: [<M39, [<Stench, >]>, <M23, [<Stench, >]>, <M28, [<Stench, >]>, <M40, [<Stench, >]>]
+20:16:33.479 [Golem1] DEBUG - MoveTo: M23 - Success
+20:16:34.081 [Golem1] DEBUG - getCurrentPosition(): M23
+20:16:34.081 [Golem1] DEBUG - Observations: [<M23, [<Stench, >]>, <M39, [<Stench, >]>, <M21, [<Stench, >]>, <M24, [<Stench, >]>]
+20:16:34.081 [Golem1] DEBUG - MoveTo: M39 - Success
+20:16:34.683 [Golem1] DEBUG - getCurrentPosition(): M39
+20:16:34.683 [Golem1] DEBUG - Observations: [<M39, [<Stench, >]>, <M23, [<Stench, >]>, <M28, [<Stench, >]>, <M40, [<Stench, >]>]
+20:16:34.683 [Golem1] DEBUG - MoveTo: M28 - Success
+20:16:35.284 [Golem1] DEBUG - getCurrentPosition(): M28
+20:16:35.284 [Golem1] DEBUG - Observations: [<M28, [<Stench, >]>, <M29, [<Stench, >]>, <M31, [<Stench, >]>, <M39, [<Stench, >]>]
+20:16:35.284 [Golem1] DEBUG - MoveTo: M31 - Success
+20:16:35.888 [Golem1] DEBUG - getCurrentPosition(): M31
+20:16:35.888 [Golem1] DEBUG - Observations: [<M31, [<Stench, >]>, <M28, [<Stench, >]>, <M30, [<Stench, >]>]
+20:16:35.888 [Golem1] DEBUG - MoveTo: M30 - Success
+20:16:36.489 [Golem1] DEBUG - getCurrentPosition(): M30
+20:16:36.489 [Golem1] DEBUG - Observations: [<M30, [<Stench, >]>, <M9, [<Stench, >]>, <M29, [<Stench, >]>, <M31, [<Stench, >]>]
+20:16:36.489 [Golem1] DEBUG - MoveTo: M31 - Success
+20:16:37.092 [Golem1] DEBUG - getCurrentPosition(): M31
+20:16:37.092 [Golem1] DEBUG - Observations: [<M31, [<Stench, >]>, <M28, [<Stench, >]>, <M30, [<Stench, >]>]
+20:16:37.092 [Golem1] DEBUG - MoveTo: M30 - Success
+20:16:37.696 [Golem1] DEBUG - getCurrentPosition(): M30
+20:16:37.696 [Golem1] DEBUG - Observations: [<M30, [<Stench, >]>, <M9, [<Stench, >]>, <M29, [<Stench, >]>, <M31, [<Stench, >]>]
+20:16:37.696 [Golem1] DEBUG - MoveTo: M29 - Success
+20:16:38.299 [Golem1] DEBUG - getCurrentPosition(): M29
+20:16:38.299 [Golem1] DEBUG - Observations: [<M29, [<Stench, >]>, <M30, [<Stench, >]>, <M28, [<Stench, >]>]
+20:16:38.299 [Golem1] DEBUG - MoveTo: M28 - Success
+20:16:38.903 [Golem1] DEBUG - getCurrentPosition(): M28
+20:16:38.903 [Golem1] DEBUG - Observations: [<M28, [<Stench, >]>, <M29, [<Stench, >]>, <M31, [<Stench, >]>, <M39, [<Stench, >]>]
+20:16:38.903 [Golem1] DEBUG - MoveTo: M39 - Success
+20:16:39.505 [Golem1] DEBUG - getCurrentPosition(): M39
+20:16:39.505 [Golem1] DEBUG - Observations: [<M39, [<Stench, >]>, <M23, [<Stench, >]>, <M28, [<Stench, >]>, <M40, [<Stench, >]>]
+20:16:39.505 [Golem1] DEBUG - MoveTo: M28 - Success
+20:16:40.107 [Golem1] DEBUG - getCurrentPosition(): M28
+20:16:40.107 [Golem1] DEBUG - Observations: [<M28, [<Stench, >]>, <M29, [<Stench, >]>, <M31, [<Stench, >]>, <M39, [<Stench, >]>]
+20:16:40.107 [Golem1] DEBUG - MoveTo: M31 - Success
+20:16:40.709 [Golem1] DEBUG - getCurrentPosition(): M31
+20:16:40.709 [Golem1] DEBUG - Observations: [<M31, [<Stench, >]>, <M28, [<Stench, >]>, <M30, [<Stench, >]>]
+20:16:40.709 [Golem1] DEBUG - MoveTo: M28 - Success
+20:16:41.314 [Golem1] DEBUG - getCurrentPosition(): M28
+20:16:41.314 [Golem1] DEBUG - Observations: [<M28, [<Stench, >]>, <M29, [<Stench, >]>, <M31, [<Stench, >]>, <M39, [<Stench, >]>]
+20:16:41.314 [Golem1] DEBUG - MoveTo: M29 - Success
+20:16:41.917 [Golem1] DEBUG - getCurrentPosition(): M29
+20:16:41.917 [Golem1] DEBUG - Observations: [<M29, [<Stench, >]>, <M30, [<Stench, >]>, <M28, [<Stench, >]>]
+20:16:41.917 [Golem1] DEBUG - MoveTo: M30 - Success
+20:16:42.518 [Golem1] DEBUG - getCurrentPosition(): M30
+20:16:42.518 [Golem1] DEBUG - Observations: [<M30, [<Stench, >]>, <M9, [<Stench, >]>, <M29, [<Stench, >]>, <M31, [<Stench, >]>]
+20:16:42.518 [Golem1] DEBUG - MoveTo: M9 - Success
+20:16:43.122 [Golem1] DEBUG - getCurrentPosition(): M9
+20:16:43.122 [Golem1] DEBUG - Observations: [<M9, [<Stench, >]>, <M6, [<Stench, >]>, <M1, [<Stench, >]>, <M30, [<Stench, >]>, <M34, [<Stench, >]>]
+20:16:43.123 [Golem1] DEBUG - MoveTo: M1 - Success
+20:16:43.727 [Golem1] DEBUG - getCurrentPosition(): M1
+20:16:43.728 [Golem1] DEBUG - Observations: [<M1, [<Stench, >]>, <M2, [<Stench, >]>, <M9, [<Stench, >]>, <M10, [<Stench, >]>]
+20:16:43.728 [Golem1] DEBUG - MoveTo: M2 - Success
+20:16:44.332 [Golem1] DEBUG - getCurrentPosition(): M2
+20:16:44.332 [Golem1] DEBUG - Observations: [<M2, [<Stench, >]>, <M3, [<Stench, >]>, <M1, [<Stench, >]>, <M6, [<Stench, >]>, <M11, [<Stench, >]>]
+20:16:44.332 [Golem1] DEBUG - MoveTo: M1 - Success
+20:16:44.934 [Golem1] DEBUG - getCurrentPosition(): M1
+20:16:44.934 [Golem1] DEBUG - Observations: [<M1, [<Stench, >]>, <M2, [<Stench, >]>, <M9, [<Stench, >]>, <M10, [<Stench, >]>]
+20:16:44.934 [Golem1] DEBUG - MoveTo: M9 - Success
+20:16:45.540 [Golem1] DEBUG - getCurrentPosition(): M9
+20:16:45.540 [Golem1] DEBUG - Observations: [<M9, [<Stench, >]>, <M6, [<Stench, >]>, <M1, [<Stench, >]>, <M30, [<Stench, >]>, <M34, [<Stench, >]>]
+20:16:45.540 [Golem1] DEBUG - MoveTo: M1 - Success
+20:16:46.145 [Golem1] DEBUG - getCurrentPosition(): M1
+20:16:46.145 [Golem1] DEBUG - Observations: [<M1, [<Stench, >]>, <M2, [<Stench, >]>, <M9, [<Stench, >]>, <M10, [<Stench, >]>]
+20:16:46.145 [Golem1] DEBUG - MoveTo: M9 - Success
+20:16:46.747 [Golem1] DEBUG - getCurrentPosition(): M9
+20:16:46.747 [Golem1] DEBUG - Observations: [<M9, [<Stench, >]>, <M6, [<Stench, >]>, <M1, [<Stench, >]>, <M30, [<Stench, >]>, <M34, [<Stench, >]>]
+20:16:46.747 [Golem1] DEBUG - MoveTo: M1 - Success
+20:16:47.351 [Golem1] DEBUG - getCurrentPosition(): M1
+20:16:47.351 [Golem1] DEBUG - Observations: [<M1, [<Stench, >]>, <M2, [<Stench, >]>, <M9, [<Stench, >]>, <M10, [<Stench, >]>]
+20:16:47.352 [Golem1] DEBUG - MoveTo: M2 - Success
+20:16:47.955 [Golem1] DEBUG - getCurrentPosition(): M2
+20:16:47.955 [Golem1] DEBUG - Observations: [<M2, [<Stench, >]>, <M3, [<Stench, >]>, <M1, [<Stench, >]>, <M6, [<Stench, >]>, <M11, [<Stench, >]>]
+20:16:47.955 [Golem1] DEBUG - MoveTo: M1 - Success
+20:16:48.556 [Golem1] DEBUG - getCurrentPosition(): M1
+20:16:48.556 [Golem1] DEBUG - Observations: [<M1, [<Stench, >]>, <M2, [<Stench, >]>, <M9, [<Stench, >]>, <M10, [<Stench, >]>]
+20:16:48.556 [Golem1] DEBUG - MoveTo: M2 - Success
+20:16:49.159 [Golem1] DEBUG - getCurrentPosition(): M2
+20:16:49.160 [Golem1] DEBUG - Observations: [<M2, [<Stench, >]>, <M3, [<Stench, >]>, <M1, [<Stench, >]>, <M6, [<Stench, >]>, <M11, [<Stench, >]>]
+20:16:49.160 [Golem1] DEBUG - MoveTo: M6 - Success
+20:16:49.762 [Golem1] DEBUG - getCurrentPosition(): M6
+20:16:49.762 [Golem1] DEBUG - Observations: [<M6, [<Stench, >]>, <M9, [<Stench, >]>, <M7, [<Stench, >]>, <M2, [<Stench, >]>]
+20:16:49.762 [Golem1] DEBUG - MoveTo: M7 - Success
+20:16:50.364 [Golem1] DEBUG - getCurrentPosition(): M7
+20:16:50.364 [Golem1] DEBUG - Observations: [<M7, [<Stench, >]>, <M8, [<Stench, >]>, <M6, [<Stench, >]>, <M3, [<Stench, >]>]
+20:16:50.364 [Golem1] DEBUG - MoveTo: M8 - Success
+20:16:50.967 [Golem1] DEBUG - getCurrentPosition(): M8
+20:16:50.967 [Golem1] DEBUG - Observations: [<M8, [<Stench, >]>, <M7, [<Stench, >]>, <M4, [<AgentName, Explo2>, <Stench, >]>, <M21, [<Stench, >]>, <M20, [<Stench, >]>]
+20:16:50.967 [Golem1] DEBUG - MoveTo: M4 - Failed
+20:16:51.568 [Golem1] DEBUG - getCurrentPosition(): M8
+20:16:51.568 [Golem1] DEBUG - Observations: [<M8, [<Stench, >]>, <M7, [<Stench, >]>, <M4, [<AgentName, Explo2>, <Stench, >]>, <M21, [<Stench, >]>, <M20, [<Stench, >]>]
+20:16:51.568 [Golem1] DEBUG - MoveTo: M21 - Success
+20:16:52.169 [Golem1] DEBUG - getCurrentPosition(): M21
+20:16:52.169 [Golem1] DEBUG - Observations: [<M21, [<Stench, >]>, <M23, [<Stench, >]>, <M8, [<Stench, >]>, <M22, [<Stench, >]>]
+20:16:52.169 [Golem1] DEBUG - MoveTo: M22 - Success
+20:16:52.786 [Golem1] DEBUG - getCurrentPosition(): M22
+20:16:52.786 [Golem1] DEBUG - Observations: [<M22, [<Stench, >]>, <M20, [<Stench, >]>, <M24, [<Stench, >]>, <M26, [<Stench, >]>, <M21, [<Stench, >]>]
+20:16:52.786 [Golem1] DEBUG - MoveTo: M26 - Success
+20:16:53.391 [Golem1] DEBUG - getCurrentPosition(): M26
+20:16:53.391 [Golem1] DEBUG - Observations: [<M26, [<Stench, >]>, <M25, [<Stench, >]>, <M22, [<Stench, >]>, <48, [<Stench, >]>, <h40, [<Stench, >]>]
+20:16:53.391 [Golem1] DEBUG - MoveTo: 48 - Success
+20:16:53.994 [Golem1] DEBUG - getCurrentPosition(): 48
+20:16:53.994 [Golem1] DEBUG - Observations: [<48, [<Stench, >]>, <39, [<Stench, >]>, <M26, [<Stench, >]>]
+20:16:53.994 [Golem1] DEBUG - MoveTo: 39 - Success
+20:16:54.599 [Golem1] DEBUG - getCurrentPosition(): 39
+20:16:54.600 [Golem1] DEBUG - Observations: [<39, [<Stench, >]>, <47, [<Stench, >]>, <48, [<Stench, >]>]
+20:16:54.600 [Golem1] DEBUG - MoveTo: 48 - Success
+20:16:55.203 [Golem1] DEBUG - getCurrentPosition(): 48
+20:16:55.204 [Golem1] DEBUG - Observations: [<48, [<Stench, >]>, <39, [<Stench, >]>, <M26, [<Stench, >]>]
+20:16:55.204 [Golem1] DEBUG - MoveTo: 39 - Success
+20:16:55.808 [Golem1] DEBUG - getCurrentPosition(): 39
+20:16:55.808 [Golem1] DEBUG - Observations: [<39, [<Stench, >]>, <47, [<Stench, >]>, <48, [<Stench, >]>]
+20:16:55.808 [Golem1] DEBUG - MoveTo: 47 - Success
+20:16:56.413 [Golem1] DEBUG - getCurrentPosition(): 47
+20:16:56.413 [Golem1] DEBUG - Observations: [<47, [<Stench, >]>, <39, [<Stench, >]>, <46, [<Stench, >]>]
+20:16:56.413 [Golem1] DEBUG - MoveTo: 46 - Success
+20:16:57.018 [Golem1] DEBUG - getCurrentPosition(): 46
+20:16:57.018 [Golem1] DEBUG - Observations: [<46, [<Stench, >]>, <38, [<Stench, >]>, <47, [<Stench, >]>]
+20:16:57.019 [Golem1] DEBUG - MoveTo: 38 - Success
+20:16:57.624 [Golem1] DEBUG - getCurrentPosition(): 38
+20:16:57.624 [Golem1] DEBUG - Observations: [<38, [<Stench, >]>, <37, [<Stench, >]>, <46, [<Stench, >]>]
+20:16:57.624 [Golem1] DEBUG - MoveTo: 37 - Success
+20:16:58.228 [Golem1] DEBUG - getCurrentPosition(): 37
+20:16:58.228 [Golem1] DEBUG - Observations: [<37, [<Stench, >]>, <38, [<Stench, >]>, <45, [<Stench, >]>]
+20:16:58.228 [Golem1] DEBUG - MoveTo: 38 - Success
+20:16:58.834 [Golem1] DEBUG - getCurrentPosition(): 38
+20:16:58.834 [Golem1] DEBUG - Observations: [<38, [<Stench, >]>, <37, [<Stench, >]>, <46, [<Stench, >]>]
+20:16:58.834 [Golem1] DEBUG - MoveTo: 37 - Success
+20:16:59.439 [Golem1] DEBUG - getCurrentPosition(): 37
+20:16:59.439 [Golem1] DEBUG - Observations: [<37, [<Stench, >]>, <38, [<Stench, >]>, <45, [<Stench, >]>]
+20:16:59.439 [Golem1] DEBUG - MoveTo: 38 - Success
+20:17:00.044 [Golem1] DEBUG - getCurrentPosition(): 38
+20:17:00.044 [Golem1] DEBUG - Observations: [<38, [<Stench, >]>, <37, [<Stench, >]>, <46, [<Stench, >]>]
+20:17:00.044 [Golem1] DEBUG - MoveTo: 46 - Success
+20:17:00.648 [Golem1] DEBUG - getCurrentPosition(): 46
+20:17:00.648 [Golem1] DEBUG - Observations: [<46, [<Stench, >]>, <38, [<Stench, >]>, <47, [<Stench, >]>]
+20:17:00.648 [Golem1] DEBUG - MoveTo: 47 - Success
+20:17:01.253 [Golem1] DEBUG - getCurrentPosition(): 47
+20:17:01.254 [Golem1] DEBUG - Observations: [<47, [<Stench, >]>, <39, [<Stench, >]>, <46, [<Stench, >]>]
+20:17:01.254 [Golem1] DEBUG - MoveTo: 39 - Success
+20:17:01.858 [Golem1] DEBUG - getCurrentPosition(): 39
+20:17:01.858 [Golem1] DEBUG - Observations: [<39, [<Stench, >]>, <47, [<Stench, >]>, <48, [<Stench, >]>]
+20:17:01.858 [Golem1] DEBUG - MoveTo: 48 - Success
+20:17:02.462 [Golem1] DEBUG - getCurrentPosition(): 48
+20:17:02.462 [Golem1] DEBUG - Observations: [<48, [<Stench, >]>, <39, [<Stench, >]>, <M26, [<Stench, >]>]
+20:17:02.462 [Golem1] DEBUG - MoveTo: 39 - Success
+20:17:03.064 [Golem1] DEBUG - getCurrentPosition(): 39
+20:17:03.064 [Golem1] DEBUG - Observations: [<39, [<Stench, >]>, <47, [<Stench, >]>, <48, [<Stench, >]>]
+20:17:03.064 [Golem1] DEBUG - MoveTo: 48 - Success
+20:17:03.668 [Golem1] DEBUG - getCurrentPosition(): 48
+20:17:03.668 [Golem1] DEBUG - Observations: [<48, [<Stench, >]>, <39, [<Stench, >]>, <M26, [<Stench, >]>]
+20:17:03.668 [Golem1] DEBUG - MoveTo: M26 - Success
+20:17:04.273 [Golem1] DEBUG - getCurrentPosition(): M26
+20:17:04.273 [Golem1] DEBUG - Observations: [<M26, [<Stench, >]>, <M25, [<Stench, >]>, <M22, [<Stench, >]>, <48, [<Stench, >]>, <h40, [<Stench, >]>]
+20:17:04.273 [Golem1] DEBUG - MoveTo: M25 - Success
+20:17:04.878 [Golem1] DEBUG - getCurrentPosition(): M25
+20:17:04.878 [Golem1] DEBUG - Observations: [<M25, [<Stench, >]>, <M24, [<Stench, >]>, <M26, [<Stench, >]>]
+20:17:04.878 [Golem1] DEBUG - MoveTo: M24 - Success
+20:17:05.481 [Golem1] DEBUG - getCurrentPosition(): M24
+20:17:05.481 [Golem1] DEBUG - Observations: [<M24, [<Stench, >]>, <M22, [<Stench, >]>, <M25, [<Stench, >]>, <M23, [<Stench, >]>]
+20:17:05.481 [Golem1] DEBUG - MoveTo: M23 - Success
+20:17:06.086 [Golem1] DEBUG - getCurrentPosition(): M23
+20:17:06.086 [Golem1] DEBUG - Observations: [<M23, [<Stench, >]>, <M39, [<Stench, >]>, <M21, [<Stench, >]>, <M24, [<Stench, >]>]
+20:17:06.086 [Golem1] DEBUG - MoveTo: M24 - Success
+20:17:06.688 [Golem1] DEBUG - getCurrentPosition(): M24
+20:17:06.688 [Golem1] DEBUG - Observations: [<M24, [<Stench, >]>, <M22, [<Stench, >]>, <M25, [<Stench, >]>, <M23, [<Stench, >]>]
+20:17:06.688 [Golem1] DEBUG - MoveTo: M23 - Success
+20:17:07.289 [Golem1] DEBUG - getCurrentPosition(): M23
+20:17:07.289 [Golem1] DEBUG - Observations: [<M23, [<Stench, >]>, <M39, [<Stench, >]>, <M21, [<Stench, >]>, <M24, [<Stench, >]>]
+20:17:07.289 [Golem1] DEBUG - MoveTo: M39 - Success
+20:17:07.891 [Golem1] DEBUG - getCurrentPosition(): M39
+20:17:07.891 [Golem1] DEBUG - Observations: [<M39, [<Stench, >]>, <M23, [<Stench, >]>, <M28, [<Stench, >]>, <M40, [<Stench, >]>]
+20:17:07.891 [Golem1] DEBUG - MoveTo: M40 - Success
+20:17:08.495 [Golem1] DEBUG - getCurrentPosition(): M40
+20:17:08.495 [Golem1] DEBUG - Observations: [<M40, [<Stench, >]>, <M39, [<Stench, >]>]
+20:17:08.496 [Golem1] DEBUG - MoveTo: M39 - Success
+20:17:09.098 [Golem1] DEBUG - getCurrentPosition(): M39
+20:17:09.098 [Golem1] DEBUG - Observations: [<M39, [<Stench, >]>, <M23, [<Stench, >]>, <M28, [<Stench, >]>, <M40, [<Stench, >]>]
+20:17:09.098 [Golem1] DEBUG - MoveTo: M28 - Success
+20:17:09.699 [Golem1] DEBUG - getCurrentPosition(): M28
+20:17:09.699 [Golem1] DEBUG - Observations: [<M28, [<Stench, >]>, <M29, [<Stench, >]>, <M31, [<Stench, >]>, <M39, [<Stench, >]>]
+20:17:09.699 [Golem1] DEBUG - MoveTo: M31 - Success
+20:17:10.304 [Golem1] DEBUG - getCurrentPosition(): M31
+20:17:10.304 [Golem1] DEBUG - Observations: [<M31, [<Stench, >]>, <M28, [<Stench, >]>, <M30, [<Stench, >]>]
+20:17:10.304 [Golem1] DEBUG - MoveTo: M30 - Success
+20:17:10.909 [Golem1] DEBUG - getCurrentPosition(): M30
+20:17:10.909 [Golem1] DEBUG - Observations: [<M30, [<Stench, >]>, <M9, [<Stench, >]>, <M29, [<Stench, >]>, <M31, [<Stench, >]>]
+20:17:10.909 [Golem1] DEBUG - MoveTo: M29 - Success
+20:17:11.511 [Golem1] DEBUG - getCurrentPosition(): M29
+20:17:11.511 [Golem1] DEBUG - Observations: [<M29, [<Stench, >]>, <M30, [<Stench, >]>, <M28, [<Stench, >]>]
+20:17:11.511 [Golem1] DEBUG - MoveTo: M30 - Success
+20:17:12.112 [Golem1] DEBUG - getCurrentPosition(): M30
+20:17:12.112 [Golem1] DEBUG - Observations: [<M30, [<Stench, >]>, <M9, [<Stench, >]>, <M29, [<Stench, >]>, <M31, [<Stench, >]>]
+20:17:12.112 [Golem1] DEBUG - MoveTo: M31 - Success
+20:17:12.717 [Golem1] DEBUG - getCurrentPosition(): M31
+20:17:12.717 [Golem1] DEBUG - Observations: [<M31, [<Stench, >]>, <M28, [<Stench, >]>, <M30, [<Stench, >]>]
+20:17:12.717 [Golem1] DEBUG - MoveTo: M30 - Success
+20:17:13.324 [Golem1] DEBUG - getCurrentPosition(): M30
+20:17:13.324 [Golem1] DEBUG - Observations: [<M30, [<Stench, >]>, <M9, [<Stench, >]>, <M29, [<Stench, >]>, <M31, [<Stench, >]>]
+20:17:13.324 [Golem1] DEBUG - MoveTo: M29 - Success
+20:17:13.928 [Golem1] DEBUG - getCurrentPosition(): M29
+20:17:13.928 [Golem1] DEBUG - Observations: [<M29, [<Stench, >]>, <M30, [<Stench, >]>, <M28, [<Stench, >]>]
+20:17:13.928 [Golem1] DEBUG - MoveTo: M30 - Success
+20:17:14.532 [Golem1] DEBUG - getCurrentPosition(): M30
+20:17:14.532 [Golem1] DEBUG - Observations: [<M30, [<Stench, >]>, <M9, [<Stench, >]>, <M29, [<Stench, >]>, <M31, [<Stench, >]>]
+20:17:14.532 [Golem1] DEBUG - MoveTo: M31 - Success
+20:17:15.137 [Golem1] DEBUG - getCurrentPosition(): M31
+20:17:15.137 [Golem1] DEBUG - Observations: [<M31, [<Stench, >]>, <M28, [<Stench, >]>, <M30, [<Stench, >]>]
+20:17:15.137 [Golem1] DEBUG - MoveTo: M30 - Success
+20:17:15.741 [Golem1] DEBUG - getCurrentPosition(): M30
+20:17:15.742 [Golem1] DEBUG - Observations: [<M30, [<Stench, >]>, <M9, [<Stench, >]>, <M29, [<Stench, >]>, <M31, [<Stench, >]>]
+20:17:15.742 [Golem1] DEBUG - MoveTo: M31 - Success
+20:17:16.347 [Golem1] DEBUG - getCurrentPosition(): M31
+20:17:16.347 [Golem1] DEBUG - Observations: [<M31, [<Stench, >]>, <M28, [<Stench, >]>, <M30, [<Stench, >]>]
+20:17:16.347 [Golem1] DEBUG - MoveTo: M30 - Success
+20:17:16.951 [Golem1] DEBUG - getCurrentPosition(): M30
+20:17:16.952 [Golem1] DEBUG - Observations: [<M30, [<Stench, >]>, <M9, [<Stench, >]>, <M29, [<Stench, >]>, <M31, [<Stench, >]>]
+20:17:16.952 [Golem1] DEBUG - MoveTo: M9 - Success
+20:17:17.554 [Golem1] DEBUG - getCurrentPosition(): M9
+20:17:17.554 [Golem1] DEBUG - Observations: [<M9, [<Stench, >]>, <M6, [<Stench, >]>, <M1, [<Stench, >]>, <M30, [<Stench, >]>, <M34, [<Stench, >]>]
+20:17:17.554 [Golem1] DEBUG - MoveTo: M30 - Success
+20:17:18.159 [Golem1] DEBUG - getCurrentPosition(): M30
+20:17:18.159 [Golem1] DEBUG - Observations: [<M30, [<Stench, >]>, <M9, [<Stench, >]>, <M29, [<Stench, >]>, <M31, [<Stench, >]>]
+20:17:18.159 [Golem1] DEBUG - MoveTo: M31 - Success
+20:17:18.760 [Golem1] DEBUG - getCurrentPosition(): M31
+20:17:18.760 [Golem1] DEBUG - Observations: [<M31, [<Stench, >]>, <M28, [<Stench, >]>, <M30, [<Stench, >]>]
+20:17:18.760 [Golem1] DEBUG - MoveTo: M30 - Success
+20:17:19.364 [Golem1] DEBUG - getCurrentPosition(): M30
+20:17:19.364 [Golem1] DEBUG - Observations: [<M30, [<Stench, >]>, <M9, [<Stench, >]>, <M29, [<Stench, >]>, <M31, [<Stench, >]>]
+20:17:19.364 [Golem1] DEBUG - MoveTo: M31 - Success
+20:17:19.968 [Golem1] DEBUG - getCurrentPosition(): M31
+20:17:19.968 [Golem1] DEBUG - Observations: [<M31, [<Stench, >]>, <M28, [<Stench, >]>, <M30, [<Stench, >]>]
+20:17:19.968 [Golem1] DEBUG - MoveTo: M30 - Success
+20:17:20.569 [Golem1] DEBUG - getCurrentPosition(): M30
+20:17:20.569 [Golem1] DEBUG - Observations: [<M30, [<Stench, >]>, <M9, [<Stench, >]>, <M29, [<Stench, >]>, <M31, [<Stench, >]>]
+20:17:20.569 [Golem1] DEBUG - MoveTo: M31 - Success
+20:17:21.173 [Golem1] DEBUG - getCurrentPosition(): M31
+20:17:21.173 [Golem1] DEBUG - Observations: [<M31, [<Stench, >]>, <M28, [<Stench, >]>, <M30, [<Stench, >]>]
+20:17:21.173 [Golem1] DEBUG - MoveTo: M28 - Success
+20:17:21.778 [Golem1] DEBUG - getCurrentPosition(): M28
+20:17:21.778 [Golem1] DEBUG - Observations: [<M28, [<Stench, >]>, <M29, [<Stench, >]>, <M31, [<Stench, >]>, <M39, [<Stench, >]>]
+20:17:21.778 [Golem1] DEBUG - MoveTo: M29 - Success
+20:17:22.384 [Golem1] DEBUG - getCurrentPosition(): M29
+20:17:22.384 [Golem1] DEBUG - Observations: [<M29, [<Stench, >]>, <M30, [<Stench, >]>, <M28, [<Stench, >]>]
+20:17:22.384 [Golem1] DEBUG - MoveTo: M30 - Success
+20:17:22.989 [Golem1] DEBUG - getCurrentPosition(): M30
+20:17:22.989 [Golem1] DEBUG - Observations: [<M30, [<Stench, >]>, <M9, [<Stench, >]>, <M29, [<Stench, >]>, <M31, [<Stench, >]>]
+20:17:22.989 [Golem1] DEBUG - MoveTo: M31 - Success
+20:17:23.594 [Golem1] DEBUG - getCurrentPosition(): M31
+20:17:23.594 [Golem1] DEBUG - Observations: [<M31, [<Stench, >]>, <M28, [<Stench, >]>, <M30, [<Stench, >]>]
+20:17:23.594 [Golem1] DEBUG - MoveTo: M30 - Success
+20:17:24.198 [Golem1] DEBUG - getCurrentPosition(): M30
+20:17:24.198 [Golem1] DEBUG - Observations: [<M30, [<Stench, >]>, <M9, [<Stench, >]>, <M29, [<Stench, >]>, <M31, [<Stench, >]>]
+20:17:24.198 [Golem1] DEBUG - MoveTo: M31 - Success
+20:17:24.803 [Golem1] DEBUG - getCurrentPosition(): M31
+20:17:24.803 [Golem1] DEBUG - Observations: [<M31, [<Stench, >]>, <M28, [<Stench, >]>, <M30, [<Stench, >]>]
+20:17:24.803 [Golem1] DEBUG - MoveTo: M30 - Success
+20:17:25.405 [Golem1] DEBUG - getCurrentPosition(): M30
+20:17:25.405 [Golem1] DEBUG - Observations: [<M30, [<Stench, >]>, <M9, [<Stench, >]>, <M29, [<Stench, >]>, <M31, [<Stench, >]>]
+20:17:25.405 [Golem1] DEBUG - MoveTo: M29 - Success
+20:17:26.007 [Golem1] DEBUG - getCurrentPosition(): M29
+20:17:26.007 [Golem1] DEBUG - Observations: [<M29, [<Stench, >]>, <M30, [<Stench, >]>, <M28, [<Stench, >]>]
+20:17:26.007 [Golem1] DEBUG - MoveTo: M28 - Success
+20:17:26.611 [Golem1] DEBUG - getCurrentPosition(): M28
+20:17:26.611 [Golem1] DEBUG - Observations: [<M28, [<Stench, >]>, <M29, [<Stench, >]>, <M31, [<Stench, >]>, <M39, [<Stench, >]>]
+20:17:26.611 [Golem1] DEBUG - MoveTo: M31 - Success
+20:17:27.213 [Golem1] DEBUG - getCurrentPosition(): M31
+20:17:27.213 [Golem1] DEBUG - Observations: [<M31, [<Stench, >]>, <M28, [<Stench, >]>, <M30, [<Stench, >]>]
+20:17:27.213 [Golem1] DEBUG - MoveTo: M28 - Success
+20:17:27.817 [Golem1] DEBUG - getCurrentPosition(): M28
+20:17:27.817 [Golem1] DEBUG - Observations: [<M28, [<Stench, >]>, <M29, [<Stench, >]>, <M31, [<Stench, >]>, <M39, [<Stench, >]>]
+20:17:27.818 [Golem1] DEBUG - MoveTo: M31 - Success
+20:17:28.423 [Golem1] DEBUG - getCurrentPosition(): M31
+20:17:28.423 [Golem1] DEBUG - Observations: [<M31, [<Stench, >]>, <M28, [<Stench, >]>, <M30, [<Stench, >]>]
+20:17:28.423 [Golem1] DEBUG - MoveTo: M28 - Success
+20:17:29.028 [Golem1] DEBUG - getCurrentPosition(): M28
+20:17:29.028 [Golem1] DEBUG - Observations: [<M28, [<Stench, >]>, <M29, [<Stench, >]>, <M31, [<Stench, >]>, <M39, [<Stench, >]>]
+20:17:29.028 [Golem1] DEBUG - MoveTo: M39 - Success
+20:17:29.633 [Golem1] DEBUG - getCurrentPosition(): M39
+20:17:29.633 [Golem1] DEBUG - Observations: [<M39, [<Stench, >]>, <M23, [<Stench, >]>, <M28, [<Stench, >]>, <M40, [<Stench, >]>]
+20:17:29.633 [Golem1] DEBUG - MoveTo: M23 - Success
+20:17:30.235 [Golem1] DEBUG - getCurrentPosition(): M23
+20:17:30.235 [Golem1] DEBUG - Observations: [<M23, [<Stench, >]>, <M39, [<Stench, >]>, <M21, [<Stench, >]>, <M24, [<Stench, >]>]
+20:17:30.235 [Golem1] DEBUG - MoveTo: M24 - Success
+20:17:30.839 [Golem1] DEBUG - getCurrentPosition(): M24
+20:17:30.839 [Golem1] DEBUG - Observations: [<M24, [<Stench, >]>, <M22, [<Stench, >]>, <M25, [<Stench, >]>, <M23, [<Stench, >]>]
+20:17:30.840 [Golem1] DEBUG - MoveTo: M23 - Success
+20:17:31.446 [Golem1] DEBUG - getCurrentPosition(): M23
+20:17:31.446 [Golem1] DEBUG - Observations: [<M23, [<Stench, >]>, <M39, [<Stench, >]>, <M21, [<Stench, >]>, <M24, [<Stench, >]>]
+20:17:31.446 [Golem1] DEBUG - MoveTo: M39 - Success
+20:17:32.048 [Golem1] DEBUG - getCurrentPosition(): M39
+20:17:32.048 [Golem1] DEBUG - Observations: [<M39, [<Stench, >]>, <M23, [<Stench, >]>, <M28, [<Stench, >]>, <M40, [<Stench, >]>]
+20:17:32.048 [Golem1] DEBUG - MoveTo: M23 - Success
+20:17:32.650 [Golem1] DEBUG - getCurrentPosition(): M23
+20:17:32.650 [Golem1] DEBUG - Observations: [<M23, [<Stench, >]>, <M39, [<Stench, >]>, <M21, [<Stench, >]>, <M24, [<Stench, >]>]
+20:17:32.650 [Golem1] DEBUG - MoveTo: M39 - Success
+20:17:33.254 [Golem1] DEBUG - getCurrentPosition(): M39
+20:17:33.254 [Golem1] DEBUG - Observations: [<M39, [<Stench, >]>, <M23, [<Stench, >]>, <M28, [<Stench, >]>, <M40, [<Stench, >]>]
+20:17:33.254 [Golem1] DEBUG - MoveTo: M40 - Success
+20:17:33.859 [Golem1] DEBUG - getCurrentPosition(): M40
+20:17:33.860 [Golem1] DEBUG - Observations: [<M40, [<Stench, >]>, <M39, [<Stench, >]>]
+20:17:33.860 [Golem1] DEBUG - MoveTo: M39 - Success
+20:17:34.464 [Golem1] DEBUG - getCurrentPosition(): M39
+20:17:34.464 [Golem1] DEBUG - Observations: [<M39, [<Stench, >]>, <M23, [<Stench, >]>, <M28, [<Stench, >]>, <M40, [<Stench, >]>]
+20:17:34.464 [Golem1] DEBUG - MoveTo: M23 - Success
+20:17:35.068 [Golem1] DEBUG - getCurrentPosition(): M23
+20:17:35.068 [Golem1] DEBUG - Observations: [<M23, [<Stench, >]>, <M39, [<Stench, >]>, <M21, [<Stench, >]>, <M24, [<Stench, >]>]
+20:17:35.068 [Golem1] DEBUG - MoveTo: M24 - Success
+20:17:35.673 [Golem1] DEBUG - getCurrentPosition(): M24
+20:17:35.673 [Golem1] DEBUG - Observations: [<M24, [<Stench, >]>, <M22, [<Stench, >]>, <M25, [<Stench, >]>, <M23, [<Stench, >]>]
+20:17:35.673 [Golem1] DEBUG - MoveTo: M25 - Success
+20:17:36.278 [Golem1] DEBUG - getCurrentPosition(): M25
+20:17:36.278 [Golem1] DEBUG - Observations: [<M25, [<Stench, >]>, <M24, [<Stench, >]>, <M26, [<Stench, >]>]
+20:17:36.279 [Golem1] DEBUG - MoveTo: M24 - Success
+20:17:36.881 [Golem1] DEBUG - getCurrentPosition(): M24
+20:17:36.881 [Golem1] DEBUG - Observations: [<M24, [<Stench, >]>, <M22, [<Stench, >]>, <M25, [<Stench, >]>, <M23, [<Stench, >]>]
+20:17:36.881 [Golem1] DEBUG - MoveTo: M22 - Success
+20:17:37.482 [Golem1] DEBUG - getCurrentPosition(): M22
+20:17:37.482 [Golem1] DEBUG - Observations: [<M22, [<Stench, >]>, <M20, [<Stench, >]>, <M24, [<Stench, >]>, <M26, [<Stench, >]>, <M21, [<Stench, >]>]
+20:17:37.482 [Golem1] DEBUG - MoveTo: M20 - Success
+20:17:38.086 [Golem1] DEBUG - getCurrentPosition(): M20
+20:17:38.086 [Golem1] DEBUG - Observations: [<M20, [<Stench, >]>, <M8, [<Stench, >]>, <M19, [<Stench, >]>, <M22, [<Stench, >]>]
+20:17:38.086 [Golem1] DEBUG - MoveTo: M22 - Success
+20:17:38.691 [Golem1] DEBUG - getCurrentPosition(): M22
+20:17:38.691 [Golem1] DEBUG - Observations: [<M22, [<Stench, >]>, <M20, [<Stench, >]>, <M24, [<Stench, >]>, <M26, [<Stench, >]>, <M21, [<Stench, >]>]
+20:17:38.691 [Golem1] DEBUG - MoveTo: M26 - Success
+20:17:39.292 [Golem1] DEBUG - getCurrentPosition(): M26
+20:17:39.292 [Golem1] DEBUG - Observations: [<M26, [<Stench, >]>, <M25, [<Stench, >]>, <M22, [<Stench, >]>, <48, [<Stench, >]>, <h40, [<Stench, >]>]
+20:17:39.292 [Golem1] DEBUG - MoveTo: M25 - Success
+20:17:39.896 [Golem1] DEBUG - getCurrentPosition(): M25
+20:17:39.897 [Golem1] DEBUG - Observations: [<M25, [<Stench, >]>, <M24, [<Stench, >]>, <M26, [<Stench, >]>]
+20:17:39.897 [Golem1] DEBUG - MoveTo: M24 - Success
+20:17:40.502 [Golem1] DEBUG - getCurrentPosition(): M24
+20:17:40.502 [Golem1] DEBUG - Observations: [<M24, [<Stench, >]>, <M22, [<Stench, >]>, <M25, [<Stench, >]>, <M23, [<Stench, >]>]
+20:17:40.502 [Golem1] DEBUG - MoveTo: M23 - Success
+20:17:41.108 [Golem1] DEBUG - getCurrentPosition(): M23
+20:17:41.108 [Golem1] DEBUG - Observations: [<M23, [<Stench, >]>, <M39, [<Stench, >]>, <M21, [<Stench, >]>, <M24, [<Stench, >]>]
+20:17:41.108 [Golem1] DEBUG - MoveTo: M24 - Success
+20:17:41.713 [Golem1] DEBUG - getCurrentPosition(): M24
+20:17:41.713 [Golem1] DEBUG - Observations: [<M24, [<Stench, >]>, <M22, [<Stench, >]>, <M25, [<Stench, >]>, <M23, [<Stench, >]>]
+20:17:41.713 [Golem1] DEBUG - MoveTo: M22 - Success
+20:17:42.314 [Golem1] DEBUG - getCurrentPosition(): M22
+20:17:42.315 [Golem1] DEBUG - Observations: [<M22, [<Stench, >]>, <M20, [<Stench, >]>, <M24, [<Stench, >]>, <M26, [<Stench, >]>, <M21, [<Stench, >]>]
+20:17:42.315 [Golem1] DEBUG - MoveTo: M21 - Success
+20:17:42.920 [Golem1] DEBUG - getCurrentPosition(): M21
+20:17:42.920 [Golem1] DEBUG - Observations: [<M21, [<Stench, >]>, <M23, [<Stench, >]>, <M8, [<Stench, >]>, <M22, [<Stench, >]>]
+20:17:42.920 [Golem1] DEBUG - MoveTo: M23 - Success
+20:17:43.522 [Golem1] DEBUG - getCurrentPosition(): M23
+20:17:43.522 [Golem1] DEBUG - Observations: [<M23, [<Stench, >]>, <M39, [<Stench, >]>, <M21, [<Stench, >]>, <M24, [<Stench, >]>]
+20:17:43.522 [Golem1] DEBUG - MoveTo: M21 - Success
+20:17:44.127 [Golem1] DEBUG - getCurrentPosition(): M21
+20:17:44.127 [Golem1] DEBUG - Observations: [<M21, [<Stench, >]>, <M23, [<Stench, >]>, <M8, [<Stench, >]>, <M22, [<Stench, >]>]
+20:17:44.127 [Golem1] DEBUG - MoveTo: M23 - Success
+20:17:44.728 [Golem1] DEBUG - getCurrentPosition(): M23
+20:17:44.728 [Golem1] DEBUG - Observations: [<M23, [<Stench, >]>, <M39, [<Stench, >]>, <M21, [<Stench, >]>, <M24, [<Stench, >]>]
+20:17:44.728 [Golem1] DEBUG - MoveTo: M39 - Success

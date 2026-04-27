@@ -1920,3 +1920,564 @@
 20:15:51.815 [Golem2] DEBUG - getCurrentPosition(): 58
 20:15:51.815 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
 20:15:51.815 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:15:52.418 [Golem2] DEBUG - getCurrentPosition(): 58
+20:15:52.418 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:15:52.418 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:15:53.022 [Golem2] DEBUG - getCurrentPosition(): 58
+20:15:53.023 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:15:53.023 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:15:53.627 [Golem2] DEBUG - getCurrentPosition(): 58
+20:15:53.627 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:15:53.628 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:15:54.233 [Golem2] DEBUG - getCurrentPosition(): 58
+20:15:54.233 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:15:54.233 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:15:54.838 [Golem2] DEBUG - getCurrentPosition(): 58
+20:15:54.838 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:15:54.838 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:15:55.441 [Golem2] DEBUG - getCurrentPosition(): 58
+20:15:55.441 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:15:55.441 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:15:56.046 [Golem2] DEBUG - getCurrentPosition(): 58
+20:15:56.046 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:15:56.046 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:15:56.651 [Golem2] DEBUG - getCurrentPosition(): 58
+20:15:56.651 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:15:56.651 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:15:57.253 [Golem2] DEBUG - getCurrentPosition(): 58
+20:15:57.253 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:15:57.253 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:15:57.858 [Golem2] DEBUG - getCurrentPosition(): 58
+20:15:57.858 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:15:57.858 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:15:58.463 [Golem2] DEBUG - getCurrentPosition(): 58
+20:15:58.463 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:15:58.463 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:15:59.064 [Golem2] DEBUG - getCurrentPosition(): 58
+20:15:59.064 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:15:59.064 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:15:59.669 [Golem2] DEBUG - getCurrentPosition(): 58
+20:15:59.669 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:15:59.669 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:00.272 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:00.272 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:00.272 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:00.876 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:00.876 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:00.876 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:01.481 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:01.481 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:01.482 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:02.084 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:02.084 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:02.084 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:02.689 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:02.689 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:02.689 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:03.292 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:03.292 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:03.292 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:03.897 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:03.897 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:03.897 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:04.499 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:04.499 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:04.499 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:05.100 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:05.100 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:05.100 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:05.703 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:05.703 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:05.703 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:06.305 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:06.305 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:06.305 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:06.907 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:06.907 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:06.907 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:07.510 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:07.510 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:07.510 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:08.115 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:08.115 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:08.115 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:08.718 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:08.718 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:08.718 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:09.319 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:09.319 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:09.319 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:09.920 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:09.920 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:09.920 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:10.525 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:10.525 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:10.525 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:11.129 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:11.129 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:11.129 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:11.731 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:11.731 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:11.731 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:12.336 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:12.336 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:12.336 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:12.938 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:12.938 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:12.939 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:13.543 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:13.544 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:13.544 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:14.147 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:14.147 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:14.147 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:14.751 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:14.751 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:14.751 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:15.356 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:15.356 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:15.357 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:15.959 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:15.959 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:15.959 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:16.564 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:16.564 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:16.564 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:17.167 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:17.167 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:17.167 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:17.775 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:17.775 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:17.775 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:18.379 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:18.379 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:18.379 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:18.983 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:18.984 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:18.984 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:19.589 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:19.589 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:19.589 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:20.192 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:20.192 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:20.192 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:20.794 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:20.794 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:20.794 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:21.396 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:21.396 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:21.396 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:22.000 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:22.000 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:22.001 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:22.604 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:22.604 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:22.604 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:23.205 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:23.205 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:23.206 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:23.810 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:23.810 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:23.810 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:24.415 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:24.415 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:24.415 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:25.019 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:25.019 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:25.020 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:25.623 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:25.624 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:25.624 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:26.227 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:26.227 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:26.227 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:26.832 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:26.832 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:26.832 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:27.436 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:27.436 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:27.436 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:28.037 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:28.037 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:28.037 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:28.641 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:28.641 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:28.641 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:29.246 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:29.246 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:29.247 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:29.852 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:29.852 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:29.852 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:30.454 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:30.454 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:30.454 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:31.059 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:31.059 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:31.059 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:31.664 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:31.664 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:31.664 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:32.269 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:32.269 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:32.269 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:32.874 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:32.874 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:32.874 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:33.479 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:33.479 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:33.479 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:34.081 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:34.081 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:34.081 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:34.682 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:34.682 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:34.682 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:35.283 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:35.283 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:35.283 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:35.888 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:35.888 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:35.888 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:36.490 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:36.491 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:36.491 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:37.092 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:37.092 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:37.092 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:37.696 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:37.696 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:37.696 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:38.297 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:38.298 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:38.298 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:38.902 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:38.903 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:38.903 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:39.505 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:39.505 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:39.505 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:40.108 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:40.108 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:40.108 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:40.709 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:40.709 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:40.709 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:41.314 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:41.314 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:41.314 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:41.915 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:41.915 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:41.915 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:42.517 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:42.517 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:42.517 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:43.122 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:43.122 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:43.123 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:43.727 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:43.728 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:43.728 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:44.332 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:44.332 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:44.332 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:44.934 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:44.934 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:44.934 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:45.540 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:45.540 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:45.540 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:46.145 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:46.145 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:46.145 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:46.746 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:46.746 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:46.746 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:47.351 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:47.351 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:47.351 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:47.953 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:47.953 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:47.953 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:48.555 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:48.555 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:48.555 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:49.159 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:49.160 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:49.160 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:49.762 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:49.762 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:49.762 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:50.364 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:50.364 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:50.364 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:50.965 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:50.965 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:50.965 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:51.566 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:51.566 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:51.566 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:52.167 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:52.167 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:52.167 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:52.778 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:52.786 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:52.786 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:53.391 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:53.391 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:53.391 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:53.994 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:53.994 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:53.994 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:54.599 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:54.600 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:54.600 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:55.203 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:55.204 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:55.204 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:55.808 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:55.808 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:55.808 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:56.413 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:56.413 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:56.413 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:57.018 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:57.018 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:57.019 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:57.624 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:57.624 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:57.624 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:58.228 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:58.228 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:58.228 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:58.834 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:58.834 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:58.834 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:16:59.439 [Golem2] DEBUG - getCurrentPosition(): 58
+20:16:59.439 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:16:59.439 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:00.044 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:00.044 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:00.044 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:00.648 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:00.648 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:00.648 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:01.253 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:01.254 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:01.254 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:01.858 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:01.858 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:01.858 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:02.462 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:02.462 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:02.462 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:03.063 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:03.063 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:03.063 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:03.668 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:03.668 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:03.668 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:04.273 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:04.273 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:04.273 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:04.878 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:04.878 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:04.878 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:05.481 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:05.481 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:05.481 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:06.086 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:06.086 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:06.086 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:06.687 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:06.687 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:06.687 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:07.289 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:07.289 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:07.289 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:07.890 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:07.890 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:07.890 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:08.495 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:08.495 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:08.496 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:09.099 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:09.099 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:09.099 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:09.700 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:09.700 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:09.700 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:10.304 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:10.304 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:10.304 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:10.909 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:10.909 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:10.909 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:11.510 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:11.510 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:11.510 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:12.112 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:12.112 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:12.112 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:12.717 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:12.717 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:12.717 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:13.321 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:13.324 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:13.324 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:13.928 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:13.928 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:13.928 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:14.532 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:14.532 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:14.532 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:15.137 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:15.137 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:15.137 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:15.741 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:15.742 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:15.742 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:16.347 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:16.347 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:16.347 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:16.951 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:16.952 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:16.952 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:17.554 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:17.554 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:17.554 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:18.159 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:18.159 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:18.159 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:18.761 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:18.762 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:18.762 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:19.364 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:19.364 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:19.364 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:19.968 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:19.968 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:19.968 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:20.570 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:20.570 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:20.570 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:21.173 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:21.173 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:21.173 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:21.778 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:21.778 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:21.778 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:22.384 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:22.384 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:22.384 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:22.989 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:22.989 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:22.989 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:23.594 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:23.594 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:23.594 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:24.198 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:24.198 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:24.198 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:24.803 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:24.803 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:24.803 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:25.405 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:25.405 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:25.405 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:26.006 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:26.006 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:26.006 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:26.611 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:26.611 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:26.611 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:27.213 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:27.213 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:27.213 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:27.817 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:27.817 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:27.818 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:28.423 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:28.423 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:28.423 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:29.028 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:29.028 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:29.028 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:29.633 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:29.633 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:29.633 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:30.235 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:30.235 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:30.235 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:30.839 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:30.839 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:30.840 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:31.446 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:31.446 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:31.446 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:32.048 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:32.048 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:32.048 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:32.649 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:32.649 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:32.649 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:33.254 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:33.254 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:33.254 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:33.859 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:33.860 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:33.860 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:34.464 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:34.464 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:34.464 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:35.068 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:35.068 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:35.068 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:35.673 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:35.673 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:35.673 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:36.278 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:36.278 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:36.279 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:36.881 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:36.881 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:36.881 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:37.484 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:37.485 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:37.486 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:38.087 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:38.087 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:38.088 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:38.692 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:38.692 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:38.692 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:39.293 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:39.293 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:39.293 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:39.896 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:39.896 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:39.897 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:40.502 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:40.502 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:40.502 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:41.108 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:41.108 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:41.108 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:41.713 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:41.713 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:41.713 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:42.316 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:42.316 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:42.316 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:42.920 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:42.920 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:42.920 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:43.522 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:43.522 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:43.522 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:44.127 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:44.127 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:44.127 [Golem2] DEBUG - MoveTo: 5 - Failed
+20:17:44.729 [Golem2] DEBUG - getCurrentPosition(): 58
+20:17:44.729 [Golem2] DEBUG - Observations: [<58, [<Stench, >]>, <5, [<AgentName, Explo3>, <Stench, >]>]
+20:17:44.729 [Golem2] DEBUG - MoveTo: 5 - Failed
