@@ -1,0 +1,72 @@
+[
+  {
+    "agentType": "wumpus",
+    "agentName": "Golem1",
+    "agentClass": "dummies.Golem",
+    "agentInitialContainer": "container2",
+    "communicationRange": 0,
+    "initialLocation": "free",
+    "backPackCapacityGold": -1,
+    "backPackCapacityDiamond": -1,
+    "detectionRadius": 2,
+    "strengthExpertise": 0,
+    "lockPickingExpertise": 0,
+    "userParameters": []
+  },
+  {
+    "agentType": "wumpus",
+    "agentName": "Golem2",
+    "agentClass": "dummies.Golem",
+    "agentInitialContainer": "container2",
+    "communicationRange": 0,
+    "initialLocation": "free",
+    "backPackCapacityGold": -1,
+    "backPackCapacityDiamond": -1,
+    "detectionRadius": 2,
+    "strengthExpertise": 0,
+    "lockPickingExpertise": 0,
+    "userParameters": []
+  },
+  {
+    "agentType": "agentExplo",
+    "agentName": "Explo1",
+    "agentClass": "dummies.explo.FSMExploAgent",
+    "agentInitialContainer": "container2",
+    "communicationRange": 3,
+    "initialLocation": "free",
+    "backPackCapacityGold": -1,
+    "backPackCapacityDiamond": -1,
+    "detectionRadius": 0,
+    "strengthExpertise": 1,
+    "lockPickingExpertise": 1,
+    "userParameters": []
+  },
+  {
+    "agentType": "agentExplo",
+    "agentName": "Explo2",
+    "agentClass": "dummies.explo.FSMExploAgent",
+    "agentInitialContainer": "container2",
+    "communicationRange": 2,
+    "initialLocation": "free",
+    "backPackCapacityGold": -1,
+    "backPackCapacityDiamond": -1,
+    "detectionRadius": 0,
+    "strengthExpertise": 1,
+    "lockPickingExpertise": 1,
+    "userParameters": []
+  },
+  {
+    "agentType": "agentExplo",
+    "agentName": "Explo3",
+    "agentClass": "dummies.explo.FSMExploAgent",
+    "agentInitialContainer": "container2",
+    "communicationRange": 2,
+    "initialLocation": "free",
+    "backPackCapacityGold": -1,
+    "backPackCapacityDiamond": -1,
+    "detectionRadius": 0,
+    "strengthExpertise": 1,
+    "lockPickingExpertise": 1,
+    "userParameters": []
+  }
+]

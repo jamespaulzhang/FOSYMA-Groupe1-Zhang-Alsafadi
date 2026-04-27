@@ -45,11 +45,10 @@ public class MapRepresentation implements Serializable {
     private static final int SCENT_DECAY_PER_STEP = 2;
     private static final int SCENT_THRESHOLD = 5;
 
-    // ========== DELTA TRACKING ==========
-    private transient Set<String> pendingNewEdges = new HashSet<>(); // format "nodeA-nodeB"
+    // Delta tracking
+    private transient Set<String> pendingNewEdges = new HashSet<>();
     private transient Map<String, MapAttribute> pendingNodeUpdates = new HashMap<>();
     private transient Map<String, Boolean> pendingScentUpdates = new HashMap<>();
-    // =====================================
 
     private final String nodeStyle = "node {" +
             "fill-color: black; size-mode:fit;text-alignment:under; text-size:14;text-color:white;text-background-mode:rounded-box;text-background-color:black;}" +
@@ -134,7 +133,8 @@ public class MapRepresentation implements Serializable {
     }
 
     public synchronized void addEdge(String id1, String id2) {
-        String edgeId = id1 + "-" + id2;
+        // Ensure canonical edge ID (lexicographic order)
+        String edgeId = id1.compareTo(id2) < 0 ? id1 + "-" + id2 : id2 + "-" + id1;
         if (g.getEdge(edgeId) == null) {
             try {
                 g.addEdge(edgeId, id1, id2);
@@ -270,7 +270,7 @@ public class MapRepresentation implements Serializable {
         return new HashMap<>(wumpusScent);
     }
 
-    // ========== DELTA METHODS ==========
+    // ---------- Delta methods ----------
     public synchronized MapDelta getPendingDelta() {
         if (pendingNewEdges.isEmpty() && pendingNodeUpdates.isEmpty() && pendingScentUpdates.isEmpty()) {
             return null;
