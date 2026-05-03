@@ -227,23 +227,6 @@ public class MapRepresentation implements Serializable {
         return path.stream().skip(1).map(Node::getId).collect(Collectors.toList());
     }
 
-    public synchronized List<String> getShortestPathToClosestOpenNode(String pos) {
-        List<String> open = getOpenNodes();
-        if (open.isEmpty()) return null;
-        String closest = null;
-        int minDist = Integer.MAX_VALUE;
-        for (String target : open) {
-            List<String> path = getShortestPath(pos, target);
-            int dist = (path == null) ? Integer.MAX_VALUE : path.size();
-            if (dist < minDist) {
-                minDist = dist;
-                closest = target;
-            }
-        }
-        if (closest == null) return null;
-        return getShortestPath(pos, closest);
-    }
-
     public synchronized List<String> getOpenNodes() {
         return g.nodes()
                 .filter(n -> {
@@ -441,7 +424,7 @@ public class MapRepresentation implements Serializable {
     public synchronized Graph getGraph() { return g; }
     public synchronized void setWumpusScent(String nodeId, boolean hasScent) { wumpusScent.put(nodeId, hasScent); }
 
-    public List<String> getShortestPathToClosestOpenNode(String myPosition, List<String> agentNodes) {
+    public List<String> getShortestPathToClosestOpenNode(String myPosition, Collection<String> agentNodes) {
         List<String> openNodes = getOpenNodes();
         openNodes.removeAll(agentNodes);
         if (openNodes.isEmpty()) {
@@ -459,7 +442,7 @@ public class MapRepresentation implements Serializable {
         Optional<Couple<String, Integer>> closest = distances.stream().min(Comparator.comparing(Couple::getRight));
         return getShortestPath(myPosition, closest.get().getLeft());
     }
-
+    
     public synchronized List<String> getClosedNodes() {
         return g.nodes()
                 .filter(n -> Objects.equals(n.getAttribute("ui.class"), MapAttribute.closed.toString()))
