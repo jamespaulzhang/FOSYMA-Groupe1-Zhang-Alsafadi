@@ -1,3 +1,4 @@
+// COMPLETE CODE - REPLACE ENTIRE FILE
 package eu.su.mas.dedaleEtu.mas.knowledge;
 
 import java.io.Serializable;

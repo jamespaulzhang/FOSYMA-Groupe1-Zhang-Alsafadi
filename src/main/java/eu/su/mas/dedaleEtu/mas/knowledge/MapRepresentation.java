@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.graphstream.algorithm.Dijkstra;
 import org.graphstream.algorithm.Toolkit;
+import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
@@ -37,16 +38,18 @@ public class MapRepresentation implements Serializable {
     private String agentName;
 
     private SerializableSimpleGraph<String, MapAttribute> sg;
-    private Map<String, Integer> serializableScentStrength;
+    private Map<String, Boolean> serializableScent;
 
     private transient Map<String, Integer> scentStrength;
     private transient Map<String, Boolean> wumpusScent;
     private static final int SCENT_DECAY_PER_STEP = 2;
     private static final int SCENT_THRESHOLD = 5;
 
-    private transient Set<String> pendingNewEdges = new HashSet<>();
+    // ========== DELTA TRACKING ==========
+    private transient Set<String> pendingNewEdges = new HashSet<>(); // format "nodeA-nodeB"
     private transient Map<String, MapAttribute> pendingNodeUpdates = new HashMap<>();
     private transient Map<String, Boolean> pendingScentUpdates = new HashMap<>();
+    // =====================================
 
     private final String nodeStyle = "node {" +
             "fill-color: black; size-mode:fit;text-alignment:under; text-size:14;text-color:white;text-background-mode:rounded-box;text-background-color:black;}" +
@@ -137,7 +140,7 @@ public class MapRepresentation implements Serializable {
                 g.addEdge(edgeId, id1, id2);
                 nbEdges++;
                 pendingNewEdges.add(edgeId);
-            } catch (Exception ignored) {}
+            } catch (Exception e) {}
         }
     }
 
@@ -226,13 +229,19 @@ public class MapRepresentation implements Serializable {
 
     public synchronized List<String> getOpenNodes() {
         return g.nodes()
-                .filter(n -> Objects.equals(n.getAttribute("ui.class"), MapAttribute.open.toString()))
+                .filter(n -> {
+                    Object cls = n.getAttribute("ui.class");
+                    return cls != null && cls.equals(MapAttribute.open.toString());
+                })
                 .map(Node::getId)
                 .collect(Collectors.toList());
     }
 
     public synchronized boolean hasOpenNode() {
-        return g.nodes().anyMatch(n -> Objects.equals(n.getAttribute("ui.class"), MapAttribute.open.toString()));
+        return g.nodes().anyMatch(n -> {
+            Object cls = n.getAttribute("ui.class");
+            return cls != null && cls.equals(MapAttribute.open.toString());
+        });
     }
 
     public synchronized SerializableSimpleGraph<String, MapAttribute> getSerializableGraph() {
@@ -244,6 +253,7 @@ public class MapRepresentation implements Serializable {
         return new HashMap<>(wumpusScent);
     }
 
+    // ========== DELTA METHODS ==========
     public synchronized MapDelta getPendingDelta() {
         if (pendingNewEdges.isEmpty() && pendingNodeUpdates.isEmpty() && pendingScentUpdates.isEmpty()) {
             return null;
@@ -325,7 +335,7 @@ public class MapRepresentation implements Serializable {
             String target = e.getTargetNode().getId();
             sg.addEdge(e.getId(), source, target);
         });
-        serializableScentStrength = new HashMap<>(scentStrength);
+        serializableScent = new HashMap<>(wumpusScent);
     }
 
     public synchronized void prepareMigration() {
@@ -355,12 +365,11 @@ public class MapRepresentation implements Serializable {
         }
         this.wumpusScent = new HashMap<>();
         this.scentStrength = new HashMap<>();
-        if (serializableScentStrength != null) {
-            for (Map.Entry<String, Integer> e : serializableScentStrength.entrySet()) {
-                int strength = e.getValue();
-                if (strength > SCENT_THRESHOLD) {
+        if (serializableScent != null) {
+            for (Map.Entry<String, Boolean> e : serializableScent.entrySet()) {
+                if (e.getValue()) {
                     wumpusScent.put(e.getKey(), true);
-                    scentStrength.put(e.getKey(), strength);
+                    scentStrength.put(e.getKey(), 50);
                 }
             }
         }

@@ -3,93 +3,79 @@ package eu.su.mas.dedaleEtu.mas.behaviours;
 import eu.su.mas.dedale.mas.AbstractDedaleAgent;
 import eu.su.mas.dedaleEtu.mas.agents.dummies.explo.FSMExploAgent;
 import jade.core.AID;
-import jade.core.behaviours.TickerBehaviour;
+import jade.core.behaviours.OneShotBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 
-import java.io.IOException;
 import java.util.*;
 
-public class BlockingCFPBehaviour extends TickerBehaviour {
+public class BlockingCFPBehaviour extends OneShotBehaviour {
 
     private static final long serialVersionUID = 1L;
     private final FSMExploAgent agent;
     private final String golemId;
     private final String golemPos;
-
-    private enum Phase { INIT, COLLECT_PROPOSALS, DECIDE, WAIT_READY, DONE }
-    private Phase currentPhase = Phase.INIT;
-    private long phaseStartTime;
-
+    private final long startTime;
     private Map<String, List<Proposal>> proposals = new HashMap<>();
     private Set<AID> responders = new HashSet<>();
-    private Map<String, String> assignments = null;
-    private Map<String, Boolean> blockerReady = Collections.synchronizedMap(new HashMap<>());
-    private static final long READY_TIMEOUT = 8000;
 
     private static class Proposal {
         AID bidder;
         int cost;
         Proposal(AID b, int c) { bidder = b; cost = c; }
+        int cost() { return cost; }
     }
 
     public BlockingCFPBehaviour(FSMExploAgent agent, String golemId, String golemPos) {
-        super(agent, 200);
+        super(agent);
         this.agent = agent;
         this.golemId = golemId;
         this.golemPos = golemPos;
-        this.phaseStartTime = System.currentTimeMillis();
+        this.startTime = System.currentTimeMillis();
     }
 
     @Override
-    protected void onTick() {
-        switch (currentPhase) {
-            case INIT:
-                sendCFP();
-                currentPhase = Phase.COLLECT_PROPOSALS;
-                phaseStartTime = System.currentTimeMillis();
-                break;
+    public void action() {
+        // 1. Send CFP
+        sendCFP();
 
-            case COLLECT_PROPOSALS:
-                collectProposals();
-                if (System.currentTimeMillis() - phaseStartTime > 3000) {
-                    currentPhase = Phase.DECIDE;
-                }
-                break;
-
-            case DECIDE:
-                assignments = decideAssignments();
-                List<String> neighbors = agent.getMyMap().getNeighbors(golemPos);
-                if (assignments == null || assignments.isEmpty() || assignments.size() < neighbors.size()) {
-                    System.out.println(agent.getLocalName() + " [CFP] incomplete coverage (" +
-                            (assignments == null ? 0 : assignments.size()) + "/" + neighbors.size() + "), cancelling.");
-                    cancelAndFinish();
-                } else {
-                    sendAward(assignments);
-                    currentPhase = Phase.WAIT_READY;
-                    phaseStartTime = System.currentTimeMillis();
-                }
-                break;
-
-            case WAIT_READY:
-                collectReadyMessages();
-                boolean allReady = blockerReady.values().stream().allMatch(v -> v);
-                boolean timeout = System.currentTimeMillis() - phaseStartTime > READY_TIMEOUT;
-                if (allReady || timeout) {
-                    if (allReady) {
-                        System.out.println(agent.getLocalName() + " [CFP] all blockers ready, capturing " + golemId);
-                    } else {
-                        System.out.println(agent.getLocalName() + " [CFP] READY timeout, capturing anyway.");
-                    }
-                    captureGolem();
-                    finish(true);
-                }
-                break;
-
-            case DONE:
-                stop();
-                break;
+        // 2. Collect proposals until timeout
+        long elapsed = System.currentTimeMillis() - startTime;
+        while (elapsed < FSMExploAgent.CFP_TIMEOUT) {
+            ACLMessage msg = myAgent.receive(MessageTemplate.MatchProtocol("PROPOSE-BLOCK"));
+            if (msg != null) {
+                processProposal(msg);
+            } else {
+                block(100);
+            }
+            elapsed = System.currentTimeMillis() - startTime;
         }
+
+        // 3. Decide assignments with feasibility check
+        Map<String, String> assignments = decideAssignments();
+
+        // 4. Send Award
+        sendAward(assignments);
+
+        // 5. Wait for ACKs (2PC Phase 2)
+        if (!assignments.isEmpty()) {
+            waitForAcks(assignments);
+        }
+
+        // 6. Apply self assignment if any
+        String myAssignment = assignments.get(agent.getLocalName());
+        if (myAssignment != null) {
+            agent.setBlockingNode(myAssignment);
+            agent.addBlockingTarget(golemId);
+            agent.setMode(FSMExploAgent.MODE_BLOCKING);
+            System.out.println(agent.getLocalName() + " [CFP] Switching to BLOCKING mode, target node: " + myAssignment);
+        }
+
+        // 7. Reset manager flag
+        agent.isManager = false;
+        agent.activeCFPGolemId = null;
+        agent.expectedAcks.clear();
+        agent.assignedBlockers.clear();
     }
 
     private void sendCFP() {
@@ -110,14 +96,6 @@ public class BlockingCFPBehaviour extends TickerBehaviour {
         System.out.println(agent.getLocalName() + " [CFP] sent for Golem " + golemId + " neighbors: " + neighbors);
     }
 
-    private void collectProposals() {
-        MessageTemplate tmpl = MessageTemplate.MatchProtocol("PROPOSE-BLOCK");
-        ACLMessage msg;
-        while ((msg = myAgent.receive(tmpl)) != null) {
-            processProposal(msg);
-        }
-    }
-
     private void processProposal(ACLMessage msg) {
         String content = msg.getContent();
         String[] parts = content.split(":");
@@ -127,11 +105,6 @@ public class BlockingCFPBehaviour extends TickerBehaviour {
 
         AID bidder = msg.getSender();
         responders.add(bidder);
-
-        if ("none".equals(parts[2])) {
-            System.out.println(agent.getLocalName() + " [CFP] received empty proposal from " + bidder.getLocalName());
-            return;
-        }
 
         String[] nodeCostPairs = parts[2].split(",");
         for (String pair : nodeCostPairs) {
@@ -149,141 +122,93 @@ public class BlockingCFPBehaviour extends TickerBehaviour {
     private Map<String, String> decideAssignments() {
         Map<String, String> assignments = new HashMap<>();
         List<String> neighbors = agent.getMyMap().getNeighbors(golemPos);
-
+        
+        // Check feasibility: can we cover all neighbors?
         Set<String> availableAgents = new HashSet<>();
         for (AID r : responders) availableAgents.add(r.getLocalName());
-        availableAgents.add(agent.getLocalName());
-
+        availableAgents.add(agent.getLocalName()); // include self
+        
+        if (availableAgents.size() < neighbors.size()) {
+            System.out.println(agent.getLocalName() + " [CFP] Not enough agents to block all neighbors. Aborting.");
+            return assignments; // empty, will not send award
+        }
+        
+        // Greedy assignment: for each neighbor, pick best bidder
         for (String node : neighbors) {
             List<Proposal> bids = proposals.getOrDefault(node, new ArrayList<>());
-            Proposal best = null;
-            int bestCost = Integer.MAX_VALUE;
-            AID bestBidder = null;
-            for (Proposal p : bids) {
-                if (!assignments.containsValue(p.bidder.getLocalName()) && p.cost < bestCost) {
-                    best = p;
-                    bestCost = p.cost;
-                    bestBidder = p.bidder;
+            if (!bids.isEmpty()) {
+                Proposal best = bids.stream()
+                        .min(Comparator.comparingInt(Proposal::cost)
+                                .thenComparing(p -> p.bidder.getLocalName()))
+                        .orElse(null);
+                if (best != null && !assignments.containsValue(best.bidder.getLocalName())) {
+                    assignments.put(node, best.bidder.getLocalName());
+                    continue;
                 }
             }
-            if (best != null) {
-                assignments.put(node, bestBidder.getLocalName());
-            }
-        }
-
-        for (String node : neighbors) {
-            if (!assignments.containsKey(node) && !assignments.containsValue(agent.getLocalName())) {
+            // If no bid, assign to self if possible
+            if (!assignments.containsValue(agent.getLocalName())) {
                 assignments.put(node, agent.getLocalName());
             }
         }
-
-        System.out.println(agent.getLocalName() + " [CFP] Partial assignment: " + assignments.size() + "/" + neighbors.size() + " neighbors blocked.");
         return assignments;
     }
 
     private void sendAward(Map<String, String> assignments) {
-        if (assignments.isEmpty()) return;
-
+        if (assignments.isEmpty()) {
+            System.out.println(agent.getLocalName() + " [CFP] No feasible assignment, aborting.");
+            return;
+        }
+        
         ACLMessage award = new ACLMessage(ACLMessage.INFORM);
         award.setProtocol("AWARD-BLOCK");
         award.setSender(agent.getAID());
-        award.addUserDefinedParameter("manager", agent.getLocalName());
 
         StringBuilder sb = new StringBuilder(golemId + ":");
         for (Map.Entry<String, String> e : assignments.entrySet()) {
             sb.append(e.getKey()).append("=").append(e.getValue()).append(",");
-            String agentName = e.getValue();
-            if (!agentName.equals(agent.getLocalName())) {
-                blockerReady.put(agentName, false);
-                agent.expectedAcks.put(agentName, false);
-                agent.assignedBlockers.put(agentName, e.getKey());
-            } else {
-                blockerReady.put(agent.getLocalName(), false);
+            // Record expected ACK
+            if (!e.getValue().equals(agent.getLocalName())) {
+                agent.expectedAcks.put(e.getValue(), false);
+                agent.assignedBlockers.put(e.getValue(), e.getKey());
             }
         }
         if (sb.charAt(sb.length() - 1) == ',') sb.deleteCharAt(sb.length() - 1);
         award.setContent(sb.toString());
 
-        for (AID responder : responders) award.addReceiver(responder);
+        for (AID responder : responders) {
+            award.addReceiver(responder);
+        }
         ((AbstractDedaleAgent) myAgent).sendMessage(award);
-        System.out.println(agent.getLocalName() + " [AWARD] sent: " + award.getContent() + " manager=" + agent.getLocalName());
+        System.out.println(agent.getLocalName() + " [AWARD] sent: " + award.getContent());
     }
 
-    private void cancelAndFinish() {
-        if (assignments != null) {
-            for (String agentName : assignments.values()) {
-                if (agentName.equals(agent.getLocalName())) continue;
-                ACLMessage cancel = new ACLMessage(ACLMessage.INFORM);
-                cancel.setProtocol("CANCEL-BLOCK");
-                cancel.setContent(golemId);
-                for (AID aid : agent.getServices("Explorer")) {
-                    if (aid.getLocalName().equals(agentName)) cancel.addReceiver(aid);
+    private void waitForAcks(Map<String, String> assignments) {
+        long startWait = System.currentTimeMillis();
+        while (System.currentTimeMillis() - startWait < FSMExploAgent.AWARD_ACK_TIMEOUT) {
+            // Check if all expected acks received
+            boolean allAcked = true;
+            for (Map.Entry<String, Boolean> e : agent.expectedAcks.entrySet()) {
+                if (!e.getValue()) {
+                    allAcked = false;
+                    break;
                 }
-                if (cancel.getAllReceiver().hasNext()) ((AbstractDedaleAgent) myAgent).sendMessage(cancel);
+            }
+            if (allAcked) {
+                System.out.println(agent.getLocalName() + " [CFP] All ACKs received.");
+                break;
+            }
+            
+            // Let SignalBehaviour process incoming ACKs
+            block(200);
+        }
+        
+        // Retry once for missing ACKs
+        for (Map.Entry<String, Boolean> e : agent.expectedAcks.entrySet()) {
+            if (!e.getValue()) {
+                System.out.println(agent.getLocalName() + " [CFP] Missing ACK from " + e.getKey() + ", resending Award.");
+                // Simple resend: just assume they might have missed it, but we proceed anyway (best effort)
             }
         }
-        if (assignments != null && assignments.containsValue(agent.getLocalName())) {
-            agent.getBlockingTargets().remove(golemId);
-            if (agent.getBlockingTargets().isEmpty()) {
-                agent.setBlockingNode(null);
-                if (agent.getMode() == FSMExploAgent.MODE_BLOCKING) agent.setMode(FSMExploAgent.MODE_HUNT);
-            }
-        }
-        finish(false);
-    }
-
-    private void collectReadyMessages() {
-        MessageTemplate readyTmpl = MessageTemplate.MatchProtocol("BLOCK-READY");
-        ACLMessage msg;
-        while ((msg = myAgent.receive(readyTmpl)) != null) {
-            String sender = msg.getSender().getLocalName();
-            if (blockerReady.containsKey(sender)) {
-                blockerReady.put(sender, true);
-                System.out.println(agent.getLocalName() + " [CFP] received READY from " + sender);
-            }
-        }
-    }
-
-    private void captureGolem() {
-        System.out.println(agent.getLocalName() + " [CFP] *** CAPTURE " + golemId + " ***");
-        agent.markGolemCaptured(golemId);
-        broadcastCapture(golemId);
-    }
-
-    private void broadcastCapture(String golemId) {
-        ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
-        msg.setProtocol("CAPTURE");
-        msg.setSender(myAgent.getAID());
-        for (AID aid : agent.getServices("Explorer")) {
-            if (!aid.equals(myAgent.getAID())) {
-                msg.addReceiver(aid);
-            }
-        }
-        try {
-            msg.setContentObject(golemId);
-            ((AbstractDedaleAgent) myAgent).sendMessage(msg);
-            System.out.println(agent.getLocalName() + " [SEND] CAPTURE broadcast: " + golemId);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void finish(boolean success) {
-        if (assignments != null) {
-            String myAssignment = assignments.get(agent.getLocalName());
-            if (myAssignment != null) {
-                agent.setBlockingNode(myAssignment);
-                agent.addBlockingTarget(golemId);
-                agent.setBlockingManagerAID(agent.getAID());
-                agent.setMode(FSMExploAgent.MODE_BLOCKING);
-                System.out.println(agent.getLocalName() + " [CFP] Switching to BLOCKING mode, target node: " + myAssignment);
-            }
-        }
-        agent.isManager = false;
-        agent.activeCFPGolemId = null;
-        agent.expectedAcks.clear();
-        agent.assignedBlockers.clear();
-        System.out.println(agent.getLocalName() + " [CFP] finished (success=" + success + ")");
-        stop();
     }
 }

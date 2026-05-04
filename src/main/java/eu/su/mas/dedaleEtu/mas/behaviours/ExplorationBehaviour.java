@@ -33,12 +33,12 @@ public class ExplorationBehaviour extends OneShotBehaviour {
         String lastPosition = agent.getLastPosition();
         String nextNode = null;
 
-        // Minimal sleep to allow observation – consider replacing with WakerBehaviour in production
-        try { Thread.sleep(200); } catch (InterruptedException e) {}
+        try { Thread.sleep(800); } catch (InterruptedException e) {}
 
+        // Clean expired blacklist entries
         agent.cleanBlockedNodes();
-        agent.cleanupMessageCaches();
 
+        // Check if previous move failed
         if (agent.getLastFailedNode() != null && myPosition.equals(agent.getLastFailedNodePosition())) {
             agent.addBlockedNode(agent.getLastFailedNode());
             System.out.println(agent.getLocalName() + " [EXPLORE] last move to " + agent.getLastFailedNode() + " failed -> blacklisted.");
@@ -50,13 +50,17 @@ public class ExplorationBehaviour extends OneShotBehaviour {
             agent.setGetoutCnt(0);
         }
 
+        // Mark current node as closed
         agent.myMapAddNewNode(myPosition);
         agent.getMyMap().addNode(myPosition, MapAttribute.closed);
 
+        // Observe surroundings
         List<Couple<Location, List<Couple<Observation, String>>>> lobs =
                 ((AbstractDedaleAgent) this.myAgent).observe();
         for (Couple<Location, List<Couple<Observation, String>>> entry : lobs) {
             String nodeId = entry.getLeft().getLocationId();
+
+            // Record all AgentNames (including ImHere)
             for (Couple<Observation, String> obs : entry.getRight()) {
                 if (obs.getLeft() == Observation.AGENTNAME) {
                     String seenAgent = obs.getRight();
@@ -75,6 +79,7 @@ public class ExplorationBehaviour extends OneShotBehaviour {
             }
         }
 
+        // Check if exploration is complete
         if (agent.getGetoutCnt() >= 10 || !agent.getMyMap().hasOpenNode() || allOpenBlocked(agent)) {
             agent.setMode(FSMExploAgent.MODE_HUNT);
             double cc = agent.getMyMap().checkTypeGraph();
@@ -83,10 +88,12 @@ public class ExplorationBehaviour extends OneShotBehaviour {
             return;
         }
 
+        // Destination management
         if (myPosition.equals(agent.getDestination())) {
             agent.setDest_wumpusfound(false);
         }
 
+        // Movement decision
         if (lastPosition.equals(myPosition) && agent.getPosition().contains(agent.getNextDest())) {
             String far = null;
             while (far == null || far.equals(myPosition) ||
@@ -133,15 +140,40 @@ public class ExplorationBehaviour extends OneShotBehaviour {
             else agent.setGetoutCnt(0);
         }
 
+        // Avoid blocked/occupied nodes
         if (nextNode != null && (agent.isNodeBlocked(nextNode) || agent.getKnownAgentPositions().contains(nextNode))) {
             System.out.println(agent.getLocalName() + " [EXPLORE] avoids " + nextNode + " (blocked or occupied)");
-            nextNode = null;
+            nextNode = null; // discard current choice
         }
 
+        // If nextNode is still null and we still need to explore, try again excluding blocked/occupied nodes
         if (nextNode == null && agent.getMyMap().hasOpenNode() && !allOpenBlocked(agent)) {
-            String safeNode = agent.getNextSafeOpenNode(myPosition);
-            if (safeNode != null) {
-                nextNode = safeNode;
+            // Build a list of open nodes that are not blocked and not occupied
+            List<String> candidates = new ArrayList<>();
+            for (String open : agent.getMyMap().getOpenNodes()) {
+                if (!agent.isNodeBlocked(open) && !agent.getKnownAgentPositions().contains(open)) {
+                    candidates.add(open);
+                }
+            }
+            // From these candidates, pick the closest one
+            if (!candidates.isEmpty()) {
+                // Compute closest candidate manually (not via getShortestPathToClosestOpenNode to avoid exclusion)
+                String closest = null;
+                int minDist = Integer.MAX_VALUE;
+                for (String cand : candidates) {
+                    List<String> path = agent.getMyMap().getShortestPath(myPosition, cand);
+                    int dist = (path == null) ? Integer.MAX_VALUE : path.size();
+                    if (dist < minDist) {
+                        minDist = dist;
+                        closest = cand;
+                    }
+                }
+                if (closest != null) {
+                    List<String> path = agent.getMyMap().getShortestPath(myPosition, closest);
+                    if (path != null && !path.isEmpty()) {
+                        nextNode = path.get(0);
+                    }
+                }
             }
         }
 
@@ -149,7 +181,7 @@ public class ExplorationBehaviour extends OneShotBehaviour {
         agent.setLastPosition(myPosition);
         agent.setNextDest(nextNode);
         if (nextNode != null) {
-            agent.setLastFailedNode(nextNode, myPosition);
+            agent.setLastFailedNode(nextNode, myPosition); // record attempt
             ((AbstractDedaleAgent) this.myAgent).moveTo(new GsLocation(nextNode));
             System.out.println(agent.getLocalName() + " [EXPLORE] moving to " + nextNode);
         }
