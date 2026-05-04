@@ -1793,3 +1793,99 @@
 2026-05-04 16:35:00.333 [Explo5] DEBUG c.s.m.d.m.a.d.explo.FSMExploAgent5 - getCurrentPosition(): 31
  
  getCurrentPosition(): 31
+2026-05-04 16:35:00.363 [Explo3] DEBUG c.s.m.d.m.a.d.explo.FSMExploAgent3 - getCurrentPosition(): 33
+ 
+ getCurrentPosition(): 33
+2026-05-04 16:35:00.782 [Explo2] DEBUG c.s.m.d.m.a.d.explo.FSMExploAgent2 - getCurrentPosition(): 16
+ 
+ getCurrentPosition(): 16
+2026-05-04 16:35:01.042 [Explo1] DEBUG c.s.m.d.m.a.d.explo.FSMExploAgent1 - getCurrentPosition(): 17
+ 
+ getCurrentPosition(): 17
+2026-05-04 16:35:01.139 [Explo4] DEBUG c.s.m.d.m.a.d.explo.FSMExploAgent4 - getCurrentPosition(): 15
+ 
+ getCurrentPosition(): 15
+2026-05-04 16:35:01.139 [Explo5] DEBUG c.s.m.d.m.a.d.explo.FSMExploAgent5 - getCurrentPosition(): 31
+ 
+ getCurrentPosition(): 31
+2026-05-04 16:35:01.165 [Explo3] DEBUG c.s.m.d.m.a.d.explo.FSMExploAgent3 - getCurrentPosition(): 33
+ 
+ getCurrentPosition(): 33
+2026-05-04 16:35:01.584 [Explo2] DEBUG c.s.m.d.m.a.d.explo.FSMExploAgent2 - getCurrentPosition(): 16
+ 
+ getCurrentPosition(): 16
+2026-05-04 16:35:01.845 [Explo1] DEBUG c.s.m.d.m.a.d.explo.FSMExploAgent1 - getCurrentPosition(): 17
+ 
+ getCurrentPosition(): 17
+2026-05-04 16:35:01.942 [Explo4] DEBUG c.s.m.d.m.a.d.explo.FSMExploAgent4 - getCurrentPosition(): 15
+ 
+ getCurrentPosition(): 15
+2026-05-04 16:35:01.942 [Explo5] DEBUG c.s.m.d.m.a.d.explo.FSMExploAgent5 - getCurrentPosition(): 31
+ 
+ getCurrentPosition(): 31
+2026-05-04 16:35:01.969 [Explo3] DEBUG c.s.m.d.m.a.d.explo.FSMExploAgent3 - getCurrentPosition(): 33
+ 
+ getCurrentPosition(): 33
+2026-05-04 16:35:02.389 [Explo2] DEBUG c.s.m.d.m.a.d.explo.FSMExploAgent2 - getCurrentPosition(): 16
+ 
+ getCurrentPosition(): 16
+2026-05-04 16:35:02.650 [Explo1] DEBUG c.s.m.d.m.a.d.explo.FSMExploAgent1 - getCurrentPosition(): 17
+ 
+ getCurrentPosition(): 17
+2026-05-04 16:35:02.746 [Explo5] DEBUG c.s.m.d.m.a.d.explo.FSMExploAgent5 - getCurrentPosition(): 31
+ 
+ getCurrentPosition(): 31
+2026-05-04 16:35:02.746 [Explo4] DEBUG c.s.m.d.m.a.d.explo.FSMExploAgent4 - getCurrentPosition(): 15
+ 
+ getCurrentPosition(): 15
+2026-05-04 16:35:02.774 [Explo3] DEBUG c.s.m.d.m.a.d.explo.FSMExploAgent3 - getCurrentPosition(): 33
+ 
+ getCurrentPosition(): 33
+2026-05-04 16:35:03.191 [Explo2] DEBUG c.s.m.d.m.a.d.explo.FSMExploAgent2 - getCurrentPosition(): 16
+ 
+ getCurrentPosition(): 16
+2026-05-04 16:35:03.452 [Explo1] DEBUG c.s.m.d.m.a.d.explo.FSMExploAgent1 - getCurrentPosition(): 17
+ 
+ getCurrentPosition(): 17
+2026-05-04 16:35:03.552 [Explo4] DEBUG c.s.m.d.m.a.d.explo.FSMExploAgent4 - getCurrentPosition(): 15
+ 
+ getCurrentPosition(): 15
+2026-05-04 16:35:03.552 [Explo5] DEBUG c.s.m.d.m.a.d.explo.FSMExploAgent5 - getCurrentPosition(): 31
+ 
+ getCurrentPosition(): 31
+2026-05-04 16:35:03.578 [Explo3] DEBUG c.s.m.d.m.a.d.explo.FSMExploAgent3 - getCurrentPosition(): 33
+ 
+ getCurrentPosition(): 33
+2026-05-04 16:35:03.993 [Explo2] DEBUG c.s.m.d.m.a.d.explo.FSMExploAgent2 - getCurrentPosition(): 16
+ 
+ getCurrentPosition(): 16
+2026-05-04 16:35:04.256 [Explo1] DEBUG c.s.m.d.m.a.d.explo.FSMExploAgent1 - getCurrentPosition(): 17
+ 
+ getCurrentPosition(): 17
+2026-05-04 16:35:04.357 [Explo4] DEBUG c.s.m.d.m.a.d.explo.FSMExploAgent4 - getCurrentPosition(): 15
+ 
+ getCurrentPosition(): 15
+2026-05-04 16:35:04.357 [Explo5] DEBUG c.s.m.d.m.a.d.explo.FSMExploAgent5 - getCurrentPosition(): 31
+ 
+ getCurrentPosition(): 31
+2026-05-04 16:35:04.380 [Explo3] DEBUG c.s.m.d.m.a.d.explo.FSMExploAgent3 - getCurrentPosition(): 33
+ 
+ getCurrentPosition(): 33
+2026-05-04 16:35:04.795 [Explo2] DEBUG c.s.m.d.m.a.d.explo.FSMExploAgent2 - getCurrentPosition(): 16
+ 
+ getCurrentPosition(): 16
+2026-05-04 16:35:05.057 [Explo1] DEBUG c.s.m.d.m.a.d.explo.FSMExploAgent1 - getCurrentPosition(): 17
+ 
+ getCurrentPosition(): 17
+2026-05-04 16:35:05.162 [Explo5] DEBUG c.s.m.d.m.a.d.explo.FSMExploAgent5 - getCurrentPosition(): 31
+ 
+ getCurrentPosition(): 31
+2026-05-04 16:35:05.162 [Explo4] DEBUG c.s.m.d.m.a.d.explo.FSMExploAgent4 - getCurrentPosition(): 15
+ 
+ getCurrentPosition(): 15
+2026-05-04 16:35:05.184 [Explo3] DEBUG c.s.m.d.m.a.d.explo.FSMExploAgent3 - getCurrentPosition(): 33
+ 
+ getCurrentPosition(): 33
+2026-05-04 16:35:05.597 [Explo2] DEBUG c.s.m.d.m.a.d.explo.FSMExploAgent2 - getCurrentPosition(): 16
+ 
+ getCurrentPosition(): 16
