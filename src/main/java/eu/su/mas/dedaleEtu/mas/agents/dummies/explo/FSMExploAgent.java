@@ -288,8 +288,8 @@ public class FSMExploAgent extends AbstractDedaleAgent {
     public void myMapAddNode(String node, MapAttribute attr) { myMap.addNode(node, attr); }
     public boolean myMapAddNewNode(String id) { return myMap.addNewNode(id); }
     public void myMapAddEdge(String id1, String id2) { myMap.addEdge(id1, id2); }
-    public List<String> myMapShortestPathToClosestOpenNode(String pos, Set<String> set) {
-        return myMap.getShortestPathToClosestOpenNode(pos, set);
+    public List<String> myMapShortestPathToClosestOpenNode(String pos, List<String> agentsPos) {
+        return myMap.getShortestPathToClosestOpenNode(pos, agentsPos);
     }
     public SerializableSimpleGraph<String, MapAttribute> getMyMapSerial() {
         return myMap.getSerializableGraph();
@@ -461,49 +461,4 @@ public class FSMExploAgent extends AbstractDedaleAgent {
     public Set<String> getBlockingTargets() { return blockingTargets; }
     public void addBlockingTarget(String golemId) { blockingTargets.add(golemId); }
     public void clearBlockingTargets() { blockingTargets.clear(); }
-    
- // ========== BLACKLIST / FAILED MOVE MANAGEMENT ==========
-    private Set<String> blockedNodes = Collections.synchronizedSet(new HashSet<>());
-    private Map<String, Long> blockedTimestamps = new ConcurrentHashMap<>();
-    private static final long BLOCKED_EXPIRY_MS = 8000; // 8 seconds
-
-    private String lastFailedNode = null;
-    private String lastFailedNodePosition = null;
-
-    public boolean isNodeBlocked(String nodeId) {
-        Long ts = blockedTimestamps.get(nodeId);
-        if (ts == null) return false;
-        if (System.currentTimeMillis() - ts > BLOCKED_EXPIRY_MS) {
-            blockedNodes.remove(nodeId);
-            blockedTimestamps.remove(nodeId);
-            return false;
-        }
-        return true;
-    }
-
-    public void addBlockedNode(String nodeId) {
-        if (blockedTimestamps.containsKey(nodeId)) {
-            // Already blocked, just refresh timestamp to avoid log spam
-            blockedTimestamps.put(nodeId, System.currentTimeMillis());
-            return;
-        }
-        blockedNodes.add(nodeId);
-        blockedTimestamps.put(nodeId, System.currentTimeMillis());
-        System.out.println(getLocalName() + " [BLACKLIST] add " + nodeId);
-    }
-
-    public void cleanBlockedNodes() {
-        long now = System.currentTimeMillis();
-        blockedTimestamps.entrySet().removeIf(e -> now - e.getValue() > BLOCKED_EXPIRY_MS);
-        blockedNodes.retainAll(blockedTimestamps.keySet());
-    }
-
-    public void setLastFailedNode(String node, String myPos) {
-        this.lastFailedNode = node;
-        this.lastFailedNodePosition = myPos;
-    }
-
-    public String getLastFailedNode() { return lastFailedNode; }
-    public String getLastFailedNodePosition() { return lastFailedNodePosition; }
-    // ==========================================================
 }

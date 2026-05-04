@@ -46,15 +46,6 @@ public class HuntBehaviour extends OneShotBehaviour {
 
         try { Thread.sleep(800); } catch (InterruptedException e) {}
 
-        // Nettoyer la liste noire expirée
-        agent.cleanBlockedNodes();
-
-        // Vérifier si le déplacement précédent a échoué
-        if (agent.getLastFailedNode() != null && myPosition.equals(agent.getLastFailedNodePosition())) {
-            agent.addBlockedNode(agent.getLastFailedNode());
-            System.out.println(agent.getLocalName() + " [HUNT] last move to " + agent.getLastFailedNode() + " failed -> blacklisted.");
-        }
-
         List<Couple<Location, List<Couple<Observation, String>>>> lobs =
                 ((AbstractDedaleAgent) this.myAgent).observe();
 
@@ -64,21 +55,14 @@ public class HuntBehaviour extends OneShotBehaviour {
             Couple<Location, List<Couple<Observation, String>>> entry = iter.next();
             String nodeId = entry.getLeft().getLocationId();
             agent.addNextNodes(nodeId);
-
-            for (Couple<Observation, String> obs : entry.getRight()) {
-                if (obs.getLeft() == Observation.AGENTNAME) {
-                    String seenAgent = obs.getRight();
-                    agent.addPosition(nodeId);
-                    agent.updateAgentPosition(seenAgent, nodeId);
-                    System.out.println(agent.getLocalName() + " [HUNT] sees agent " + seenAgent + " at " + nodeId);
-                }
-                if (obs.getLeft() == Observation.STENCH) {
+            if (!entry.getRight().isEmpty() && entry.getRight().get(0).getLeft() != null) {
+                if (entry.getRight().get(0).getLeft().toString().equals("Stench")) {
                     nodeStench.add(nodeId);
                 }
             }
         }
 
-        // Met à jour les propres observations d'odeur
+        // Update own stench observations
         if (nodeStench.size() == 1) {
             agent.setOwnStenchDirection(nodeStench.get(0));
         } else if (nodeStench.size() > 1) {
@@ -88,17 +72,19 @@ public class HuntBehaviour extends OneShotBehaviour {
             agent.setOwnInsideStench(null);
         }
 
+        // Update scent map for sharing via delta
         if (!nodeStench.isEmpty()) {
             agent.getMyMap().updateScentFromObservation(new java.util.HashSet<>(nodeStench));
         }
 
-        // Détecter les Golems visibles
+        // Detect Golems in sight
         Map<String, String> spottedGolems = detectAllGolems(lobs, agent);
         for (Map.Entry<String, String> e : spottedGolems.entrySet()) {
+            // 直接目击：confirmed = true
             agent.addOrUpdateGolem(e.getValue(), e.getKey(), true);
         }
 
-        // Détection d'encerclement
+        // Surrounded detection (with consecutive confirmation)
         for (GolemInfo golem : agent.getKnownGolems().values()) {
             if (agent.getCapturedGolems().contains(golem.getId())) continue;
             String pos = golem.getLastKnownPosition();
@@ -122,7 +108,7 @@ public class HuntBehaviour extends OneShotBehaviour {
             }
         }
 
-        // Chasse style graphe : points d'articulation
+        // Graph-style hunt: use articulation points to block
         if (agent.getStyle() == 1) {
             for (GolemInfo golem : agent.getKnownGolems().values()) {
                 if (agent.getCapturedGolems().contains(golem.getId())) continue;
@@ -148,9 +134,11 @@ public class HuntBehaviour extends OneShotBehaviour {
             }
         }
 
-        // Adjacent à un Golem -> lancer CFP
+        // If adjacent to a Golem and not already a manager, start CFP
         for (GolemInfo golem : agent.getKnownGolems().values()) {
-            if (agent.getCapturedGolems().contains(golem.getId())) continue;
+            if (agent.getCapturedGolems().contains(golem.getId())) {
+                continue;
+            }
             String golemPos = golem.getLastKnownPosition();
             List<String> neighbors = agent.getMyMap().getNeighbors(myPosition);
             if (myPosition.equals(golemPos) || neighbors.contains(golemPos)) {
@@ -165,7 +153,7 @@ public class HuntBehaviour extends OneShotBehaviour {
             }
         }
 
-        // Sélection de cible
+        // Target selection
         if (agent.getCurrentTargetGolemId() == null ||
                 !agent.getKnownGolems().containsKey(agent.getCurrentTargetGolemId())) {
             GolemInfo best = agent.selectBestTarget(myPosition);
@@ -174,7 +162,7 @@ public class HuntBehaviour extends OneShotBehaviour {
             }
         }
 
-        // Gestion de destination
+        // Destination management
         if (myPosition.equals(agent.getDestination())) {
             agent.setDestination(null);
             agent.setDestinationAlea(false);
@@ -183,7 +171,7 @@ public class HuntBehaviour extends OneShotBehaviour {
             agent.setDestinationInterblocage(false);
         }
 
-        // Décision de mouvement (originale, conservée intégralement)
+        // Movement decision
         if (lastPosition.equals(myPosition) && agent.getPosition().contains(agent.getNextDest())) {
             if (!nodeStench.isEmpty() && agent.getStyle() == 1) {
                 for (String nb : nodeStench) {
@@ -298,50 +286,9 @@ public class HuntBehaviour extends OneShotBehaviour {
             }
         }
 
-        // ---- Éviter les sommets bloqués ou occupés ----
-        if (nextNode != null && (agent.isNodeBlocked(nextNode) || agent.getKnownAgentPositions().contains(nextNode))) {
-            System.out.println(agent.getLocalName() + " [HUNT] avoids " + nextNode + " (blocked or occupied)");
-            nextNode = null; // discard current choice
-        }
-
-        // ---- Si nextNode est toujours nul, essayer de trouver une alternative ----
-        if (nextNode == null && agent.getMyMap().hasOpenNode()) {
-            // Construire une liste de nœuds ouverts non bloqués et non occupés
-            List<String> candidates = new ArrayList<>();
-            for (String open : agent.getMyMap().getOpenNodes()) {
-                if (!agent.isNodeBlocked(open) && !agent.getKnownAgentPositions().contains(open)) {
-                    candidates.add(open);
-                }
-            }
-            // On pourrait aussi envisager des nœuds fermés non occupés pour continuer la chasse
-            // mais pour l'instant, on utilise la même logique que l'exploration.
-            if (!candidates.isEmpty()) {
-                // Choisir le plus proche parmi ces candidats
-                String closest = null;
-                int minDist = Integer.MAX_VALUE;
-                for (String cand : candidates) {
-                    List<String> path = agent.getMyMap().getShortestPath(myPosition, cand);
-                    int dist = (path == null) ? Integer.MAX_VALUE : path.size();
-                    if (dist < minDist) {
-                        minDist = dist;
-                        closest = cand;
-                    }
-                }
-                if (closest != null) {
-                    List<String> path = agent.getMyMap().getShortestPath(myPosition, closest);
-                    if (path != null && !path.isEmpty()) {
-                        nextNode = path.get(0);
-                        System.out.println(agent.getLocalName() + " [HUNT] redirected to " + nextNode);
-                    }
-                }
-            }
-        }
-        // ------------------------------------------------------------
-
         agent.setLastPosition(myPosition);
         agent.setNextDest(nextNode);
         if (nextNode != null) {
-            agent.setLastFailedNode(nextNode, myPosition);
             ((AbstractDedaleAgent) this.myAgent).moveTo(new GsLocation(nextNode));
             System.out.println(agent.getLocalName() + " [HUNT] moving to " + nextNode);
         }
@@ -355,6 +302,11 @@ public class HuntBehaviour extends OneShotBehaviour {
         Map<String, String> result = new HashMap<>();
         for (int i = 0; i < obs.size(); i++) {
             String nodeId = obs.get(i).getLeft().getLocationId();
+            for (Couple<Observation, String> p : obs.get(i).getRight()) {
+                if (p.getLeft() == Observation.AGENTNAME) {
+                    System.out.println(agent.getLocalName() + " [DEBUG] sees agent: '" + p.getRight() + "' at " + nodeId);
+                }
+            }
             Optional<String> golemName = obs.get(i).getRight().stream()
                     .filter(p -> p.getLeft() == Observation.AGENTNAME &&
                             p.getRight() != null &&
@@ -378,6 +330,7 @@ public class HuntBehaviour extends OneShotBehaviour {
         String myPos = ((AbstractDedaleAgent) myAgent).getCurrentPosition().getLocationId();
         occupied.add(myPos);
         occupied.remove(golemNode);
+
         for (String nb : neighbours) {
             if (!occupied.contains(nb)) {
                 return false;
@@ -406,6 +359,7 @@ public class HuntBehaviour extends OneShotBehaviour {
             ((AbstractDedaleAgent) myAgent).sendMessage(msg);
             System.out.println(agent.getLocalName() + " [SEND] CAPTURE: " + golemId);
         } catch (IOException e) {}
+        // Simple retry
         try { Thread.sleep(100); } catch (InterruptedException e) {}
         ((AbstractDedaleAgent) myAgent).sendMessage(msg);
     }
